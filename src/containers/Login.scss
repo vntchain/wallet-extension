@@ -1,0 +1,21 @@
+@import "../component/base";
+.banner {
+  height: $banner-height;
+  background: url("../assets/images/login_banner.png") no-repeat;
+  background-size: cover;
+}
+.container {
+  @include main-content;
+  overflow-y: auto;
+}
+.title {
+  margin-bottom: 0.4rem;
+  line-height: 0.24rem;
+  font-size: 0.24rem;
+  color: $font-color;
+  font-weight: 600;
+}
+.tip {
+  font-size: 0.14rem;
+  color: $font-color-light;
+}

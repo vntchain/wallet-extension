@@ -1,0 +1,82 @@
+@import "../base";
+.setting {
+  .icon {
+    width: 0.17rem;
+    height: auto;
+  }
+  &-bg {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: transparent;
+    z-index: 99;
+  }
+  &-cont {
+    position: absolute;
+    width: 2.6rem;
+    border-radius: 0.04rem;
+    top: 0.5rem;
+    right: 0.15rem;
+    background: #ffffff;
+    z-index: 100;
+    overflow-y: auto;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  &-list {
+    @include stylelessUl;
+    padding: 0.1rem 0;
+    &:not(:last-child) {
+      border-bottom: 1px solid $border-color;
+    }
+  }
+  &-item {
+    position: relative;
+    display: block;
+    padding: 0.1rem 0.15rem 0.1rem 0.4rem;
+    line-height: 0.16rem;
+    font-size: 0.16rem;
+    color: $font-color;
+    p {
+      margin-bottom: 0;
+      display: flex;
+      justify-content: space-between;
+      &:not(:last-child) {
+        margin-bottom: 0.1rem;
+      }
+    }
+    .vnt {
+      line-height: 0.14rem;
+      font-size: 0.14rem;
+      color: $font-color-light;
+    }
+    .import {
+      padding: 0.04rem 0.12rem;
+      line-height: 0.14rem;
+      font-size: 0.14rem;
+      border-radius: 0.16rem;
+      background: $primary-blue;
+      color: #ffffff;
+    }
+    &:hover {
+      color: $primary-blue;
+    }
+    &_active {
+      color: $primary-blue;
+      .vnt {
+        color: $primary-blue;
+      }
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0.15rem;
+        top: 0.14rem;
+        width: 0.12rem;
+        height: 0.09rem;
+        background: url("../../assets/images/select.png");
+        background-size: cover;
+      }
+    }
+  }
+}

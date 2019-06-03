@@ -1,0 +1,43 @@
+@import "../base";
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  height: $header-height;
+  line-height: $header-height;
+  h1 {
+    margin: 0;
+    font-size: 0.18rem;
+    font-weight: 600;
+  }
+  &.trans {
+    border-bottom: 1px solid rgba(225, 225, 225, 0.15);
+    background-color: transparent;
+    h1 {
+      color: #ffffff;
+    }
+  }
+  &.white {
+    border-bottom: 1px solid $border-color;
+    background-color: #ffffff;
+    h1 {
+      color: $font-color;
+    }
+  }
+
+  .back {
+    width: 0.2rem;
+    cursor: pointer;
+  }
+  .title {
+    flex: 1;
+    text-align: center;
+  }
+  .setting {
+    width: 0.2rem;
+    cursor: pointer;
+  }
+}

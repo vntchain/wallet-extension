@@ -1,0 +1,17 @@
+@import "../../component/base";
+
+.create {
+  .title {
+    margin-bottom: 0.4rem;
+    h2 {
+      line-height: 0.24rem;
+      font-size: 0.24rem;
+      color: $font-color;
+      font-weight: 600;
+    }
+    span {
+      font-size: 0.14rem;
+      color: $font-color-light;
+    }
+  }
+}

@@ -1,0 +1,11 @@
+@import "../../component/base";
+.cont {
+  margin-top: 0.18rem;
+  padding: 0.15rem;
+  border: 1px solid $border-color;
+  border-radius: 0.04rem;
+  color: $font-color;
+  font-weight: 500;
+  font-size: 0.16rem;
+  min-height: 1rem;
+}

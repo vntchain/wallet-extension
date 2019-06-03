@@ -1,0 +1,41 @@
+{
+  "name": "vntwallet",
+  "description" : "vntchain wallet extension",
+  "version": "1.0",
+  "browser_action": {
+    "default_popup": "index.html",
+    "default_icon": "demo_extension.png"
+  },
+  "manifest_version": 2,
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Alt+Shift+F",
+        "mac": "Alt+Shift+F"
+      },
+      "description": "Opens popup.html"
+    }
+  },
+  "background": {
+    "scripts": [
+      "./extension/background.js"
+    ],
+    "persistent": true
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "notifications"
+
+  ],
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["./extension/contentscript.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    "./extension/inpage.js"
+  ]
+}

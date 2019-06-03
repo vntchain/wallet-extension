@@ -1,0 +1,111 @@
+@import "../component/base";
+.banner {
+  margin-bottom: 0.3rem;
+  padding-top: $header-height;
+  height: 2.6rem;
+  background: url("../assets/images/home_banner.png") no-repeat;
+  background-size: cover;
+  box-sizing: border-box;
+  .user {
+    margin-top: 0.3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    img {
+      margin-right: 0.05rem;
+      width: 0.32rem;
+      height: 0.32rem;
+    }
+    .code {
+      font-size: 0.16rem;
+      line-height: 0.32rem;
+      color: #ffffff;
+    }
+    .btn {
+      width: 0.52rem;
+      height: 0.22rem;
+      line-height: 0.22rem;
+      font-size: 0.14rem;
+      background: rgba(225, 225, 225, 0.2);
+      text-align: center;
+      border-radius: 0.11rem;
+      color: #ffffff;
+    }
+  }
+  .vnt {
+    margin-top: 0.3rem;
+    line-height: 0.24rem;
+    font-size: 0.28rem;
+    font-weight: bold;
+    color: #ffffff;
+    font-family: Arial, serif;
+  }
+  .currency {
+    margin-top: 0.15rem;
+    line-height: 0.18rem;
+    font-size: 0.18rem;
+    color: #ffffff;
+  }
+  .tx {
+    margin-top: 0.25rem;
+    display: grid;
+    grid-column-gap: 0.15rem;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    &-btn {
+      height: 0.54rem;
+      line-height: 0.54rem;
+      font-size: 0.16rem;
+      color: $font-color;
+      background: #ffffff;
+      border-radius: 0.04rem;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      img {
+        margin-right: 0.1rem;
+        width: 0.28rem;
+        height: 0.28rem;
+      }
+    }
+  }
+}
+.container {
+  @include main-content;
+  overflow-y: auto;
+}
+.title {
+  margin-bottom: 0.2rem;
+  line-height: 0.16rem;
+  font-size: 0.16rem;
+  color: $font-color;
+  font-weight: 600;
+}
+.history {
+  &-item {
+    margin-bottom: 0.1rem;
+    padding: 0.2rem;
+    border-radius: 0.04rem;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+    li {
+      display: flex;
+      justify-content: space-between;
+      .date {
+        font-size: 0.14rem;
+        color: $font-color-light;
+      }
+      .txid,
+      .currency {
+        font-size: 0.16rem;
+        color: #8088a0;
+      }
+      .vnt,
+      .code {
+        font-size: 0.16rem;
+        color: $font-color;
+      }
+      &:not(:last-child) {
+        margin-bottom: 0.15rem;
+      }
+    }
+  }
+}

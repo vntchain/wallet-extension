@@ -1,0 +1,43 @@
+@import "../../component/base";
+.wrap {
+  padding: 0 0.2rem;
+}
+.detail {
+  width: 100%;
+  .qrcode {
+    margin: 0.3rem 0;
+    width: auto;
+    height: auto;
+  }
+  .code {
+    margin-bottom: 0.2rem;
+    display: flex;
+    height: 0.5rem;
+    line-height: 0.5rem;
+    border-radius: 0.04rem;
+    border: 1px solid $border-color;
+    color: $font-color;
+    .str {
+      flex: 1;
+      padding: 0 0.05rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      text-align: left;
+    }
+    .copy {
+      width: 0.4rem;
+      &::after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: url("../../assets/images/copy.png") center center no-repeat;
+        background-size: 40%;
+      }
+    }
+  }
+  .btn {
+    margin-bottom: 0.2rem;
+  }
+}

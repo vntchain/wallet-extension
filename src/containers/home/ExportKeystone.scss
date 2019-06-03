@@ -1,0 +1,30 @@
+@import "../../component/base";
+.wrap {
+  padding: 0 0.2rem;
+}
+.detail {
+  width: 100%;
+  .cont {
+    text-align: left;
+    .title {
+      margin-top: 0.4rem;
+      margin-bottom: 0.2rem;
+      display: flex;
+      justify-content: space-between;
+      line-height: 0.16rem;
+      a {
+        margin-left: 0.15rem;
+      }
+    }
+    .code {
+      padding: 0.15rem;
+      border: 1px solid $border-color;
+      border-radius: 0.04rem;
+      color: $font-color;
+      font-weight: 500;
+      font-size: 0.16rem;
+      max-height: 1rem;
+      overflow-y: auto;
+    }
+  }
+}

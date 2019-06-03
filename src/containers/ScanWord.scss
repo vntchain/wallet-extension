@@ -1,0 +1,22 @@
+@import "../component/base";
+.container {
+  @include main-content;
+  margin-top: $header-height;
+  overflow-y: auto;
+}
+.cont {
+  margin-top: 0.18rem;
+  padding: 0.15rem;
+  border: 1px solid $border-color;
+  border-radius: 0.04rem;
+  color: $font-color;
+  font-weight: 500;
+  font-size: 0.16rem;
+  min-height: 1rem;
+}
+.copy {
+  margin-top: 0.05rem;
+  display: block;
+  font-size: 0.14rem;
+  text-align: right;
+}

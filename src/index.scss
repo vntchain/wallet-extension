@@ -1,0 +1,55 @@
+@import "component/base";
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+  font-size: 625%;
+}
+
+body {
+  font-family: "Microsoft YaHei", "微软雅黑", "PingFangSC-Regular", sans-serif;
+  min-width: 1.2rem;
+}
+
+:global {
+  .am-textarea-item {
+    width: 100%;
+    height: 0.95rem;
+    border: 1px solid $border-color;
+    border-radius: 0.04rem;
+    .am-textarea-control {
+      height: 100%;
+      textarea {
+        height: 100%;
+        font-size: 0.16rem;
+        color: $font-color;
+        overflow-y: auto;
+      }
+    }
+  }
+  .am-button {
+    font-size: 0.16rem;
+  }
+  .am-list-item.am-input-item {
+    border-bottom: 1px solid $border-color;
+  }
+  .am-list-item .am-input-control input {
+    font-size: 0.24rem;
+    &::-webkit-input-placeholder {
+      color: #aab2bd;
+      font-size: 0.16rem;
+    }
+  }
+  .am-modal-header {
+    border-bottom: 1px solid $border-color;
+    .am-modal-title {
+      color: $font-color;
+    }
+  }
+}

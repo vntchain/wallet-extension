@@ -1,0 +1,6 @@
+@import "../component/base";
+.container {
+  @include main-content;
+  margin-top: $header-height;
+  overflow-y: auto;
+}

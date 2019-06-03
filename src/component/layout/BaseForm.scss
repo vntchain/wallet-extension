@@ -1,0 +1,31 @@
+@import "../base";
+.form {
+  &-item {
+    display: flex;
+    padding-bottom: 0.2rem;
+    .label {
+      font-size: 0.16rem;
+      color: $font-color;
+    }
+    .error {
+      color: $error-color;
+    }
+    p {
+      margin-bottom: 0;
+    }
+    &.horizontal {
+      flex-direction: row;
+      .label {
+        width: 0.8rem;
+      }
+      .cont {
+        flex: 1;
+      }
+    }
+    &.vertical {
+      flex-direction: column;
+    }
+  }
+}
+.error {
+}

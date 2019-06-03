@@ -1,0 +1,23 @@
+@import "../base";
+
+.label {
+  line-height: 0.16rem;
+  img {
+    margin-right: 0.1rem;
+    width: auto;
+    height: 0.16rem;
+    vertical-align: middle;
+  }
+  label {
+    font-size: 0.16rem;
+    font-weight: 600;
+    color: $font-color;
+    vertical-align: middle;
+  }
+  .tip {
+    margin-left: 0.1rem;
+    font-size: 0.16rem;
+    color: $font-color-light;
+    vertical-align: middle;
+  }
+}

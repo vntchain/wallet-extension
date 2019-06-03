@@ -1,0 +1,49 @@
+$main-width: 12rem;
+$header-height: 0.6rem;
+$banner-height: 2.3rem;
+// color
+$font-color: #2b3861;
+$font-color-light: #8088a0;
+$primary-blue: #3389ff;
+$border-color: #e1e3e9;
+$error-color: #ff0201;
+
+@mixin stylelessUl {
+  margin: 0;
+  padding: 0;
+  li {
+    list-style: none;
+  }
+}
+
+@mixin stylelessAnchor {
+  text-decoration: none;
+}
+
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+  }
+  * html & {
+    height: 1px;
+  }
+}
+
+@mixin main-content {
+  @include clearfix;
+  padding: 0.4rem 0;
+}
+
+@mixin stylelessA {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+@mixin stylelessInput {
+  border: none;
+  outline: none;
+}
