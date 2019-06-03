@@ -139,7 +139,7 @@ function injectScript (content) {
 /************   event & message    ***********/
 /*********************************************/
 var port = chrome.runtime.connect({name: "contentscript"});
-port.postMessage({src: "contentScript",dst:"background"});
+// port.postMessage({src: "contentScript",dst:"background"});
 port.onMessage.addListener(function(msg) {
     console.log("port.onMessage: " +JSON.stringify(msg));
 
