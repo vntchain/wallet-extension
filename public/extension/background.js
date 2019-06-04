@@ -51347,6 +51347,7 @@ var providerUrl = network.testnet
 var provider = new vntProvider(providerUrl)
 var selectedAddr = ''
 var is_wallet_exist = false
+var is_wallet_unlock = false
 var extension_wallet = new walletManage({})
 var wallet_passwd = ''
 /**
@@ -51388,6 +51389,8 @@ window.login = async function login(passwd) {
     }
 
     wallet_passwd = passwd
+    is_wallet_unlock = true
+    updateState()
     await extension_wallet.submitPassword(passwd)
     return extension_wallet.fullUpdate()
 }
@@ -51398,6 +51401,8 @@ window.login = async function login(passwd) {
  * 
  */
 window.logout = async function logout() {
+    is_wallet_unlock = false
+    updateState()
     await extension_wallet.setLocked()
     delete wallet_passwd
 }
@@ -51411,13 +51416,12 @@ window.logout = async function logout() {
  */
 window.createWallet = async function createWallet(passwd) {
 
-    if (is_wallet_exist) {
-        return Promise.reject(new Error('wallet already exist.'))
-    }
+    resetState()
 
     await extension_wallet.createNewVaultAndKeychain(passwd)
     wallet_passwd = passwd
     is_wallet_exist = true
+    is_wallet_unlock = true
    
     var addrs = await extension_wallet.getAccounts()
     selectedAddr = addrs[addrs.length - 1]
@@ -51437,9 +51441,12 @@ window.createWallet = async function createWallet(passwd) {
  */
 window.restoreFromSeed = async function restoreFromSeed(passwd, seed) {
 
+    resetState()
+
     await extension_wallet.createNewVaultAndRestore(passwd, seed)
     wallet_passwd = passwd
     is_wallet_exist = true
+    is_wallet_unlock = true
     var addrs = await extension_wallet.getAccounts()
     updateAccounts(false, addrs[addrs.length - 1])
     updateState()
@@ -51758,6 +51765,13 @@ function updateTrxs(addr, trxid, value) {
 }
 
 /**
+ * reset extension state
+ */
+function resetState() {
+    chrome.storage.sync.clear()
+}
+
+/**
  * restore extension state
  * 
  * the state:
@@ -51809,6 +51823,16 @@ function restoreState() {
         }
     })
 
+    chrome.storage.sync.get('isWalletUnlock', function(obj){
+        var backup_isWalletUnlock = obj.isWalletUnlock
+        if (backup_isWalletUnlock !== undefined){
+            console.log('restoreState: is wallet unlock')
+            is_wallet_unlock = backup_isWalletUnlock
+        }
+    })
+
+    
+
 }
 
 /**
@@ -51837,7 +51861,11 @@ function updateState() {
 
     // wallet state
     chrome.storage.sync.set({'isWalletExist': is_wallet_exist}, function(){
-        console.log('updateState: update wallet state')
+        console.log('updateState: update wallet exist state')
+    })
+
+    chrome.storage.sync.set({'isWalletUnlock': is_wallet_unlock}, function(){
+        console.log('updateState: update wallet unlock state')
     })
 
 
