@@ -51416,9 +51416,7 @@ window.logout = async function logout() {
  */
 window.createWallet = async function createWallet(passwd) {
 
-    if (is_wallet_exist) {
-        return Promise.reject(new Error('wallet already exist.'))
-    }
+    resetState()
 
     await extension_wallet.createNewVaultAndKeychain(passwd)
     wallet_passwd = passwd
@@ -51442,6 +51440,8 @@ window.createWallet = async function createWallet(passwd) {
  * 
  */
 window.restoreFromSeed = async function restoreFromSeed(passwd, seed) {
+
+    resetState()
 
     await extension_wallet.createNewVaultAndRestore(passwd, seed)
     wallet_passwd = passwd
@@ -51762,6 +51762,13 @@ function updateTrxs(addr, trxid, value) {
         account_info.trxs[addr] = [{time: date.toLocaleString(), id: trxid, value: value}]
     }
 
+}
+
+/**
+ * reset extension state
+ */
+function resetState() {
+    chrome.storage.sync.clear()
 }
 
 /**
