@@ -8,7 +8,7 @@ const plumber = require('gulp-plumber')
 const livereload = require('gulp-livereload')
 const gulpSequence = require('gulp-sequence')
 const del = require('del')
-const webpackConfig = require('./config/webpack.config.dev')
+const webpackConfig = require('./config/webpack.config.gulp')
 const yargs = require('yargs')
 
 const args = yargs

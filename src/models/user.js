@@ -1,9 +1,8 @@
 import { effects } from 'redux-sirius'
 import { push } from 'react-router-redux'
-import paths from 'utils/paths'
+import paths from '../utils/paths'
+import { login } from '../utils/chrome'
 import { message } from 'antd'
-
-const chrome = global.chrome
 
 const { put } = effects
 export default {
@@ -19,28 +18,26 @@ export default {
         type: 'user/setIsLoginDisable',
         payload: true
       })
-      chrome.runtime.getBackgroundPage(function(bg) {
-        bg.login(payload)
-          .then(function*() {
-            yield put({
-              type: 'user/setIsLogin',
-              payload: true
-            })
-            yield put(push(paths.home))
-            yield put({
-              type: 'user/setIsLoginDisable',
-              payload: false
-            })
-          })
-          .catch(e => {
-            put({
-              type: 'user/setIsLoginDisable',
-              payload: false
-            })
-            message.error(e.message)
-            console.log(e) //eslint-disable-line
-          })
-      })
+      try {
+        yield login(payload)
+        yield put({
+          type: 'user/setIsLogin',
+          payload: true
+        })
+        yield put(push(paths.home))
+        yield put({
+          type: 'user/setIsLoginDisable',
+          payload: false
+        })
+      } catch (e) {
+        message.error(e.message)
+        console.log(e) //eslint-disable-line
+      } finally {
+        put({
+          type: 'user/setIsLoginDisable',
+          payload: false
+        })
+      }
     })
   })
 }

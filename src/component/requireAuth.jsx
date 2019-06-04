@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 
-import paths from 'utils/paths'
+import paths from '../utils/paths'
 
 function requireAuth(WrappedComponent) {
   const mapStateToProps = ({ user: { isAuth } }) => {

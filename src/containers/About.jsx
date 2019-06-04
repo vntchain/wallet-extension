@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import CommonPadding from '../component/layout/CommonPadding'
 import Header from '../component/layout/Header'
-import imgs from 'utils/imgs'
+import imgs from '../utils/imgs'
 
 import styles from './About.scss'
 

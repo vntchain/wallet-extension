@@ -20,7 +20,6 @@ const webpack = require('webpack');
 const WebpackDevServer = require('webpack-dev-server');
 const clearConsole = require('react-dev-utils/clearConsole');
 const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
-const tasks = require('./tasks');
 const {
   choosePort,
   createCompiler,
@@ -67,7 +66,6 @@ choosePort(HOST, DEFAULT_PORT)
       // We have not found a port.
       return;
     }
-    tasks.copyAssets('process.env.NODE_ENV')
     const protocol = process.env.HTTPS === 'true' ? 'https' : 'http';
     const appName = require(paths.appPackageJson).name;
     const urls = prepareUrls(protocol, HOST, port);

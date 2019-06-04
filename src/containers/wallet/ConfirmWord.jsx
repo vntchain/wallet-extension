@@ -1,17 +1,19 @@
 import React, { Fragment } from 'react'
+import { connect } from 'react-redux'
 import BaseLabel from '../../component/layout/BaseLabel'
 import { Form } from 'antd'
 import { Button, TextareaItem } from 'antd-mobile'
 const FormItem = Form.Item
 
 const WordForm = Form.create({ name: 'word' })(props => {
-  const { form } = props
+  const { form, onSubmit } = props
   const { getFieldDecorator } = form
   const handleSubmit = e => {
     e.preventDefault()
     form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values) //eslint-disable-line
+        onSubmit(values.word)
       }
     })
   }
@@ -35,12 +37,19 @@ const WordForm = Form.create({ name: 'word' })(props => {
   )
 })
 
-const ConfirmWord = function() {
+const ConfirmWord = function(props) {
+  const { dispatch } = props
+  const handleConfirmWord = word => {
+    dispatch({
+      type: 'wallet/confirmWord',
+      payload: word
+    })
+  }
   return (
     <Fragment>
-      <WordForm />
+      <WordForm onSubmit={handleConfirmWord} />
     </Fragment>
   )
 }
 
-export default ConfirmWord
+export default connect()(ConfirmWord)

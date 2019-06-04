@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import imgs from 'utils/imgs'
+import imgs from '../../utils/imgs'
 import styles from './BaseWarn.scss'
 
 const BaseTip = function(props) {

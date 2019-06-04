@@ -11,7 +11,7 @@ import {
 import createHistory from 'history/createBrowserHistory'
 // import registerServiceWorker from 'registerServiceWorker'
 
-import App from 'containers/App'
+import App from './containers/App'
 import 'normalize.css'
 import './index.scss'
 

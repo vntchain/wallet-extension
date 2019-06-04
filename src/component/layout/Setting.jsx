@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import paths from 'utils/paths'
-import imgs from 'utils/imgs'
+import paths from '../../utils/paths'
+import imgs from '../../utils/imgs'
 import styles from './Setting.scss'
 
 const Setting = function(props) {
