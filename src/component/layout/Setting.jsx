@@ -6,7 +6,7 @@ import imgs from 'utils/imgs'
 import styles from './Setting.scss'
 
 const Setting = function(props) {
-  const { env, walletList, currWallet } = props
+  const { env, walletList, currWallet, history } = props
   const [isSetShow, setIsSetShow] = useState(false)
   const showDisplay = () => {
     return isSetShow ? 'block' : 'none'
@@ -16,7 +16,7 @@ const Setting = function(props) {
     test: '测试网'
   }
   const linkTo = link => {
-    props.history.push(link)
+    history.push(link)
   }
   const loginOut = () => {}
   const LinkList = [

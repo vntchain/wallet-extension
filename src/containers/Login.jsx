@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Button, InputItem } from 'antd-mobile'
 import { Form } from 'antd'
@@ -11,13 +12,14 @@ import imgs from '../utils/imgs'
 const FormItem = Form.Item
 
 const LoginForm = Form.create({ name: 'login' })(props => {
-  const { form } = props
+  const { form, onSubmit } = props
   const { getFieldDecorator } = form
   const handleSubmit = e => {
     e.preventDefault()
     form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values) //eslint-disable-line
+        onSubmit(values.password)
       }
     })
   }
@@ -39,7 +41,14 @@ const LoginForm = Form.create({ name: 'login' })(props => {
     </Form>
   )
 })
-const Login = function() {
+const Login = function(props) {
+  const { dispatch } = props
+  const handleLogin = data => {
+    dispatch({
+      type: 'user/login',
+      payload: data
+    })
+  }
   return (
     <Fragment>
       <Header title={'主网'} theme={'trans'} />
@@ -47,7 +56,7 @@ const Login = function() {
       <div className={styles.container}>
         <CommonPadding>
           <h2 className={styles.title}>登录VNT钱包</h2>
-          <LoginForm />
+          <LoginForm onSubmit={handleLogin} />
           <div className={styles.tip}>
             <p>
               登录另一个钱包？
@@ -64,4 +73,4 @@ const Login = function() {
   )
 }
 
-export default Login
+export default connect()(Login)

@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import { connect } from 'react-redux'
 import { Form, Checkbox, message } from 'antd'
 import { Button, InputItem } from 'antd-mobile'
 import BaseLabel from '../../component/layout/BaseLabel'
@@ -6,7 +7,7 @@ import styles from './Create.scss'
 const FormItem = Form.Item
 
 const CreateForm = function(props) {
-  const form = props.form
+  const { form, onSubmit, isCreateDisable } = props
   const { getFieldDecorator } = form
   const handleSubmit = e => {
     e.preventDefault()
@@ -15,6 +16,7 @@ const CreateForm = function(props) {
         const isAgree = form.getFieldValue('agree')
         if (isAgree) {
           console.log('Received values of form: ', values) //eslint-disable-line
+          onSubmit(values.password)
         } else {
           message.warn('请阅读并同意服务条款')
         }
@@ -65,7 +67,11 @@ const CreateForm = function(props) {
             </span>
           </Checkbox>
         )}
-        <Button type="primary" onClick={handleSubmit}>
+        <Button
+          type="primary"
+          onClick={handleSubmit}
+          disabled={isCreateDisable}
+        >
           创建
         </Button>
       </FormItem>
@@ -75,7 +81,17 @@ const CreateForm = function(props) {
 
 const WrapCreateForm = Form.create({ name: 'create' })(CreateForm)
 
-const Wallet = function() {
+const Wallet = function(props) {
+  const {
+    dispatch,
+    wallet: { isCreateDisable }
+  } = props
+  const handleCreate = data => {
+    dispatch({
+      type: 'wallet/create',
+      payload: data
+    })
+  }
   return (
     <Fragment>
       <div className={styles.create}>
@@ -84,9 +100,14 @@ const Wallet = function() {
           <span>请记住您的密码，将用于登录钱包。</span>
         </div>
       </div>
-      <WrapCreateForm />
+      <WrapCreateForm
+        onSubmit={handleCreate}
+        isCreateDisable={isCreateDisable}
+      />
     </Fragment>
   )
 }
 
-export default Wallet
+export default connect(({ wallet }) => ({
+  wallet
+}))(Wallet)

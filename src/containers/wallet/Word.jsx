@@ -27,6 +27,6 @@ const Word = function(props) {
   )
 }
 
-export default connect(() => {
-  ;[1, 2, 3]
-})(Word)
+export default connect(() => ({
+  word: [1, 2, 3]
+}))(Word)

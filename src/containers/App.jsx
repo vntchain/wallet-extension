@@ -3,6 +3,7 @@ import { Route, withRouter, Switch, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import InnerWidthWatcher from '../component/InnerWidthWatcher'
+import requireAuth from '../component/requireAuth'
 import paths from '../utils/paths'
 
 import Login from './Login'
@@ -19,13 +20,21 @@ class App extends Component {
       <InnerWidthWatcher>
         <Switch>
           <Route exact path={paths.login} component={Login} />
-          <Route exact path={paths.home} component={Home} />
-          <Route exact path={paths.scanWord} component={ScanWord} />
+          <Route exact path={paths.home} component={requireAuth(Home)} />
+          <Route
+            exact
+            path={paths.scanWord}
+            component={requireAuth(ScanWord)}
+          />
           <Route exact path={paths.about} component={About} />
-          <Route exact path={paths.importKeystone} component={ImportKeystone} />
-          <Route exact path={paths.send} component={Send} />
-          <Route exact path={paths.customize} component={Send} />
-          <Route exact path={paths.txDetail} component={Send} />
+          <Route
+            exact
+            path={paths.importKeystone}
+            component={requireAuth(ImportKeystone)}
+          />
+          <Route exact path={paths.send} component={requireAuth(Send)} />
+          <Route exact path={paths.customize} component={requireAuth(Send)} />
+          <Route exact path={paths.txDetail} component={requireAuth(Send)} />
           <Route path={paths.wallet} component={Wallet} />
           <Redirect to="/" />
         </Switch>
