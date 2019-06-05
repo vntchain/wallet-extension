@@ -743,6 +743,10 @@ InpageHttpProvider.prototype.prepareRequest = function (async) {
  */
 InpageHttpProvider.prototype.send = function (payload) { 
 
+  if ((authUrl === '') || (authUrl !== window.location.host)) {
+    throw errors.authorizationError('request Authorization first.')
+  }
+
   switch (payload.method) {
     case 'core_accounts':
       return (this.selectedAccount === '')? []:[this.selectedAccount] 
@@ -785,18 +789,14 @@ InpageHttpProvider.prototype.send = function (payload) {
  */
 var id = 1
 var jsonrpc = "2.0"
-// var sendSignedTrx = function(e){
-//   console.log("inpage: send signed trx")
-//   InpageHttpProvider.prototype.sendAsync(e.payload, curCallback)
-//   if (e.detail.error) {
-//     curCallback(e.detail.error)
-//   } else {
-//     var result = {id: id, jsonrpc: jsonrpc, result: e.detail.result}
-//     curCallback(null, result)
-//   }
-// }
 
 InpageHttpProvider.prototype.sendAsync = function (payload, callback) {
+
+  if (authUrl.indexOf(window.location.host) == -1) {
+    callback(errors.authorizationError('request Authorization first.'))
+    return
+  }
+
   console.log(payload)
   switch (payload.method) {
     case 'core_sendTransaction':
@@ -933,29 +933,39 @@ var curProviderUrl = network.testnet
 window.vnt = new Vnt(new InpageHttpProvider(curProviderUrl))
 
 
-// var apiCallback
-// var apiFunc = function(e){
-//   console.log("inpage: api callback")
-//   window.vnt.currentProvider.isEnable = e.detail.enabled
-//   apiCallback(null, e.detail.enabled)
-// }
-// window.vnt.requesetAuthorization = function(cb) {
+var authUrl = ''
+window.vnt.requesetAuthorization = function(callback) {
 
-//     apiCallback = cb
-//     const url = window.location.host
+    const url = window.location.host
 
-//     let event = new CustomEvent('enable_vnt', {
-//         detail: {"type": "enable_vnt", "url": url}
-//     })
-//     window.dispatchEvent(event);
+    window.postMessage({
+      "target": "contentscript",
+      "data": {"url": url},
+      "method": "inpage_requesetAuthorization",
+    }, "*");
 
-//     window.addEventListener("confirmed_enable_vnt", apiFunc, {once: true})
-// }
-// 
-// window.addEventListener('web_api_enable', function(e){
-//     const domain = window.location.host
-//     curProvider.isEnable.push(domain)
-// })
+    window.addEventListener('message', function(e) {
+      //  e.data.data contain the passed data
+      if (e.data.src ==="content" && e.data.type === "requesetAuthorization_response" && !!e.data.data) {
+        console.log('inpage: message requesetAuthorization_response')
+        if (!!e.data.data.confirmAuthorization) {
+          authUrl = e.data.data.url
+          localStorage.setItem('authUrl', authUrl)
+          var result = {id: id, jsonrpc: jsonrpc, result: e.data.data.confirmAuthorization}
+          callback(null, result)
+        } else {
+          callback(errors.authorizationError('user denied.'))
+        }
+      }
+    })
+
+
+}
+
+window.addEventListener('web_api_enable', function(e){
+    const domain = window.location.host
+    curProvider.isEnable.push(domain)
+})
 
 window.addEventListener('message', function(e) {
   // e  contains the transferred data 
@@ -970,6 +980,10 @@ window.addEventListener('message', function(e) {
   }
 })
 
+
+window.onload = function() {
+  authUrl = localStorage.getItem('authUrl') || ''
+}
 }).call(this,require("buffer").Buffer)
 },{"./errors":1,"./vnt.min.js":5,"buffer":9,"xhr2":2,"xmlhttprequest":3}],5:[function(require,module,exports){
 (function (global,Buffer){
