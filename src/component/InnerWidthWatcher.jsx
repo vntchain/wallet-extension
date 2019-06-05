@@ -36,17 +36,14 @@ const InnerWidthWatcher = props => {
       window.removeEventListener('resize', handleChangeWidth)
     }
   }, [])
-  useEffect(
-    () => {
-      if (w !== null) {
-        props.dispatch({
-          type: 'window/setWidth',
-          payload: w
-        })
-      }
-    },
-    [w]
-  )
+  useEffect(() => {
+    if (w !== null) {
+      props.dispatch({
+        type: 'window/setWidth',
+        payload: w
+      })
+    }
+  }, [w])
   return props.children
 }
 

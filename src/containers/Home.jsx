@@ -14,12 +14,9 @@ const Home = function(props) {
   } = props
   const [userVisible, setUserVisible] = useState(false)
   const [keystoneVisible, setKeystoneVisible] = useState(false)
-  useEffect(
-    () => {
+  useEffect(() => {
       console.log(addr) //eslint-disable-line
-    },
-    [addr]
-  )
+  }, [addr])
   return (
     <Fragment>
       <Header title={'首页'} theme={'trans'} hasSetting={true} />
