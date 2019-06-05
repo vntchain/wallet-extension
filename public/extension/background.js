@@ -51363,6 +51363,7 @@ var wallet_passwd = ''
  *      time: the time of the trx,
  *      id: the trx id,
  *      value: the transaction value
+ *      state: "pending/success/error"
  *      },
  *      ......
  *      ],
@@ -51383,7 +51384,10 @@ var account_info = {accounts:[], trxs:{}}
  * @param {string} passwd  the wallet passwd
  * 
  */
-window.login = async function login(passwd) {
+window.login = async function login(obj) {
+
+    var passwd = obj.passwd
+
     if (!is_wallet_exist) {
         return Promise.reject(new Error('Please create wallet first.'))
     }
@@ -51414,7 +51418,9 @@ window.logout = async function logout() {
  *
  * @param {string} passwd - the wallet password
  */
-window.createWallet = async function createWallet(passwd) {
+window.createWallet = async function createWallet(obj) {
+
+    var passwd = obj.passwd
 
     resetState()
 
@@ -51429,7 +51435,7 @@ window.createWallet = async function createWallet(passwd) {
     updateState()
 
     var keyring = await getWalletKeyring('HD Key Tree')
-    return Promise.resolve(JSON.stringify(keyring[0].mnemonic))
+    return Promise.resolve(keyring[0].mnemonic)
 }
 
 /**
@@ -51439,10 +51445,14 @@ window.createWallet = async function createWallet(passwd) {
  * @param {string} seed   - the seed to recover
  * 
  */
-window.restoreFromSeed = async function restoreFromSeed(passwd, seed) {
+window.restoreFromSeed = async function restoreFromSeed(obj) {
+
+    var passwd = obj.passwd
+    var seed = obj.seed
 
     resetState()
 
+    console.log(typeof passwd)
     await extension_wallet.createNewVaultAndRestore(passwd, seed)
     wallet_passwd = passwd
     is_wallet_exist = true
@@ -51460,7 +51470,10 @@ window.restoreFromSeed = async function restoreFromSeed(passwd, seed) {
  * @param {string} addr the addr of the account
  * @param {string} passwd the wallet passwd
  */
-window.exportAccountPrivatekey = async function exportAccountPrivatekey(addr, passwd) {
+window.exportAccountPrivatekey = async function exportAccountPrivatekey(obj) {
+
+    var addr = obj.addr
+    var passwd = obj.passwd
 
     if (wallet_passwd !== passwd) {
         throw new Error("password not correct!")
@@ -51475,7 +51488,10 @@ window.exportAccountPrivatekey = async function exportAccountPrivatekey(addr, pa
  * @param {*} privatekey the privatekey
  * @param {*} passwd  the wallet passwd
  */
-window.exportAccountKeystore = function exportAccountKeystore(privatekey, passwd) {
+window.exportAccountKeystore = function exportAccountKeystore(obj) {
+
+    var privatekey = obj.privateKey
+    var passwd = obj.passwd
 
     const buffer = ethUtil.toBuffer(privatekey)
     const wallet = Wallet.fromPrivateKey(buffer)
@@ -51490,9 +51506,11 @@ window.exportAccountKeystore = function exportAccountKeystore(privatekey, passwd
  * 
  * @param {string} addr 
  */
-function getKeyringOfAccount(addr) {
+window.getKeyringOfAccount = function getKeyringOfAccount(obj) {
+    var addr = obj.addr
+
     extension_wallet.getKeyringForAccount(addr).then((keyring) => {
-        return Promise.resolve(JSON.stringify(keyring.mnemonic))
+        return Promise.resolve(keyring.mnemonic)
     })
 }
 
@@ -51526,7 +51544,7 @@ window.addNewAccount = async function addNewAccount() {
 /**
  * get all accounts
  */
-window.getAccounts = function getAllAccounts() {
+function getAllAccounts() {
     return extension_wallet.getAccounts()
 }
 
@@ -51546,7 +51564,9 @@ window.getAccounts = function getAllAccounts() {
  * 
  * @param {string} privateKey  the hex private key
  */
-window.importByPrivatekey = async function importByPrivatekey(privateKey) {
+window.importByPrivatekey = async function importByPrivatekey(obj) {
+
+    var privateKey = obj.privateKey
 
     try {
 
@@ -51580,7 +51600,10 @@ window.importByPrivatekey = async function importByPrivatekey(privateKey) {
  * @param {string} input  the keyStore content
  * @param {string} passwd the keyStore password
  */
-window.importByKeystore = async function importByKeystore(input, passwd) {
+window.importByKeystore = async function importByKeystore(obj) {
+
+    var input = obj.input
+    var passwd = obj.passwd
 
     let wallet
     try {
@@ -51616,7 +51639,9 @@ function sendRawTransaction(rawTransactionParam) {
     provider.send(payload)
 }
 
-window.signThenSendTransaction = function signThenSendTransaction(tx, addr) {
+window.signThenSendTransaction = function signThenSendTransaction(obj) {
+    var tx = obj.tx
+    var addr = obj.addr
 
     var trx_value = tx.value 
     extension_wallet.signTransaction(tx, addr).then((signedtx) => {
@@ -51653,7 +51678,9 @@ function getNonce(addr) {
  * 
  * @param {string} addr  the addr of account
  */
-function getAccountBalance(addr) {
+window.getAccountBalance = function getAccountBalance(obj) {
+    var obj = obj.addr
+
     var payload = {jsonrpc: "2.0", id: 1, method: "core_getBalance", params:[]}
     payload.params[0] = addr
     payload.params[1] = "latest"
@@ -51669,7 +51696,8 @@ function getAccountBalance(addr) {
  * @param {string} id  the transaction id
  * 
  */
-function checkTransaction(id) {
+window.checkTransaction = function checkTransaction(obj) {
+    var id = obj.id
 
     var payload = {jsonrpc: "2.0", id: 1, method: "core_getTransactionReceipt", params:[]}
     payload.params[0] = id
@@ -51692,7 +51720,7 @@ function checkTransaction(id) {
  *  get the vnt price
  * 
  */
-function getVntPrice() {
+window.getVntPrice = function getVntPrice() {
 
     var url = "http://dncapi.bqiapp.com/api/coin/coininfo?code=vntchain"
     return JSON.parse(provider.httpGet(url)).data.price_cny
@@ -51704,7 +51732,8 @@ function getVntPrice() {
  * 
  * @param {string} newprovider the new provider url
  */
-function changeProvider(newprovider) {
+window.changeProvider = function changeProvider(obj) {
+    var newprovider = obj.newprovider
 
     console.log("function: changeProvider")
         
@@ -51757,7 +51786,7 @@ function updateTrxs(addr, trxid, value) {
     var trxs = account_info.trxs[addr]
     var date = new Date()
     if (trxs) {
-        trxs.push({time: date.toLocaleString(), id: trxid, value: value})
+        trxs.push({time: date.toLocaleString(), id: trxid, value: value, state: 'pending'})
     } else {
         account_info.trxs[addr] = [{time: date.toLocaleString(), id: trxid, value: value}]
     }
@@ -51931,6 +51960,15 @@ chrome.runtime.onConnect.addListener(function(port) {
                 // createPopup("notification.html", function(window){
                 // })
 
+            } else if (msg.data.method === "inpage_requesetAuthorization") {
+                
+                console.log("background: receive inpage request authorization")
+                console.log(msg) 
+
+                // create confirm_get_accounts popup window
+                // chrome.rutime.sendMessage({type: "requesetAuthorization", url: msg.data.data.url, addr: selectedAddr})
+                // createPopup("notification.html", function(window){
+                // })
             }
         } else if (msg.src === 'popup') { // from popup
             if (msg.data.type === "confirm_send_trx") {
@@ -51985,6 +52023,20 @@ chrome.runtime.onConnect.addListener(function(port) {
                 }
 
                
+            } else if (msg.data.type === "confirm_request_authorization") {
+
+                if (!!msg.data.data.confirmAuthorization) {
+                    chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
+                        chrome.tabs.sendMessage(tabArray[0].id, {confirmAuthorization: true});
+                    });
+    
+                } else {
+                    chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
+                        chrome.tabs.sendMessage(tabArray[0].id, {confirmAuthorization: false});
+                    });
+                }
+
+
             }
         
         } // end src from popup
