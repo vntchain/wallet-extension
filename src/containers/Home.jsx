@@ -1,4 +1,5 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import styles from './Home.scss'
 import Header from '../component/layout/Header'
@@ -7,9 +8,18 @@ import UserDetail from './home/UserDetail'
 import ExportKeystone from './home/ExportKeystone'
 import imgs from '../utils/imgs'
 
-const Home = function() {
+const Home = function(props) {
+  const {
+    user: { addr }
+  } = props
   const [userVisible, setUserVisible] = useState(false)
   const [keystoneVisible, setKeystoneVisible] = useState(false)
+  useEffect(
+    () => {
+      console.log(addr) //eslint-disable-line
+    },
+    [addr]
+  )
   return (
     <Fragment>
       <Header title={'首页'} theme={'trans'} hasSetting={true} />
@@ -76,4 +86,6 @@ const Home = function() {
   )
 }
 
-export default Home
+export default connect(({ user }) => ({
+  user
+}))(Home)

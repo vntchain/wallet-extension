@@ -10,6 +10,6 @@ export default {
   scanWord: '/word', //查看助记词
   importKeystone: '/import', //导入地址
   send: '/send', //发送vnt
-  customize: '/send', //自定义手续费
+  commission: '/commission', //自定义手续费
   txDetail: '/detail' //交易详情
 }

@@ -13,6 +13,7 @@ import ScanWord from './ScanWord'
 import About from './About'
 import ImportKeystone from './ImportKeystone'
 import Send from './Send'
+import Commission from './Commission'
 
 class App extends Component {
   render() {
@@ -33,7 +34,11 @@ class App extends Component {
             component={requireAuth(ImportKeystone)}
           />
           <Route exact path={paths.send} component={requireAuth(Send)} />
-          <Route exact path={paths.customize} component={requireAuth(Send)} />
+          <Route
+            exact
+            path={paths.commission}
+            component={requireAuth(Commission)}
+          />
           <Route exact path={paths.txDetail} component={requireAuth(Send)} />
           <Route path={paths.wallet} component={Wallet} />
           <Redirect to="/" />
