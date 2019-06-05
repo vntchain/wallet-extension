@@ -1,28 +1,22 @@
 import React, { Fragment } from 'react'
-import { InputItem, TextareaItem } from 'antd-mobile'
-import { Form } from 'antd'
+import { Link } from 'react-router-dom'
+import { Button } from 'antd-mobile'
+import { Form, Input } from 'antd'
 import CommonPadding from '../component/layout/CommonPadding'
 import Header from '../component/layout/Header'
-import BaseModalFooter from '../component/layout/BaseModalFooter'
 import styles from './ImportKeystone.scss'
 import BaseLabel from '../component/layout/BaseLabel'
-// import { Link } from 'react-router-dom'
-// import paths from '../utils/paths'
+import paths from '../utils/paths'
 
 const FormItem = Form.Item
+const TexeArea = Input.TextArea
 
 const SendForm = Form.create({ name: 'login' })(props => {
   const { form } = props
   const { getFieldDecorator } = form
   const formItemLayout = {
-    labelCol: {
-      xs: { span: 24 },
-      sm: { span: 5 }
-    },
-    wrapperCol: {
-      xs: { span: 24 },
-      sm: { span: 12 }
-    }
+    labelCol: { span: 6 },
+    wrapperCol: { span: 18 }
   }
   const handleSubmit = e => {
     e.preventDefault()
@@ -32,27 +26,34 @@ const SendForm = Form.create({ name: 'login' })(props => {
       }
     })
   }
-  const routeBack = () => {}
   return (
     <Form hideRequiredMark={true} {...formItemLayout} onSubmit={handleSubmit}>
       <FormItem label={<BaseLabel label={'来自:'} />}>
         <p>11111</p>
       </FormItem>
-      <FormItem label={<BaseLabel label={'请输入密码'} />}>
-        {getFieldDecorator('password', {
-          rules: [
-            { required: true, message: '请输入密码' },
-            { min: 8, message: '密码长度不足' }
-          ]
-        })(<InputItem type="password" placeholder="请输入" />)}
+      <FormItem label={<BaseLabel label={'发送至：'} />}>
+        {getFieldDecorator('to', {
+          rules: [{ required: true, message: '请输入目标地址' }]
+        })(<Input type="password" placeholder="请输入" />)}
       </FormItem>
-      <FormItem label={<BaseLabel label={'请输入密码'} />}>
+      <FormItem label={<BaseLabel label={'数量：'} />}>
+        {getFieldDecorator('to', {
+          rules: [{ required: true, message: '请输入数量' }]
+        })(<Input type="number" placeholder="请输入" />)}
+      </FormItem>
+      <FormItem label={<BaseLabel label={'手续费:'} />}>
+        <div>
+          <p>11111</p>
+          <Link to={paths.commission}>自定义</Link>
+        </div>
+      </FormItem>
+      <FormItem label={<BaseLabel label={'备注数据：'} />}>
         {getFieldDecorator('remind')(
-          <TextareaItem placeholder="请填写交易备注数据，非必填。" />
+          <TexeArea placeholder="请填写交易备注数据，非必填。" />
         )}
       </FormItem>
       <FormItem>
-        <BaseModalFooter onOk={handleSubmit} onCancel={routeBack} />
+        <Button type="primary" onClick={handleSubmit} />
       </FormItem>
     </Form>
   )
@@ -61,8 +62,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
 const Send = function() {
   return (
     <Fragment>
-      <Header title={'主网'} theme={'trans'} />
-      <div className={styles.banner} />
+      <Header title={'发送VNT'} hasBack={true} />
       <div className={styles.container}>
         <CommonPadding>
           <SendForm />
