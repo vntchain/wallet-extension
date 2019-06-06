@@ -48,10 +48,6 @@ export default {
           type: 'user/getAddr'
         })
         yield put(push(paths.home))
-        yield put({
-          type: 'user/setIsLoginDisable',
-          payload: false
-        })
       } catch (e) {
         message.error(e.message)
         console.log(e) //eslint-disable-line

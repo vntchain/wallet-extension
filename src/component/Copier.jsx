@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
 import { message } from 'antd'
 
 const Copier = props => {
@@ -25,6 +26,11 @@ const Copier = props => {
       <span onClick={handleCopy}>{props.children}</span>
     </Fragment>
   )
+}
+
+Copier.propType = {
+  text: PropTypes.string.isRequired,
+  copyRef: PropTypes.isRequired
 }
 
 export default Copier

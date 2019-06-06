@@ -20,7 +20,6 @@ export default {
       })
       try {
         const word = yield createWallet(payload)
-        console.log(word) //eslint-disable-line
         message.success('创建钱包成功！')
         yield put({
           type: 'user/setIsAuth',
@@ -41,7 +40,7 @@ export default {
         console.log(e) //eslint-disable-line
       } finally {
         yield put({
-          type: 'user/setIsCreateDisable',
+          type: 'wallet/setIsCreateDisable',
           payload: false
         })
       }

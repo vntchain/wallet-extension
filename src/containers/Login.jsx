@@ -12,7 +12,7 @@ import imgs from '../utils/imgs'
 const FormItem = Form.Item
 
 const LoginForm = Form.create({ name: 'login' })(props => {
-  const { form, onSubmit } = props
+  const { form, onSubmit, isLoginDisable } = props
   const { getFieldDecorator } = form
   const handleSubmit = e => {
     e.preventDefault()
@@ -34,7 +34,7 @@ const LoginForm = Form.create({ name: 'login' })(props => {
         })(<InputItem type="password" placeholder="请输入" />)}
       </FormItem>
       <FormItem>
-        <Button type="primary" onClick={handleSubmit}>
+        <Button type="primary" onClick={handleSubmit} disabled={isLoginDisable}>
           登录
         </Button>
       </FormItem>
@@ -42,7 +42,10 @@ const LoginForm = Form.create({ name: 'login' })(props => {
   )
 })
 const Login = function(props) {
-  const { dispatch } = props
+  const {
+    dispatch,
+    user: { isLoginDisable }
+  } = props
   const handleLogin = data => {
     dispatch({
       type: 'user/login',
@@ -56,7 +59,7 @@ const Login = function(props) {
       <div className={styles.container}>
         <CommonPadding>
           <h2 className={styles.title}>登录VNT钱包</h2>
-          <LoginForm onSubmit={handleLogin} />
+          <LoginForm onSubmit={handleLogin} isLoginDisable={isLoginDisable} />
           <div className={styles.tip}>
             <p>
               登录另一个钱包？
@@ -73,4 +76,4 @@ const Login = function(props) {
   )
 }
 
-export default connect()(Login)
+export default connect(({ user }) => ({ user }))(Login)
