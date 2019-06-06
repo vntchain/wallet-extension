@@ -27,6 +27,8 @@
     }
     .copy {
       width: 0.4rem;
+      display: inline-block;
+      height: 100%;
       &::after {
         content: "";
         display: block;

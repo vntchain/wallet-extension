@@ -14,27 +14,49 @@ const createFuncPromise = function(funcName, payload) {
   })
 }
 
-export const login = function*(payload) {
-  yield createFuncPromise('login', payload)
-}
-
-export const logout = function*(payload) {
-  yield createFuncPromise('logout', payload)
-}
-
-export const createWallet = function*(payload) {
-  yield createFuncPromise('createWallet', payload)
-}
-
-export const restoreFromSeed = function*(payload) {
-  yield createFuncPromise('restoreFromSeed', payload)
-}
-
-export const getAddr = () =>
-  new Promise((resolve, reject) => {
-    chrome.storage.sync.get('selectedAddr', function(obj) {
-      const addr = obj.selectedAddr
-      if (addr) resolve(addr)
+const createGetPromise = function(getName) {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get(getName, function(obj) {
+      const result = obj[getName]
+      if (result) resolve(result)
       else reject({ message: '系统错误' })
     })
   })
+}
+//登录
+export const login = function*(payload) {
+  return yield createFuncPromise('login', payload)
+}
+//登出
+export const logout = function*(payload) {
+  return yield createFuncPromise('logout', payload)
+}
+//创建钱包
+export const createWallet = function*(payload) {
+  return yield createFuncPromise('createWallet', payload)
+}
+//找回钱包
+export const restoreFromSeed = function*(payload) {
+  return yield createFuncPromise('restoreFromSeed', payload)
+}
+//获取账户余额
+export const getAccountBalance = function*(payload) {
+  return yield createFuncPromise('getAccountBalance', payload)
+}
+//导出私钥
+export const exportAccountPrivatekey = function*(payload) {
+  return yield createFuncPromise('exportAccountPrivatekey', payload)
+}
+
+//获取当前vnt价格
+export const getVntPrice = function*(payload) {
+  return yield createFuncPromise('getVntPrice', payload)
+}
+//获取地址信息
+export const getAddr = function*() {
+  return yield createGetPromise('selectedAddr')
+}
+//获取账户信息
+export const getAccounts = function*() {
+  return yield createGetPromise('account_info')
+}

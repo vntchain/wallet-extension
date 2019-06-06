@@ -28,33 +28,41 @@ const SendForm = Form.create({ name: 'login' })(props => {
   }
   return (
     <Form hideRequiredMark={true} {...formItemLayout} onSubmit={handleSubmit}>
-      <FormItem label={<BaseLabel label={'来自:'} />}>
-        <p>11111</p>
+      <FormItem
+        label={<BaseLabel style={{ lineHeight: '.4rem' }} label={'来自:'} />}
+      >
+        <span>11111</span>
       </FormItem>
       <FormItem label={<BaseLabel label={'发送至：'} />}>
         {getFieldDecorator('to', {
           rules: [{ required: true, message: '请输入目标地址' }]
-        })(<Input type="password" placeholder="请输入" />)}
+        })(<Input type="password" placeholder="请输入" size="large" />)}
       </FormItem>
-      <FormItem label={<BaseLabel label={'数量：'} />}>
+      <FormItem
+        label={<BaseLabel style={{ lineHeight: '.4rem' }} label={'数量：'} />}
+      >
         {getFieldDecorator('to', {
           rules: [{ required: true, message: '请输入数量' }]
-        })(<Input type="number" placeholder="请输入" />)}
+        })(<Input type="number" placeholder="请输入" size="large" />)}
       </FormItem>
-      <FormItem label={<BaseLabel label={'手续费:'} />}>
-        <div>
-          <p>11111</p>
-          <Link to={paths.commission}>自定义</Link>
-        </div>
+      <FormItem
+        label={<BaseLabel style={{ lineHeight: '.4rem' }} label={'手续费:'} />}
+      >
+        <span>11111</span>
+        <Link to={paths.commission}>自定义</Link>
       </FormItem>
-      <FormItem label={<BaseLabel label={'备注数据：'} />}>
+      <FormItem
+        label={
+          <BaseLabel style={{ lineHeight: '.4rem' }} label={'备注数据：'} />
+        }
+      >
         {getFieldDecorator('remind')(
-          <TexeArea placeholder="请填写交易备注数据，非必填。" />
+          <TexeArea placeholder="请填写交易备注数据，非必填。" size="large" />
         )}
       </FormItem>
-      <FormItem>
-        <Button type="primary" onClick={handleSubmit} />
-      </FormItem>
+      <Button type="primary" onClick={handleSubmit}>
+        发送
+      </Button>
     </Form>
   )
 })

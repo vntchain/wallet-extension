@@ -16,7 +16,7 @@ const CreateForm = function(props) {
         const isAgree = form.getFieldValue('agree')
         if (isAgree) {
           console.log('Received values of form: ', values) //eslint-disable-line
-          onSubmit(values.password)
+          onSubmit({ passwd: values.password })
         } else {
           message.warn('请阅读并同意服务条款')
         }

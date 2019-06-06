@@ -6,7 +6,12 @@ import imgs from '../../utils/imgs'
 import styles from './Setting.scss'
 
 const Setting = function(props) {
-  const { env, walletList, currWallet, history } = props
+  const {
+    user: { addr, accounts },
+    env,
+    history,
+    dispatch
+  } = props
   const [isSetShow, setIsSetShow] = useState(false)
   const showDisplay = () => {
     return isSetShow ? 'block' : 'none'
@@ -18,7 +23,11 @@ const Setting = function(props) {
   const linkTo = link => {
     history.push(link)
   }
-  const loginOut = () => {}
+  const loginOut = () => {
+    dispatch({
+      type: 'user/logout'
+    })
+  }
   const LinkList = [
     {
       创建新地址: () => linkTo(paths.create),
@@ -68,18 +77,18 @@ const Setting = function(props) {
           })}
         </div>
         <div className={styles['setting-list']}>
-          {walletList.map(item => {
+          {accounts.map(item => {
             return (
               <div
                 className={`${styles['setting-item']} ${
-                  currWallet === item.code ? styles['setting-item_active'] : ''
+                  addr === item.addr ? styles['setting-item_active'] : ''
                 }`}
-                key={item.code}
+                key={item.addr}
                 onClick={handleChangeWallet}
               >
                 <p>
-                  <span>{item.code}</span>
-                  {item.isImport ? (
+                  <span>{item.addr}</span>
+                  {item.type ? (
                     <span className={styles.import}>外部导入</span>
                   ) : (
                     ''
@@ -109,20 +118,8 @@ const Setting = function(props) {
 }
 
 export default withRouter(
-  connect(() => ({
-    env: 'maintain',
-    currWallet: '1111',
-    walletList: [
-      {
-        code: '1111',
-        vnt: '111',
-        isImport: false
-      },
-      {
-        code: '2222',
-        vnt: '111',
-        isImport: true
-      }
-    ]
+  connect(({ user }) => ({
+    user,
+    env: 'maintain'
   }))(Setting)
 )

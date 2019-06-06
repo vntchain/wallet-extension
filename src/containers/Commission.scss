@@ -1,0 +1,25 @@
+@import "../component/base";
+.container {
+  margin-top: $header-height;
+  overflow-y: auto;
+}
+.blocks {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid $border-color;
+}
+.outline {
+  display: flex;
+  justify-content: space-between;
+  .innerFlex {
+    display: flex;
+    text-align: right;
+  }
+}
+.price {
+  display: grid;
+  grid-column-gap: 0.2rem;
+  grid-template-columns: 1fr 1fr;
+}
+.button {
+  width: 100%;
+}

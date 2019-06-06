@@ -1,11 +1,18 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import { Modal, Button } from 'antd-mobile'
+import Copier from '../../component/Copier'
 import styles from './UserDetail.scss'
 import imgs from '../../utils/imgs'
 
 const UserDetail = function(props) {
-  const { visible, onClose, openKeystone } = props
-  const handleCopyCode = () => {}
+  const copyRef = React.createRef()
+  const {
+    visible,
+    onClose,
+    openKeystone,
+    user: { addr }
+  } = props
   const handleOpenKeystone = () => {
     onClose()
     openKeystone()
@@ -21,8 +28,10 @@ const UserDetail = function(props) {
     >
       <img className={styles.qrcode} src={imgs.qrcode} alt="qrcode" />
       <div className={styles.code}>
-        <span className={styles.str}>{`12312313123123123123132323424112`}</span>
-        <span className={styles.copy} onClick={() => handleCopyCode} />
+        <span className={styles.str}>{addr}</span>
+        <Copier text={addr} copyRef={copyRef}>
+          <span className={styles.copy} />
+        </Copier>
       </div>
       <Button type="primary" className={styles.btn}>
         去VNT浏览器上查看
@@ -38,4 +47,6 @@ const UserDetail = function(props) {
   )
 }
 
-export default UserDetail
+export default connect(({ user }) => ({
+  user
+}))(UserDetail)

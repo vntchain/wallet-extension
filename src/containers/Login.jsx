@@ -19,7 +19,7 @@ const LoginForm = Form.create({ name: 'login' })(props => {
     form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values) //eslint-disable-line
-        onSubmit(values.password)
+        onSubmit({ passwd: values.password })
       }
     })
   }
