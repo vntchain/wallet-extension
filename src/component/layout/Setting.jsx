@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import paths from '../../utils/paths'
 import imgs from '../../utils/imgs'
+import { splitLongStr } from '../../utils/helper'
 import styles from './Setting.scss'
 
 const Setting = function(props) {
@@ -87,14 +88,16 @@ const Setting = function(props) {
                 onClick={handleChangeWallet}
               >
                 <p>
-                  <span>{item.addr}</span>
+                  <span>{splitLongStr(item.addr)}</span>
                   {item.type ? (
                     <span className={styles.import}>外部导入</span>
                   ) : (
                     ''
                   )}
                 </p>
-                <p className={styles.vnt}>{`${item.vnt} VNT`}</p>
+                <p className={styles.vnt}>
+                  {item.vnt ? `${item.vnt} VNT` : '--'}
+                </p>
               </div>
             )
           })}

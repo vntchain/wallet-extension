@@ -13,15 +13,15 @@ export default {
   },
   reducer: {},
   effects: ({ takeLatest }) => ({
-    getPrivateKey: takeLatest(function*(payload) {
+    getPrivateKey: takeLatest(function*({ payload }) {
       yield put({
-        type: 'user/setIsExportDisable',
+        type: 'keystone/setIsExportDisable',
         payload: true
       })
       try {
         const data = yield exportAccountPrivatekey(payload)
         yield put({
-          type: 'user/merge',
+          type: 'keystone/merge',
           payload: {
             hasGetKey: true,
             privateKey: data
@@ -32,20 +32,20 @@ export default {
         console.log(e) //eslint-disable-line
       } finally {
         yield put({
-          type: 'user/setIsExportDisable',
+          type: 'keystone/setIsExportDisable',
           payload: false
         })
       }
     }),
-    getPrivateJson: takeLatest(function*(payload) {
+    getPrivateJson: takeLatest(function*({ payload }) {
       yield put({
-        type: 'user/setIsDownloadDisable',
+        type: 'keystone/setIsDownloadDisable',
         payload: true
       })
       try {
         const data = yield exportAccountKeystore(payload)
         yield put({
-          type: 'user/setPrivateJson',
+          type: 'keystone/setPrivateJson',
           payload: data
         })
       } catch (e) {
@@ -53,7 +53,7 @@ export default {
         console.log(e) //eslint-disable-line
       } finally {
         yield put({
-          type: 'user/setIsDownloadDisable',
+          type: 'keystone/setIsDownloadDisable',
           payload: false
         })
       }

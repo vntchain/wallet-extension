@@ -17,6 +17,7 @@ const UserDetail = function(props) {
     onClose()
     openKeystone()
   }
+  const linkToVnt = () => {}
   return (
     <Modal
       visible={visible}
@@ -33,7 +34,7 @@ const UserDetail = function(props) {
           <span className={styles.copy} />
         </Copier>
       </div>
-      <Button type="primary" className={styles.btn}>
+      <Button type="primary" className={styles.btn} onClick={linkToVnt}>
         去VNT浏览器上查看
       </Button>
       <Button

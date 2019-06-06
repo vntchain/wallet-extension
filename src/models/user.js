@@ -32,7 +32,7 @@ export default {
     }
   },
   effects: ({ takeLatest }) => ({
-    login: takeLatest(function*(payload) {
+    login: takeLatest(function*({ payload }) {
       yield put({
         type: 'user/setIsLoginDisable',
         payload: true
@@ -91,12 +91,11 @@ export default {
     getAccounts: takeLatest(function*() {
       try {
         const data = yield getAccounts()
-        console.log(data) //eslint-disable-line
         const { accounts, trxs } = data
         yield put({
           type: 'user/merge',
           payload: {
-            accounts: accounts,
+            accounts: accounts.reverse(),
             trades: trxs
           }
         })
@@ -118,7 +117,7 @@ export default {
         })
       } catch (e) {
         message.error(e.message)
-        console.log(e) //eslint-disable-line
+        console.log('getAccountBalance' + e) //eslint-disable-line
       }
     })
   })

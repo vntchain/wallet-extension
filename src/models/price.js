@@ -13,7 +13,7 @@ export default {
       try {
         const data = yield getVntPrice()
         yield put({
-          type: 'user/setVntToCny',
+          type: 'price/setVntToCny',
           payload: data
         })
       } catch (e) {

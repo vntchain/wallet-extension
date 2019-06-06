@@ -1,6 +1,6 @@
 const chrome = global.chrome
 
-const createFuncPromise = function(funcName, payload) {
+const createPromise = function(funcName, payload) {
   return new Promise((resolve, reject) => {
     chrome.runtime.getBackgroundPage(function(bg) {
       bg[funcName](payload)
@@ -14,52 +14,62 @@ const createFuncPromise = function(funcName, payload) {
   })
 }
 
+const createFuncPromise = function(funcName, payload) {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.getBackgroundPage(function(bg) {
+      const result = bg[funcName](payload)
+      if (result) resolve(result)
+      else reject({ message: '网络错误' })
+    })
+  })
+}
+
 const createGetPromise = function(getName) {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(getName, function(obj) {
       const result = obj[getName]
       if (result) resolve(result)
-      else reject({ message: '系统错误' })
+      else reject({ message: '网络错误' })
     })
   })
 }
 //登录
 export const login = function*(payload) {
-  return yield createFuncPromise('login', payload)
+  return yield createPromise('login', payload)
 }
 //登出
 export const logout = function*(payload) {
-  return yield createFuncPromise('logout', payload)
+  return yield createPromise('logout', payload)
 }
 //创建钱包
 export const createWallet = function*(payload) {
-  return yield createFuncPromise('createWallet', payload)
+  return yield createPromise('createWallet', payload)
 }
 //找回钱包
 export const restoreFromSeed = function*(payload) {
-  return yield createFuncPromise('restoreFromSeed', payload)
+  return yield createPromise('restoreFromSeed', payload)
+}
+//导出私钥
+export const exportAccountPrivatekey = function*(payload) {
+  return yield createPromise('exportAccountPrivatekey', payload)
+}
+//导出私钥Json
+export const exportAccountKeystore = function*(payload) {
+  return yield createPromise('exportAccountKeystore', payload)
 }
 //获取账户余额
 export const getAccountBalance = function*(payload) {
   return yield createFuncPromise('getAccountBalance', payload)
 }
-//导出私钥
-export const exportAccountPrivatekey = function*(payload) {
-  return yield createFuncPromise('exportAccountPrivatekey', payload)
-}
-//导出私钥Json
-export const exportAccountKeystore = function*(payload) {
-  return yield createFuncPromise('exportAccountKeystore', payload)
-}
 //查看助记词
 export const getKeyringOfAccount = function*(payload) {
   return yield createFuncPromise('getKeyringOfAccount', payload)
 }
-
 //获取当前vnt价格
 export const getVntPrice = function*(payload) {
   return yield createFuncPromise('getVntPrice', payload)
 }
+
 //获取地址信息
 export const getAddr = function*() {
   return yield createGetPromise('selectedAddr')

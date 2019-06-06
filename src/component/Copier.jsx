@@ -9,7 +9,7 @@ const Copier = props => {
     document.execCommand('copy')
     message.info('复制成功！')
   }
-  console.log(props.children) //eslint-disable-line
+  console.log(copyRef) //eslint-disable-line
   return (
     <Fragment>
       <input
@@ -29,8 +29,8 @@ const Copier = props => {
 }
 
 Copier.propType = {
-  text: PropTypes.string.isRequired,
-  copyRef: PropTypes.isRequired
+  text: PropTypes.string.isRequired
+  // copyRef: PropTypes.isRequired
 }
 
 export default Copier
