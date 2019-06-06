@@ -743,16 +743,17 @@ InpageHttpProvider.prototype.prepareRequest = function (async) {
  */
 InpageHttpProvider.prototype.send = function (payload) { 
 
-  if ((authUrl === '') || (authUrl !== window.location.host)) {
+  if (authUrl.indexOf(window.location.host) == -1) {
     throw errors.authorizationError('request Authorization first.')
   }
 
   switch (payload.method) {
     case 'core_accounts':
-      return (this.selectedAccount === '')? []:[this.selectedAccount] 
+      var result = (selectedAccount === '')? []:[selectedAccount] 
+      return {id: id, jsonrpc: jsonrpc, result: result}
 
     case 'core_coinbase':
-      return this.selectedAccount
+      return {id: id, jsonrpc: jsonrpc, result: selectedAccount}
 
     case 'core_sendTransaction': 
       var message = `The VNT object does not support synchronous methods like ${payload.method} without a callback parameter.`
@@ -820,7 +821,7 @@ InpageHttpProvider.prototype.sendAsync = function (payload, callback) {
           }
         }
       })
-      return;
+      return
 
     case 'core_accounts':
       console.log('inpage: core_accounts:')
@@ -849,7 +850,13 @@ InpageHttpProvider.prototype.sendAsync = function (payload, callback) {
         }
       })
 
-      return;
+      return
+
+     case 'core_coinbase':
+       console.log('inpage: core_coinbase')
+       var result = {id: id, jsonrpc: jsonrpc, result: selectedAccount}
+       callback(null, result)
+       return
   }
 
   var request = this.prepareRequest(true);
@@ -933,7 +940,7 @@ var curProviderUrl = network.testnet
 window.vnt = new Vnt(new InpageHttpProvider(curProviderUrl))
 
 
-var authUrl = ''
+var authUrl = []
 window.vnt.requesetAuthorization = function(callback) {
 
     const url = window.location.host
@@ -949,8 +956,10 @@ window.vnt.requesetAuthorization = function(callback) {
       if (e.data.src ==="content" && e.data.type === "requesetAuthorization_response" && !!e.data.data) {
         console.log('inpage: message requesetAuthorization_response')
         if (!!e.data.data.confirmAuthorization) {
-          authUrl = e.data.data.url
-          localStorage.setItem('authUrl', authUrl)
+          if ( (e.data.data.url == window.location.host) && (authUrl.indexOf(e.data.data.url) == -1)) {
+            authUrl.push(e.data.data.url)
+            localStorage.setItem('authUrl', authUrl.join(','))
+          }
           var result = {id: id, jsonrpc: jsonrpc, result: e.data.data.confirmAuthorization}
           callback(null, result)
         } else {
@@ -971,18 +980,21 @@ window.addEventListener('message', function(e) {
   // e  contains the transferred data 
   if (e.data.src ==="content" && e.data.type === "change_providerUrl" && !!e.data.data) {
     console.log('inpage: message change_providerUrl')
-    curProviderUrl = e.data.data.providerUrl
+    curProviderUrl = e.data.data.providerUrl || network.testnet
     window.vnt.setProvider(new InpageHttpProvider(curProviderUrl))
 
   } else if (e.data.src ==="content" && e.data.type === "change_selectedAddr" && !!e.data.data){
     console.log('inpage: message change_selectedAddr')
-    selectedAccount = e.data.data.selectedAddr
+    selectedAccount = e.data.data.selectedAddr || ''
   }
 })
 
 
 window.onload = function() {
-  authUrl = localStorage.getItem('authUrl') || ''
+  var store = localStorage.getItem('authUrl')
+  if (!!store) {
+    authUrl = store.split(',')
+  }
 }
 }).call(this,require("buffer").Buffer)
 },{"./errors":1,"./vnt.min.js":5,"buffer":9,"xhr2":2,"xmlhttprequest":3}],5:[function(require,module,exports){
