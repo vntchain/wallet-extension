@@ -51465,6 +51465,21 @@ window.restoreFromSeed = async function restoreFromSeed(obj) {
 }
 
 /**
+ *  verify the passwd after login in
+ * 
+ * @param {string} passwd - the wallet password
+ */
+window.verifyPasswd = function verifyPasswd(obj) {
+    var passwd = obj.passwd
+
+    if (passwd === wallet_passwd) {
+        return Promise.resolve(true)
+    } else {
+        return Promise.resolve(false)
+    }
+}
+
+/**
  *  export the account privateKey
  * 
  * @param {string} addr the addr of the account
@@ -51679,7 +51694,7 @@ function getNonce(addr) {
  * @param {string} addr  the addr of account
  */
 window.getAccountBalance = function getAccountBalance(obj) {
-    var obj = obj.addr
+    var addr = obj.addr
 
     var payload = {jsonrpc: "2.0", id: 1, method: "core_getBalance", params:[]}
     payload.params[0] = addr
@@ -51735,14 +51750,19 @@ window.getVntPrice = function getVntPrice() {
 window.changeProvider = function changeProvider(obj) {
     var newprovider = obj.newprovider
 
-    console.log("function: changeProvider")
-        
-    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, {type: "changeProvider", provider: newprovider}, function(response) {
-            console.log(response);
-        });
-    });
+    if (newprovider != providerUrl) {
 
+        providerUrl = newprovider
+        provider = new vntProvider(providerUrl)
+        console.log("function: changeProvider")
+            
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {type: "changeProvider", provider: newprovider}, function(response) {
+                console.log(response);
+            });
+        });
+    }
+   
 }
 
 /**
