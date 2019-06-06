@@ -51491,7 +51491,7 @@ window.exportAccountPrivatekey = async function exportAccountPrivatekey(obj) {
     var passwd = obj.passwd
 
     if (wallet_passwd !== passwd) {
-        throw new Error("password not correct!")
+        return Promise.reject(new Error("password not correct!"))
     }
 
     return extension_wallet.exportAccount(addr)
@@ -51508,6 +51508,9 @@ window.exportAccountKeystore = function exportAccountKeystore(obj) {
     var privatekey = obj.privateKey
     var passwd = obj.passwd
 
+    if (wallet_passwd !== passwd) {
+        return Promise.reject(new Error("password not correct!"))
+    }
     const buffer = ethUtil.toBuffer(privatekey)
     const wallet = Wallet.fromPrivateKey(buffer)
 
@@ -51520,9 +51523,15 @@ window.exportAccountKeystore = function exportAccountKeystore(obj) {
  *  get the account keyring
  * 
  * @param {string} addr 
+ * @param {string} passwd
  */
 window.getKeyringOfAccount = function getKeyringOfAccount(obj) {
     var addr = obj.addr
+    var passwd = obj.passwd
+
+    if (wallet_passwd !== passwd) {
+        return Promise.reject(new Error("password not correct!"))
+    }
 
     extension_wallet.getKeyringForAccount(addr).then((keyring) => {
         return Promise.resolve(keyring.mnemonic)
