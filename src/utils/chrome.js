@@ -47,6 +47,14 @@ export const getAccountBalance = function*(payload) {
 export const exportAccountPrivatekey = function*(payload) {
   return yield createFuncPromise('exportAccountPrivatekey', payload)
 }
+//导出私钥Json
+export const exportAccountKeystore = function*(payload) {
+  return yield createFuncPromise('exportAccountKeystore', payload)
+}
+//查看助记词
+export const getKeyringOfAccount = function*(payload) {
+  return yield createFuncPromise('getKeyringOfAccount', payload)
+}
 
 //获取当前vnt价格
 export const getVntPrice = function*(payload) {

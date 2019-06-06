@@ -1,16 +1,19 @@
 import { effects } from 'redux-sirius'
-import { exportAccountPrivatekey } from '../utils/chrome'
+import { exportAccountPrivatekey, exportAccountKeystore } from '../utils/chrome'
 import { message } from 'antd'
 
 const { put } = effects
 export default {
   state: {
+    hasGetKey: false,
     privateKey: '',
-    isExportDisable: false
+    privateJson: '',
+    isExportDisable: false,
+    isDownloadDisable: false
   },
   reducer: {},
   effects: ({ takeLatest }) => ({
-    getPrivatekey: takeLatest(function*(payload) {
+    getPrivateKey: takeLatest(function*(payload) {
       yield put({
         type: 'user/setIsExportDisable',
         payload: true
@@ -18,8 +21,11 @@ export default {
       try {
         const data = yield exportAccountPrivatekey(payload)
         yield put({
-          type: 'user/setPrivateKey',
-          payload: data
+          type: 'user/merge',
+          payload: {
+            hasGetKey: true,
+            privateKey: data
+          }
         })
       } catch (e) {
         message.error(e.message)
@@ -27,6 +33,27 @@ export default {
       } finally {
         yield put({
           type: 'user/setIsExportDisable',
+          payload: false
+        })
+      }
+    }),
+    getPrivateJson: takeLatest(function*(payload) {
+      yield put({
+        type: 'user/setIsDownloadDisable',
+        payload: true
+      })
+      try {
+        const data = yield exportAccountKeystore(payload)
+        yield put({
+          type: 'user/setPrivateJson',
+          payload: data
+        })
+      } catch (e) {
+        message.error(e.message)
+        console.log(e) //eslint-disable-line
+      } finally {
+        yield put({
+          type: 'user/setIsDownloadDisable',
           payload: false
         })
       }
