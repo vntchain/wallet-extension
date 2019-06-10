@@ -29,8 +29,8 @@ const Copier = props => {
 }
 
 Copier.propType = {
-  text: PropTypes.string.isRequired
-  // copyRef: PropTypes.isRequired
+  text: PropTypes.string.isRequired,
+  copyRef: PropTypes.object.isRequired
 }
 
 export default Copier

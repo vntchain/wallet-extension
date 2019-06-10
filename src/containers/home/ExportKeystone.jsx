@@ -5,6 +5,7 @@ import PasswordForm from './PasswordForm'
 import BaseTip from '../../component/layout/BaseTip'
 import BaseLabel from '../../component/layout/BaseLabel'
 import Copier from '../../component/Copier'
+import Downloader from '../../component/Downloader'
 import styles from './ExportKeystone.scss'
 
 const UserDetail = function(props) {
@@ -14,7 +15,7 @@ const UserDetail = function(props) {
     visible,
     onClose,
     user: { addr },
-    keystone: { privateKey, isDownloadDisable, hasGetKey },
+    keystone: { privateKey, hasGetKey, privateJson },
     dispatch
   } = props
   useEffect(() => {
@@ -24,15 +25,17 @@ const UserDetail = function(props) {
       payload: false
     })
   }, [])
-  const handleGetJson = () => {
-    if (!isDownloadDisable) {
-      console.log('download') //eslint-disable-line
-    }
-  }
   const handleFetchKeystone = values => {
     const { password: passwd } = values
     dispatch({
       type: 'keystone/getPrivateKey',
+      payload: {
+        addr,
+        passwd
+      }
+    })
+    dispatch({
+      type: 'keystone/getPrivateJson',
       payload: {
         addr,
         passwd
@@ -59,13 +62,13 @@ const UserDetail = function(props) {
                 <a href="javascript:">复制地址</a>
               </Copier>
             </div>
-            <div className={styles.code}>{addr}</div>
+            <div className={styles.addr}>{addr}</div>
             <div className={styles.title}>
               <BaseLabel>私钥</BaseLabel>
               <span>
-                <a href="javascript:" onClick={() => handleGetJson}>
+                <Downloader content={privateJson} fileName={'private.json'}>
                   下载JSON文件
-                </a>
+                </Downloader>
                 <Copier text={privateKey} copyRef={privateCopyRef}>
                   <a href="javascript:">复制私钥</a>
                 </Copier>

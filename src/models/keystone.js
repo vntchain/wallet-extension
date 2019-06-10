@@ -12,7 +12,7 @@ export default {
   state: {
     hasGetKey: false,
     privateKey: '',
-    privateJson: '',
+    privateJson: {},
     isExportDisable: false,
     isDownloadDisable: false,
     idImportDisable: false

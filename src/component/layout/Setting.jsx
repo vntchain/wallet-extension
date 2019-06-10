@@ -32,7 +32,7 @@ const Setting = function(props) {
   const LinkList = [
     {
       创建新地址: () => linkTo(paths.create),
-      导入地址: () => linkTo(paths.import)
+      导入地址: () => linkTo(paths.importKeystone)
     },
     {
       关于我们: () => linkTo(paths.about),

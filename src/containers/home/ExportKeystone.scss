@@ -16,13 +16,25 @@
         margin-left: 0.15rem;
       }
     }
+    .addr {
+      padding: 0.15rem;
+      border: 1px solid $border-color;
+      border-radius: 0.04rem;
+      color: $font-color;
+      font-size: 0.14rem;
+      line-height: 0.14rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
     .code {
       padding: 0.15rem;
       border: 1px solid $border-color;
       border-radius: 0.04rem;
       color: $font-color;
       font-weight: 500;
-      font-size: 0.16rem;
+      font-size: 0.14rem;
+      line-height: 0.2rem;
       max-height: 1rem;
       overflow-y: auto;
     }
