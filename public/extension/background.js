@@ -51452,12 +51452,12 @@ window.restoreFromSeed = async function restoreFromSeed(obj) {
 
     resetState()
 
-    console.log(typeof passwd)
     await extension_wallet.createNewVaultAndRestore(passwd, seed)
     wallet_passwd = passwd
     is_wallet_exist = true
     is_wallet_unlock = true
     var addrs = await extension_wallet.getAccounts()
+    selectedAddr = addrs[addrs.length - 1]
     updateAccounts(false, addrs[addrs.length - 1])
     updateState()
 
@@ -51605,7 +51605,7 @@ window.importByPrivatekey = async function importByPrivatekey(obj) {
             throw new  Error('Cannot import invalid private key. ')
         }
         const addr = ethUtil.bufferToHex(ethUtil.privateToAddress(buffer))
-    
+        selectedAddr = addr
         const stripped = ethUtil.stripHexPrefix(prefixed)
         await extension_wallet.addNewKeyring('Simple Key Pair', [stripped])
 
@@ -51643,7 +51643,8 @@ window.importByKeystore = async function importByKeystore(obj) {
 
     const privateKeyBuffer = wallet.getPrivateKey()
     const addr = ethUtil.bufferToHex(ethUtil.privateToAddress(privateKeyBuffer))
-
+    selectedAddr = addr
+    
     await extension_wallet.addNewKeyring('Simple Key Pair', [privateKeyBuffer])
     updateAccounts(true, addr)
     updateState()
@@ -51664,7 +51665,7 @@ function sendRawTransaction(rawTransactionParam) {
     provider.send(payload)
 }
 
-window.signThenSendTransaction = function signThenSendTransaction(obj) {
+window.signThenSendTransaction = async function signThenSendTransaction(obj) {
     var tx = obj.tx
     var addr = obj.addr
     var trx_value = tx.value 
@@ -51673,17 +51674,19 @@ window.signThenSendTransaction = function signThenSendTransaction(obj) {
         
         if (addr !== selectedAddr) throw new Error("sign addr and selected addr not the same.")
 
-        tx.nonce = getNonce()
-        extension_wallet.signTransaction(tx, addr).then((signedtx) => {
-            var trx_id = signedtx.hash(true)
-            var serializedTx = signedtx.serialize()
-            var rawTransactionParam = '0x' + serializedTx.toString('hex');
-            sendRawTransaction(rawTransactionParam)
+        tx.nonce = getNonce(addr)
+        tx = new Tx(tx)
+        var signedtx = extension_wallet.signTransaction(tx, addr)
+        
+        var trx_id = '0x' + signedtx.hash(true).toString('hex')
+        var serializedTx = signedtx.serialize()
+        var rawTransactionParam = '0x' + serializedTx.toString('hex');
+        sendRawTransaction(rawTransactionParam)
+
+        updateTrxs(addr, trx_id, trx_value)
+        updateState()
+        return Promise.resolve(trx_id)
     
-            updateTrxs(addr, trxid, trx_value)
-            updateState()
-            return trx_id
-        })
 
     } catch (error) {
         return Promise.resolve(error)
