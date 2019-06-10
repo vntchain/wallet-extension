@@ -33,6 +33,13 @@ export default {
             privateKey: data
           }
         })
+        yield put({
+          type: 'keystone/getPrivateJson',
+          payload: {
+            passwd: payload.passwd,
+            privatekey: data
+          }
+        })
       } catch (e) {
         message.error(e.message)
         console.log(e) //eslint-disable-line

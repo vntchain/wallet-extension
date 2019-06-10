@@ -77,7 +77,6 @@ export default {
           type: 'user/setAddr',
           payload: addr
         })
-        console.log(addr) //eslint-disable-line
         //拿到地址后获取当前账户vnt
         yield put({
           type: 'user/getAccountBalance',

@@ -21,6 +21,9 @@ const Home = function(props) {
     dispatch({
       type: 'user/getAccounts'
     })
+    return () => {
+      console.log('leave home page') //eslint-disable-line
+    }
   }, [])
   return (
     <Fragment>

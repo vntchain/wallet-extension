@@ -11,10 +11,15 @@ function requireAuth(WrappedComponent) {
     }
   }
   return connect(mapStateToProps)(function(props) {
-    if (!props.isAuth) {
-      props.dispatch(push(paths['login']))
+    const { isAuth, dispatch } = props
+    if (!isAuth) {
+      dispatch(push(paths['login']))
+    } else {
+      dispatch({
+        type: 'user/getAddr'
+      })
     }
-    return props.isAuth ? <WrappedComponent /> : null
+    return isAuth ? <WrappedComponent /> : null
   })
 }
 

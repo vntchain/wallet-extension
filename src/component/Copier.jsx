@@ -9,7 +9,6 @@ const Copier = props => {
     document.execCommand('copy')
     message.info('复制成功！')
   }
-  console.log(copyRef) //eslint-disable-line
   return (
     <Fragment>
       <input

@@ -1,9 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import { Modal, Button } from 'antd-mobile'
 import Copier from '../../component/Copier'
 import styles from './UserDetail.scss'
 import imgs from '../../utils/imgs'
+import paths from '../../utils/paths'
 
 const UserDetail = function(props) {
   const copyRef = React.createRef()
@@ -11,13 +13,16 @@ const UserDetail = function(props) {
     visible,
     onClose,
     openKeystone,
-    user: { addr }
+    user: { addr },
+    push
   } = props
   const handleOpenKeystone = () => {
     onClose()
     openKeystone()
   }
-  const linkToVnt = () => {}
+  const linkToVnt = () => {
+    push(paths.vnt)
+  }
   return (
     <Modal
       visible={visible}
@@ -48,6 +53,8 @@ const UserDetail = function(props) {
   )
 }
 
-export default connect(({ user }) => ({
-  user
-}))(UserDetail)
+export default withRouter(
+  connect(({ user }) => ({
+    user
+  }))(UserDetail)
+)

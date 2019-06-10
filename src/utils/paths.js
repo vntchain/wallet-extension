@@ -11,5 +11,7 @@ export default {
   importKeystone: '/import', //导入地址
   send: '/send', //发送vnt
   commission: '/commission', //自定义手续费
-  txDetail: '/detail' //交易详情
+  txDetail: '/detail', //交易详情
+
+  vnt: '' //vnt detail
 }

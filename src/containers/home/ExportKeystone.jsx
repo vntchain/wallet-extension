@@ -20,22 +20,17 @@ const UserDetail = function(props) {
   } = props
   useEffect(() => {
     //关闭窗口时重置状态，下次打开需重新输入密码获取
-    return dispatch({
-      type: 'keystone/setHasGetKey',
-      payload: false
-    })
+    return () => {
+      dispatch({
+        type: 'keystone/setHasGetKey',
+        payload: false
+      })
+    }
   }, [])
   const handleFetchKeystone = values => {
     const { password: passwd } = values
     dispatch({
       type: 'keystone/getPrivateKey',
-      payload: {
-        addr,
-        passwd
-      }
-    })
-    dispatch({
-      type: 'keystone/getPrivateJson',
       payload: {
         addr,
         passwd
