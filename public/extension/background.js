@@ -51527,17 +51527,16 @@ window.exportAccountKeystore = function exportAccountKeystore(obj) {
  * @param {string} addr 
  * @param {string} passwd
  */
-window.getKeyringOfAccount = function getKeyringOfAccount(obj) {
+window.getKeyringOfAccount = async function getKeyringOfAccount(obj) {
     var addr = obj.addr
     var passwd = obj.passwd
 
     if (wallet_passwd !== passwd) {
         return Promise.reject(new Error("password not correct!"))
     }
-
-    extension_wallet.getKeyringForAccount(addr).then((keyring) => {
-        return Promise.resolve(keyring.mnemonic)
-    })
+    
+    var keyring = await extension_wallet.getKeyringForAccount(addr)
+    return Promise.resolve(keyring.mnemonic)
 }
 
 /**
@@ -51668,10 +51667,13 @@ function sendRawTransaction(rawTransactionParam) {
 window.signThenSendTransaction = function signThenSendTransaction(obj) {
     var tx = obj.tx
     var addr = obj.addr
-
     var trx_value = tx.value 
 
     try {
+        
+        if (addr !== selectedAddr) throw new Error("sign addr and selected addr not the same.")
+
+        tx.nonce = getNonce()
         extension_wallet.signTransaction(tx, addr).then((signedtx) => {
             var trx_id = signedtx.hash(true)
             var serializedTx = signedtx.serialize()
@@ -51701,15 +51703,9 @@ function getNonce(addr) {
     var payload = {jsonrpc: "2.0", id: 1, method: "core_getTransactionCount", params:[]}
     payload.params[0] = addr
     payload.params[1] = "latest"
-
-    try {
             
-        var nonce = provider.send(payload)
-        return Promise.resolve(nonce.result)
-    } catch (error) {
-        return Promise.reject(error)
-    }
-
+    var nonce = provider.send(payload)
+    return nonce.result
 }
 
 /**
