@@ -39,8 +39,8 @@ module.exports = {
         return new Error('CONNECTION TIMEOUT: timeout of ' + ms + ' ms achived');
     },
 
-    ApiNotEnabled: function (){
-        return new Error('Api not enabled')
+    walletLocked: function (){
+        return new Error('wallet is locked')
     },
 
     authorizationError: function (error){
@@ -51505,12 +51505,14 @@ window.exportAccountPrivatekey = async function exportAccountPrivatekey(obj) {
  */
 window.exportAccountKeystore = function exportAccountKeystore(obj) {
 
-    var privatekey = obj.privateKey
+    var privatekey = obj.privatekey
     var passwd = obj.passwd
 
     if (wallet_passwd !== passwd) {
         return Promise.reject(new Error("password not correct!"))
     }
+
+    privatekey = ethUtil.addHexPrefix(privatekey)
     const buffer = ethUtil.toBuffer(privatekey)
     const wallet = Wallet.fromPrivateKey(buffer)
 
@@ -52101,115 +52103,6 @@ chrome.runtime.onConnect.addListener(function(port) {
     })
 })
 
-
-
-
-// chrome.runtime.onMessage.addListener(
-//     function(request, sender, sendResponse) {
-//         if (request.type === "send_trx") {
-//             console.log("in background: send_trx")
-//             createPopup("notification.html", function(window){
-//                 window.document
-//             })
-            
-//         } else if (request.type === "confirm_send_trx") {
-
-            
-//             //   var signedtx = signTransaction(tx, chrome.storage.sync.get('curAddress'))
-//             //   var signedtx = signTransaction(tx, )
-//             // var privateKey = new Buffer('e2a193920eafba2c7092b647813c951ee5b1a997e54caf53ebe7a271c58e9c5a', 'hex');
-//             // tx.sign(privateKey);
-//             // var hash = trx.hash(true)
-//             // var serializedTx = tx.serialize();
-//             // console.log(serializedTx.toString('hex'));
-//             // var rawTransactionParam = '0x' + serializedTx.toString('hex');
-//             // request.payload.method = 'core_sendRawTransaction';
-//             // request.payload.params[0] = rawTransactionParam;
-//             // console.log(request.payload)
-            
-
-//         } else if (request.type === "get_accounts") {
-//           console.log("background: get accounts")
-
-//         } else if (request.type === "enable_vnt") {
-//             console.log("background: enable vnt")
-//             createPopup("test.html")
-
-//         } else if (request.type === "confirm_enable_vnt") {
-
-//             // chrome.storage.sync.get("isEnable", function(store){
-//             //      var enabled = store.isEnable
-//             //      enabled.push(request.domain)
-//             //      chrome.storage.sync.set({isEnable: enabled})
-//             // })
-
-//             chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
-//                 chrome.tabs.sendMessage(tabArray[0].id, {'enabled': true});
-//             });
-
-
-//         } else if (request.type === "test1") {
-//             // var addr = "0x0496bc10fd602a3f718582719856147309e35551"
-//             // var count = getNonce(addr)
-//             // console.log(count)
-
-//         //    console.log(getAccountBalance("0x0496bc10fd602a3f718582719856147309e35551"))
-//         // createWallet('12345')
-//         // console.log(extension_wallet)
-//         console.log(extension_wallet)
-//         chrome.storage.sync.set({"extension_wallet": extension_wallet.store.getState()})
-       
-
-            
-
-//         } else if (request.type === "test2") {
-           
-//         //    var privatekey = exportAccountPrivatekey("0x58cc8b3b66e7d49c068edf6a79030b9317b2761d", '12345678')
-//         //    console.log(privatekey)
-        
-//         //    privatekey.then(function(key){
-//         //        console.log(typeof key)
-//         //        console.log(key)
-               
-//         //        var keystore = exportAccountKeystore(ethUtil.addHexPrefix(key), '12345678')
-//         //        console.log(keystore)
-//         //    })
-//         // network.testnet = 'changed'
-
-//         } else if (request.type === "test3") {
-//             // getAccountBalance('0x0496bc10fd602a3f718582719856147309e35551', function(err, result){
-//             //     console.log(result)
-//             // })
-
-//             // console.log(checkTransaction('0x449afd378d9759d6f5e6667d766856df15f285d52ffaa29ce5713b99bcfee7bc'))
-//             // var out = getVntPrice()
-//             // console.log(typeof out)
-//             // console.log(out)
-//             console.log(extension_wallet)
-//         }
-
-//       }
-// )
-
-
-// /*********************************************/
-// /************   test functions    ***********/
-// /*********************************************/
-// window.printAccountInfo = function() {
-//     console.log(account_info)
-// }
-
-// window.printExtensionWallet = function() {
-//     console.log(extension_wallet)
-// }
-
-// window.printAddresses = function() {
-//     console.log(extension_wallet.getAccounts())
-// }
-
-// window.testUpdateTrxs = function(addr, trxid, value) {
-//     updateTrxs(addr, trxid, value)
-// }
 
 },{"./vnt_extension_provider":173,"./vnt_util":174,"eth-keyring-controller":84,"ethereumjs-tx":95,"ethereumjs-util":96,"ethereumjs-wallet":98,"ethereumjs-wallet/thirdparty":100,"extensionizer":103,"obs-store":133}],172:[function(require,module,exports){
 /*

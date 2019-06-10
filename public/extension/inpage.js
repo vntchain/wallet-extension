@@ -39,8 +39,8 @@ module.exports = {
         return new Error('CONNECTION TIMEOUT: timeout of ' + ms + ' ms achived');
     },
 
-    ApiNotEnabled: function (){
-        return new Error('Api not enabled')
+    walletLocked: function (){
+        return new Error('wallet is locked')
     },
 
     authorizationError: function (error){
@@ -747,6 +747,10 @@ InpageHttpProvider.prototype.send = function (payload) {
     throw errors.authorizationError('request Authorization first.')
   }
 
+  if (!walletUnlock) {
+    throw errors.walletLocked()
+  }
+
   switch (payload.method) {
     case 'core_accounts':
       var result = (selectedAccount === '')? []:[selectedAccount] 
@@ -796,6 +800,10 @@ InpageHttpProvider.prototype.sendAsync = function (payload, callback) {
   if (authUrl.indexOf(window.location.host) == -1) {
     callback(errors.authorizationError('request Authorization first.'))
     return
+  }
+
+  if (!walletUnlock) {
+    throw errors.walletLocked()
   }
 
   console.log(payload)
@@ -937,6 +945,7 @@ var network = {
 }
 var selectedAccount = '';
 var curProviderUrl = network.testnet
+var walletUnlock = false;
 window.vnt = new Vnt(new InpageHttpProvider(curProviderUrl))
 
 
@@ -971,11 +980,6 @@ window.vnt.requesetAuthorization = function(callback) {
 
 }
 
-window.addEventListener('web_api_enable', function(e){
-    const domain = window.location.host
-    curProvider.isEnable.push(domain)
-})
-
 window.addEventListener('message', function(e) {
   // e  contains the transferred data 
   if (e.data.src ==="content" && e.data.type === "change_providerUrl" && !!e.data.data) {
@@ -986,6 +990,10 @@ window.addEventListener('message', function(e) {
   } else if (e.data.src ==="content" && e.data.type === "change_selectedAddr" && !!e.data.data){
     console.log('inpage: message change_selectedAddr')
     selectedAccount = e.data.data.selectedAddr || ''
+  } else if (e.data.src ==="content" && e.data.type === "change_walletUnlock") {
+    console.log('inpage: message change_walletUnlock')
+    walletUnlock = e.data.data.isWalletUnlock 
+    localStorage.setItem('walletUnlock', e.data.data.isWalletUnlock)
   }
 })
 
@@ -995,6 +1003,11 @@ window.onload = function() {
   if (!!store) {
     authUrl = store.split(',')
   }
+
+  if (!!localStorage.getItem('walletUnlock')) {
+    walletLocked = localStorage.getItem('walletUnlock')
+  }
+
 }
 }).call(this,require("buffer").Buffer)
 },{"./errors":1,"./vnt.min.js":5,"buffer":9,"xhr2":2,"xmlhttprequest":3}],5:[function(require,module,exports){
