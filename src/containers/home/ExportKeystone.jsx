@@ -15,7 +15,13 @@ const UserDetail = function(props) {
     visible,
     onClose,
     user: { addr },
-    keystone: { privateKey, hasGetKey, privateJson },
+    keystone: {
+      privateKey,
+      hasGetKey,
+      privateJson,
+      isDownload,
+      isExportLoading
+    },
     dispatch
   } = props
   useEffect(() => {
@@ -61,7 +67,11 @@ const UserDetail = function(props) {
             <div className={styles.title}>
               <BaseLabel>私钥</BaseLabel>
               <span>
-                <Downloader content={privateJson} fileName={'private.json'}>
+                <Downloader
+                  content={privateJson}
+                  fileName={'keystore.json'}
+                  isDownload={isDownload}
+                >
                   下载JSON文件
                 </Downloader>
                 <Copier text={privateKey} copyRef={privateCopyRef}>
@@ -81,7 +91,11 @@ const UserDetail = function(props) {
             </Button>
           </Fragment>
         ) : (
-          <PasswordForm onCancel={onClose} onOk={handleFetchKeystone} />
+          <PasswordForm
+            onCancel={onClose}
+            onOk={handleFetchKeystone}
+            loading={isExportLoading}
+          />
         )}
       </div>
     </Modal>

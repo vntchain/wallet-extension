@@ -15,15 +15,19 @@ const Send = function() {
       <Header title={'自定义手续费'} hasBack={true} />
       <div className={styles.container}>
         <CommonPadding>
-          <div className={`${styles.outline} ${styles.blocks}`}>
+          <div className={`${styles.outlineFlex} ${styles.blocks}`}>
             <div className={styles.innerFlex}>
               <BaseLabel label={'手续费：'} />
               <span>
-                <div>${`111VNT`}</div>
-                <div>${`￥123`}</div>
+                <div className={styles.value}>${`111VNT`}</div>
+                <div className={styles.info}>${`￥123`}</div>
               </span>
             </div>
-            <a href="javascript" onClick={handleDefault}>
+            <a
+              className={styles.btn}
+              href="javascript:"
+              onClick={handleDefault}
+            >
               推荐设置
             </a>
           </div>
@@ -47,8 +51,19 @@ const Send = function() {
               ]}
             />
           </div>
-          <div className={styles.blocks}>
-            <div>1</div>
+          <div className={`${styles.blocks} ${styles.total}`}>
+            <div className={styles.outlineFlex}>
+              <span className={styles.info}>转账数量</span>
+              <span className={styles.value}>111</span>
+            </div>
+            <div className={styles.outlineFlex}>
+              <span className={styles.info}>手续费</span>
+              <span className={styles.value}>111</span>
+            </div>
+            <div className={styles.outlineFlex}>
+              <span className={styles.info}>总计</span>
+              <span className={styles.value}>111</span>
+            </div>
           </div>
           <Button
             className={styles.button}

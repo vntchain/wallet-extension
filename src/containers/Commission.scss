@@ -7,18 +7,53 @@
   padding: 0.4rem 0;
   border-bottom: 1px solid $border-color;
 }
-.outline {
+.value,
+.info {
+  display: block;
+  font-size: 0.16rem;
+  line-height: 0.16rem;
+  vertical-align: middle;
+}
+.value {
+  color: $font-color;
+}
+.info {
+  display: block;
+  color: $font-color-light;
+}
+.outlineFlex {
   display: flex;
   justify-content: space-between;
   .innerFlex {
     display: flex;
     text-align: right;
+    .value {
+      margin-bottom: 0.1rem;
+    }
   }
 }
 .price {
   display: grid;
   grid-column-gap: 0.2rem;
   grid-template-columns: 1fr 1fr;
+  label {
+    font-size: 0.16rem;
+    color: $font-color;
+    font-weight: 600;
+  }
+}
+.total {
+  & > div:not(:last-child) {
+    margin-bottom: 0.1rem;
+  }
+}
+.btn {
+  padding: 0.15rem;
+  line-height: 0.16rem;
+  font-size: 0.16rem;
+  color: $font-color;
+  background: $border-color;
+  border-radius: 0.04rem;
 }
 .button {
   width: 100%;

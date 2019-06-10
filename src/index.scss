@@ -53,4 +53,9 @@ body {
       color: $font-color;
     }
   }
+
+  form textarea.ant-input {
+    height: 1.2rem;
+    overflow-y: auto;
+  }
 }

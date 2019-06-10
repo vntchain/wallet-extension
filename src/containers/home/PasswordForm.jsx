@@ -7,7 +7,7 @@ import BaseLabel from '../../component/layout/BaseLabel'
 const FormItem = Form.Item
 
 const PasswordForm = Form.create({ name: 'word' })(props => {
-  const { form, onCancel, onOk } = props
+  const { form, onCancel, onOk, loading } = props
   const { getFieldDecorator } = form
   const handleSubmit = e => {
     e.preventDefault()
@@ -29,7 +29,11 @@ const PasswordForm = Form.create({ name: 'word' })(props => {
         })(<InputItem type="password" placeholder="请输入" />)}
       </FormItem>
       <FormItem>
-        <BaseModalFooter onCancel={onCancel} onOk={handleSubmit} />
+        <BaseModalFooter
+          onCancel={onCancel}
+          onOk={handleSubmit}
+          loading={loading}
+        />
       </FormItem>
     </Form>
   )

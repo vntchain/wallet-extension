@@ -4,13 +4,13 @@ import { Button } from 'antd-mobile'
 import styles from './BaseModalFooter.scss'
 
 const BaseModalFooter = function(props) {
-  const { cancelText, okText, onCancel, onOk } = props
+  const { cancelText, okText, onCancel, onOk, loading } = props
   return (
     <div className={styles.footer}>
       <Button className={styles.cancel} onClick={onCancel}>
         {cancelText || '取消'}
       </Button>
-      <Button type="primary" onClick={onOk}>
+      <Button type="primary" onClick={onOk} loading={loading}>
         {okText || '确定'}
       </Button>
     </div>

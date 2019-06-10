@@ -15,7 +15,14 @@ const Option = Select.Option
 
 const ImportForm = Form.create({ name: 'login' })(props => {
   const [files, setFiles] = useState([])
-  const { form, importType, onSubmit, labelCol, contCol } = props
+  const {
+    form,
+    importType,
+    onSubmit,
+    labelCol,
+    contCol,
+    isImportLoading
+  } = props
   const { getFieldDecorator } = form
   const uploadProps = {
     name: 'files',
@@ -50,7 +57,7 @@ const ImportForm = Form.create({ name: 'login' })(props => {
         <Fragment>
           <FormItem wrapperCol={{ offset: labelCol, xs: contCol }}>
             {getFieldDecorator('file', {
-              rules: [{ required: true, message: '请上传keystone' }]
+              rules: [{ required: true, message: '请上传keystore' }]
             })(
               <Upload {...uploadProps}>
                 <Button size="large">选择文件</Button>
@@ -68,14 +75,21 @@ const ImportForm = Form.create({ name: 'login' })(props => {
         </Fragment>
       )}
       <FormItem>
-        <BaseModalFooter onOk={handleSubmit} onCancel={routeBack} />
+        <BaseModalFooter
+          onOk={handleSubmit}
+          onCancel={routeBack}
+          loading={isImportLoading}
+        />
       </FormItem>
     </Form>
   )
 })
 
 const ImportKeystone = function(props) {
-  const { dispatch } = props
+  const {
+    dispatch,
+    keystone: { isImportLoading }
+  } = props
   const importTypeList = ['私钥', 'JSON文件']
   const [importType, setImportType] = useState(0)
   const labelCol = 6
@@ -142,6 +156,7 @@ const ImportKeystone = function(props) {
             onSubmit={handleImport}
             labelCol={labelCol}
             contCol={contCol}
+            isImportLoading={isImportLoading}
           />
         </CommonPadding>
       </div>
@@ -149,4 +164,6 @@ const ImportKeystone = function(props) {
   )
 }
 
-export default connect()(ImportKeystone)
+export default connect(({ keystone }) => ({
+  keystone
+}))(ImportKeystone)

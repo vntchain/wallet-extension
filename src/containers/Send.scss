@@ -1,0 +1,26 @@
+@import "../component/base";
+.container {
+  @include main-content;
+  margin-top: $header-height;
+  overflow-y: auto;
+  .value,
+  .info {
+    display: block;
+    font-size: 0.16rem;
+    line-height: 0.22rem;
+  }
+  .value {
+    color: $font-color;
+  }
+  .info {
+    display: block;
+    color: $font-color-light;
+  }
+  .between {
+    display: flex;
+    justify-content: space-between;
+  }
+  .commission {
+    text-align: right;
+  }
+}

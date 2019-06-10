@@ -20,10 +20,12 @@ const ScanWord = function(props) {
   } = props
   useEffect(() => {
     //关闭窗口时重置状态，下次打开需重新输入密码获取
-    return dispatch({
-      type: 'word/setHasGetWord',
-      payload: false
-    })
+    return () => {
+      dispatch({
+        type: 'word/setHasGetWord',
+        payload: false
+      })
+    }
   }, [])
   const handleBack = () => {
     history.goBack()
