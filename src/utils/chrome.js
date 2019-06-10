@@ -1,6 +1,6 @@
 const chrome = global.chrome
 
-const createPromise = function(funcName, payload) {
+const createFuncPromise = function(funcName, payload) {
   return new Promise((resolve, reject) => {
     chrome.runtime.getBackgroundPage(function(bg) {
       bg[funcName](payload)
@@ -10,16 +10,6 @@ const createPromise = function(funcName, payload) {
         .catch(e => {
           reject(e)
         })
-    })
-  })
-}
-
-const createFuncPromise = function(funcName, payload) {
-  return new Promise((resolve, reject) => {
-    chrome.runtime.getBackgroundPage(function(bg) {
-      const result = bg[funcName](payload)
-      if (result) resolve(result)
-      else reject({ message: '网络错误' })
     })
   })
 }
@@ -35,27 +25,35 @@ const createGetPromise = function(getName) {
 }
 //登录
 export const login = function*(payload) {
-  return yield createPromise('login', payload)
+  return yield createFuncPromise('login', payload)
 }
 //登出
 export const logout = function*(payload) {
-  return yield createPromise('logout', payload)
+  return yield createFuncPromise('logout', payload)
 }
 //创建钱包
 export const createWallet = function*(payload) {
-  return yield createPromise('createWallet', payload)
+  return yield createFuncPromise('createWallet', payload)
 }
 //找回钱包
 export const restoreFromSeed = function*(payload) {
-  return yield createPromise('restoreFromSeed', payload)
+  return yield createFuncPromise('restoreFromSeed', payload)
 }
 //导出私钥
 export const exportAccountPrivatekey = function*(payload) {
-  return yield createPromise('exportAccountPrivatekey', payload)
+  return yield createFuncPromise('exportAccountPrivatekey', payload)
 }
 //导出私钥Json
 export const exportAccountKeystore = function*(payload) {
-  return yield createPromise('exportAccountKeystore', payload)
+  return yield createFuncPromise('exportAccountKeystore', payload)
+}
+//导入账户(私钥)
+export const importByPrivatekey = function*(payload) {
+  return yield createFuncPromise('importByPrivatekey', payload)
+}
+//导入账户(keystore文件)
+export const importByKeystore = function*(payload) {
+  return yield createFuncPromise('importByKeystore', payload)
 }
 //获取账户余额
 export const getAccountBalance = function*(payload) {

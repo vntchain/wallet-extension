@@ -1,26 +1,39 @@
 import React, { Fragment, useState } from 'react'
 import { connect } from 'react-redux'
 import { InputItem, TextareaItem } from 'antd-mobile'
-import { Form, Select, Row, Col, Upload, Button } from 'antd'
+import { Form, Select, Row, Col, Upload, Button, message } from 'antd'
 import CommonPadding from '../component/layout/CommonPadding'
 import Header from '../component/layout/Header'
 import BaseWarn from '../component/layout/BaseWarn'
 import BaseModalFooter from '../component/layout/BaseModalFooter'
-import styles from './ImportKeystone.scss'
 import BaseLabel from '../component/layout/BaseLabel'
+import { fileReaderAsText } from '../utils/helper'
+import styles from './ImportKeystone.scss'
 
 const FormItem = Form.Item
 const Option = Select.Option
 
 const ImportForm = Form.create({ name: 'login' })(props => {
-  const { form, importType, onSubmit, labelCol } = props
+  const [files, setFiles] = useState([])
+  const { form, importType, onSubmit, labelCol, contCol } = props
   const { getFieldDecorator } = form
+  const uploadProps = {
+    name: 'files',
+    action: '',
+    accept: '.json',
+    beforeUpload: file => {
+      console.log('Received values of form: ', file) //eslint-disable-line
+      setFiles([file])
+      return false
+    },
+    fileList: files
+  }
   const handleSubmit = e => {
     e.preventDefault()
     form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values) //eslint-disable-line
-        onSubmit(values)
+        onSubmit({ ...values, files })
       }
     })
   }
@@ -35,14 +48,11 @@ const ImportForm = Form.create({ name: 'login' })(props => {
         </FormItem>
       ) : (
         <Fragment>
-          <FormItem wrapperCol={{ offset: labelCol }}>
-            {getFieldDecorator('passwd', {
-              rules: [
-                { required: true, message: '请输入密码' },
-                { min: 8, message: '密码长度不足' }
-              ]
+          <FormItem wrapperCol={{ offset: labelCol, xs: contCol }}>
+            {getFieldDecorator('file', {
+              rules: [{ required: true, message: '请上传keystone' }]
             })(
-              <Upload>
+              <Upload {...uploadProps}>
                 <Button size="large">选择文件</Button>
               </Upload>
             )}
@@ -64,12 +74,37 @@ const ImportForm = Form.create({ name: 'login' })(props => {
   )
 })
 
-const ImportKeystone = function() {
+const ImportKeystone = function(props) {
+  const { dispatch } = props
   const importTypeList = ['私钥', 'JSON文件']
   const [importType, setImportType] = useState(0)
   const labelCol = 6
   const contCol = 18
-  const handleImport = () => {}
+  const handleImport = data => {
+    if (importType === 0) {
+      const { privateKey } = data
+      dispatch({
+        type: 'keystone/importByPrivateKey',
+        payload: { privateKey }
+      })
+    } else {
+      const { files, passwd } = data
+      fileReaderAsText(files[0])
+        .then(text => {
+          const keystone = JSON.parse(text)
+          dispatch({
+            type: 'keystone/importByKeystone',
+            payload: {
+              passwd,
+              input: keystone
+            }
+          })
+        })
+        .catch(err => {
+          message.error(err.message)
+        })
+    }
+  }
   return (
     <Fragment>
       <Header title={'导入地址'} hasBack={true} />
@@ -83,7 +118,7 @@ const ImportKeystone = function() {
               '请另行保管该地址的私钥！'
             ]}
           />
-          <Row>
+          <Row className={styles.types}>
             <Col span={labelCol}>
               <BaseLabel label={'选择类型:'} />
             </Col>
@@ -106,6 +141,7 @@ const ImportKeystone = function() {
             importType={importType}
             onSubmit={handleImport}
             labelCol={labelCol}
+            contCol={contCol}
           />
         </CommonPadding>
       </div>
