@@ -51354,7 +51354,7 @@ var wallet_passwd = ''
  *  two item: 1. accounts   2. trxs   {accounts: accounts, trxs: trxs}
  *  accounts: [{
  *      addr: "the account addr",
- *      type: 0|1,  // 0 means not import account
+ *      type: 0|1  // 0 means not import account
  * }]
  * 
  * trxs: {
@@ -51668,16 +51668,23 @@ window.signThenSendTransaction = function signThenSendTransaction(obj) {
     var addr = obj.addr
 
     var trx_value = tx.value 
-    extension_wallet.signTransaction(tx, addr).then((signedtx) => {
-        var trx_id = signedtx.hash(true)
-        var serializedTx = signedtx.serialize()
-        var rawTransactionParam = '0x' + serializedTx.toString('hex');
-        sendRawTransaction(rawTransactionParam)
 
-        updateTrxs(addr, trxid, trx_value)
-        updateState()
-        return trx_id
-    })
+    try {
+        extension_wallet.signTransaction(tx, addr).then((signedtx) => {
+            var trx_id = signedtx.hash(true)
+            var serializedTx = signedtx.serialize()
+            var rawTransactionParam = '0x' + serializedTx.toString('hex');
+            sendRawTransaction(rawTransactionParam)
+    
+            updateTrxs(addr, trxid, trx_value)
+            updateState()
+            return trx_id
+        })
+
+    } catch (error) {
+        return Promise.resolve(error)
+    }
+   
 }
 
 
@@ -51692,9 +51699,15 @@ function getNonce(addr) {
     var payload = {jsonrpc: "2.0", id: 1, method: "core_getTransactionCount", params:[]}
     payload.params[0] = addr
     payload.params[1] = "latest"
-    var nonce = provider.send(payload)
 
-    return nonce.result
+    try {
+            
+        var nonce = provider.send(payload)
+        return Promise.resolve(nonce.result)
+    } catch (error) {
+        return Promise.reject(error)
+    }
+
 }
 
 /**
@@ -51708,9 +51721,14 @@ window.getAccountBalance = function getAccountBalance(obj) {
     var payload = {jsonrpc: "2.0", id: 1, method: "core_getBalance", params:[]}
     payload.params[0] = addr
     payload.params[1] = "latest"
-    var balanceobj = provider.send(payload)
+    try {
+        var balanceobj = provider.send(payload)
 
-    return util.fromWei(balanceobj.result, 'vnt')
+        return Promise.resolve(util.fromWei(balanceobj.result, 'vnt'))
+    } catch (error) {
+        return Promise.reject(error)
+    }
+
 }
 
 
@@ -51726,16 +51744,22 @@ window.checkTransaction = function checkTransaction(obj) {
     var payload = {jsonrpc: "2.0", id: 1, method: "core_getTransactionReceipt", params:[]}
     payload.params[0] = id
 
-    var trxobj = provider.send(payload)
+    try {
 
-    // trxobj is null, means in pending
-    if (!trxobj) {
-        return "pending"
-    } else if (trxobj.result.status === "0x0"){
-        return "error"
-    } else if (trxobj.result.status === "0x1"){
-        return "success"
+        var trxobj = provider.send(payload)
+
+        // trxobj is null, means in pending
+        if (!trxobj) {
+            return Promise.resolve("pending")
+        } else if (trxobj.result.status === "0x0"){
+            return Promise.resolve("error")
+        } else if (trxobj.result.status === "0x1"){
+            return Promise.resolve("success")
+        }
+    } catch (error) {
+        return Promise.reject(error)
     }
+    
 
 }
 
@@ -51746,8 +51770,13 @@ window.checkTransaction = function checkTransaction(obj) {
  */
 window.getVntPrice = function getVntPrice() {
 
-    var url = "http://dncapi.bqiapp.com/api/coin/coininfo?code=vntchain"
-    return JSON.parse(provider.httpGet(url)).data.price_cny
+    try {
+        var url = "http://dncapi.bqiapp.com/api/coin/coininfo?code=vntchain"
+        return Promise.resolve(JSON.parse(provider.httpGet(url)).data.price_cny)
+    } catch (error) {
+        return Promise.reject(error)
+    }
+
 
 }
 
