@@ -51644,7 +51644,7 @@ window.importByKeystore = async function importByKeystore(obj) {
     const privateKeyBuffer = wallet.getPrivateKey()
     const addr = ethUtil.bufferToHex(ethUtil.privateToAddress(privateKeyBuffer))
     selectedAddr = addr
-    
+
     await extension_wallet.addNewKeyring('Simple Key Pair', [privateKeyBuffer])
     updateAccounts(true, addr)
     updateState()
@@ -51777,9 +51777,49 @@ window.getVntPrice = function getVntPrice() {
     } catch (error) {
         return Promise.reject(error)
     }
+}
 
+/**
+ * get default gas price
+ */
+window.getGasPrice = function getGasPrice() {
+
+    try {
+        var payload = {jsonrpc: "2.0", id: 1, method: "core_gasPrice", params:[]}
+
+        var gasprice = provider.send(payload)
+
+        return Promise.resolve(util.fromWei(gasprice.result, 'gwei'))
+
+    } catch (error) {
+        return Promise.reject(error)
+    }
 
 }
+
+
+/**
+ * get estimate gas limit
+ * 
+ * @param {json object} tx  the transaction obj
+ * 
+ */
+window.getEstimateGas = function getEstimateGas(obj) {
+    
+    try {
+        var payload = {jsonrpc: "2.0", id: 1, method: "core_estimateGas", params:[]}
+        payload.params[0] = obj.tx
+
+        var gaslimit = provider.send(payload)
+        return Promise.resolve(util.toDecimal(gaslimit.result))
+
+    } catch (error) {
+        return Promise.reject(error)
+    }
+
+}
+
+
 
 /**
  * change the provider
