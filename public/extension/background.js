@@ -51327,6 +51327,7 @@ function extend() {
 }
 
 },{}],171:[function(require,module,exports){
+(function (Buffer){
 const walletManage = require('eth-keyring-controller')
 const Tx = require('ethereumjs-tx');
 const vntProvider = require('./vnt_extension_provider')
@@ -51361,9 +51362,7 @@ var wallet_passwd = ''
  *      "the account addr": [
  *      {
  *      time: the time of the trx,
- *      id: the trx id,
- *      value: the transaction value
- *      state: "pending/success/error"
+ *      trx //transaction obj
  *      },
  *      ......
  *      ],
@@ -51662,7 +51661,23 @@ window.importByKeystore = async function importByKeystore(obj) {
 function sendRawTransaction(rawTransactionParam) {
     var payload = {jsonrpc: "2.0", id: 1, method: "core_sendRawTransaction", params:[]}
     payload.params[0] = rawTransactionParam
-    provider.send(payload)
+    return provider.send(payload)
+}
+
+Date.prototype.Format = function (fmt) { 
+    var o = {
+        "M+": this.getMonth() + 1, 
+        "d+": this.getDate(), 
+        "h+": this.getHours(), 
+        "m+": this.getMinutes(),  
+        "s+": this.getSeconds(), 
+        "q+": Math.floor((this.getMonth() + 3) / 3), 
+        "S": this.getMilliseconds() 
+    };
+    if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    for (var k in o)
+    if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+    return fmt;
 }
 
 window.signThenSendTransaction = async function signThenSendTransaction(obj) {
@@ -51675,17 +51690,22 @@ window.signThenSendTransaction = async function signThenSendTransaction(obj) {
         if (addr !== selectedAddr) throw new Error("sign addr and selected addr not the same.")
 
         tx.nonce = getNonce(addr)
+        var storetx = tx
         tx = new Tx(tx)
-        var signedtx = extension_wallet.signTransaction(tx, addr)
-        
-        var trx_id = '0x' + signedtx.hash(true).toString('hex')
-        var serializedTx = signedtx.serialize()
-        var rawTransactionParam = '0x' + serializedTx.toString('hex');
-        sendRawTransaction(rawTransactionParam)
+        var privatekey = await extension_wallet.exportAccount(addr)
+        var privatebuffer = new Buffer(privatekey, 'hex')
+        tx.sign(privatebuffer)
 
-        updateTrxs(addr, trx_id, trx_value)
+        var serializedTx = tx.serialize()
+        var rawTransactionParam = '0x' + serializedTx.toString('hex');
+        var trx_id = sendRawTransaction(rawTransactionParam)
+
+        var date = new Date().Format("yyyy-MM-dd hh:mm:ss")
+        storetx.time = date
+        storetx.id = trx_id.result
+        updateTrxs(addr, storetx)
         updateState()
-        return Promise.resolve(trx_id)
+        return Promise.resolve(trx_id.result)
     
 
     } catch (error) {
@@ -51693,6 +51713,7 @@ window.signThenSendTransaction = async function signThenSendTransaction(obj) {
     }
    
 }
+
 
 
 
@@ -51819,6 +51840,24 @@ window.getEstimateGas = function getEstimateGas(obj) {
 
 }
 
+/**
+ * get trx  intf
+ * @param {id} txid the transaction id
+ * 
+ */
+window.getTrxInfo = function getTrxInfo(obj) {
+
+    var trxs = account_info.trxs[selectedAddr]
+    
+    for (var i = 0; i < trxs.length; i++) {
+        if (trxs[i].id === obj.txid) return Promise.resolve(trxs[i])
+    }
+
+    return Promise.reject(new Error('not found the transaction'))
+
+
+}
+
 
 
 /**
@@ -51880,14 +51919,14 @@ function updateAccounts(isImport, addr) {
 /**
  * update the trxs in account_info
  */
-function updateTrxs(addr, trxid, value) {
+function updateTrxs(addr, trx) {
 
     var trxs = account_info.trxs[addr]
-    var date = new Date()
+
     if (trxs) {
-        trxs.push({time: date.toLocaleString(), id: trxid, value: value, state: 'pending'})
+        trxs.push(trx)
     } else {
-        account_info.trxs[addr] = [{time: date.toLocaleString(), id: trxid, value: value}]
+        account_info.trxs[addr] = [trx]
     }
 
 }
@@ -52143,7 +52182,8 @@ chrome.runtime.onConnect.addListener(function(port) {
 })
 
 
-},{"./vnt_extension_provider":173,"./vnt_util":174,"eth-keyring-controller":84,"ethereumjs-tx":95,"ethereumjs-util":96,"ethereumjs-wallet":98,"ethereumjs-wallet/thirdparty":100,"extensionizer":103,"obs-store":133}],172:[function(require,module,exports){
+}).call(this,require("buffer").Buffer)
+},{"./vnt_extension_provider":173,"./vnt_util":174,"buffer":226,"eth-keyring-controller":84,"ethereumjs-tx":95,"ethereumjs-util":96,"ethereumjs-wallet":98,"ethereumjs-wallet/thirdparty":100,"extensionizer":103,"obs-store":133}],172:[function(require,module,exports){
 /*
     This file is part of vnt.js.
     vnt.js is free software: you can redistribute it and/or modify
