@@ -51842,7 +51842,7 @@ window.getEstimateGas = function getEstimateGas(obj) {
 
 /**
  * get trx  intf
- * @param {id} txid the transaction id
+ * @param {string} txid the transaction id
  * 
  */
 window.getTrxInfo = function getTrxInfo(obj) {
@@ -51886,7 +51886,7 @@ window.changeProvider = function changeProvider(obj) {
 /**
  * create window
  */
-function createPopup(url, cb) {
+window.createPopup = function createPopup(url, cb) {
     const NOTIFICATION_HEIGHT = 620
     const NOTIFICATION_WIDTH = 360
     const {screenX, screenY, outerWidth, outerHeight} = window
@@ -52088,17 +52088,19 @@ chrome.runtime.onConnect.addListener(function(port) {
                 // createPopup("notification.html", function(window){
                    
                 // })
-            } else if (msg.data.method === "inpage_accounts") {
+            } 
+            // else if (msg.data.method === "inpage_accounts") {
                 
-                console.log("background: receive inpage get accounts")
-                console.log(msg) 
+            //     console.log("background: receive inpage get accounts")
+            //     console.log(msg) 
 
-                // create confirm_get_accounts popup window
-                // chrome.rutime.sendMessage({type: "getAccounts"})
-                // createPopup("notification.html", function(window){
-                // })
+            //     // create confirm_get_accounts popup window
+            //     // chrome.rutime.sendMessage({type: "getAccounts"})
+            //     // createPopup("notification.html", function(window){
+            //     // })
 
-            } else if (msg.data.method === "inpage_requesetAuthorization") {
+            // } 
+            else if (msg.data.method === "inpage_requesetAuthorization") {
                 
                 console.log("background: receive inpage request authorization")
                 console.log(msg) 
@@ -52147,21 +52149,23 @@ chrome.runtime.onConnect.addListener(function(port) {
                 }
                 
     
-            } else if (msg.data.type === "confirm_get_accounts") {
+            } 
+            // else if (msg.data.type === "confirm_get_accounts") {
 
-                if (!!msg.data.data.confirmedGetAccounts) {
-                    chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
-                        chrome.tabs.sendMessage(tabArray[0].id, {confirmedGetAccounts: true});
-                    });
+            //     if (!!msg.data.data.confirmedGetAccounts) {
+            //         chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
+            //             chrome.tabs.sendMessage(tabArray[0].id, {confirmedGetAccounts: true});
+            //         });
     
-                } else {
-                    chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
-                        chrome.tabs.sendMessage(tabArray[0].id, {confirmedGetAccounts: false});
-                    });
-                }
+            //     } else {
+            //         chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
+            //             chrome.tabs.sendMessage(tabArray[0].id, {confirmedGetAccounts: false});
+            //         });
+            //     }
 
                
-            } else if (msg.data.type === "confirm_request_authorization") {
+            // } 
+            else if (msg.data.type === "confirm_request_authorization") {
 
                 if (!!msg.data.data.confirmAuthorization) {
                     chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
