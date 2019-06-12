@@ -1,0 +1,29 @@
+@import "../component/base";
+.container {
+  margin-top: $header-height;
+  overflow-y: auto;
+}
+.block {
+  padding: 0.4rem;
+  &:not(:last-child) {
+    margin-bottom: 1px solid $border-color;
+  }
+  &-item {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.16rem;
+    line-height: 0.16rem;
+    .inner {
+      display: flex;
+    }
+    label {
+      color: $font-color-light;
+    }
+    .cont {
+      color: $font-color;
+    }
+    .copy {
+      color: $primary-blue;
+    }
+  }
+}

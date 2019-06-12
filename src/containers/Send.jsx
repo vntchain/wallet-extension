@@ -18,10 +18,11 @@ const SendForm = Form.create({ name: 'login' })(props => {
     form,
     user: { addr, accountBalance },
     price: { vntToCny },
-    send: { gasPrice, gasLimit },
+    send: { tx },
     getGasLimit,
     onSubmit
   } = props
+  const { to, value, data, gas: gasLimit, gasPrice } = tx
   const [balanceCNY, setBalanceCNY] = useState(0)
   const { getFieldDecorator, setFieldsValue, getFieldValue } = form
   const formItemLayout = {
@@ -33,24 +34,13 @@ const SendForm = Form.create({ name: 'login' })(props => {
     form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values) //eslint-disable-line
-        const { to, balance, remark } = values
-        onSubmit({
-          addr: addr,
-          tx: {
-            from: addr,
-            to: to,
-            value: balance,
-            gas: gasLimit,
-            gasPrice: gasPrice,
-            data: remark
-          }
-        })
+        onSubmit()
       }
     })
   }
   const handleSendAll = () => {
     setFieldsValue({
-      balance: accountBalance
+      value: accountBalance
     })
   }
   const validateToAddr = (rule, value, callback) => {
@@ -76,16 +66,16 @@ const SendForm = Form.create({ name: 'login' })(props => {
   }
   const handleGetGasLimit = () => {
     const to = getFieldValue('to')
-    const balance = getFieldValue('balance')
-    if (to && balance) {
-      getGasLimit({
-        tx: {
-          from: addr,
-          to: to,
-          value: balance
-        }
-      })
-    }
+    const value = getFieldValue('value')
+    const data = getFieldValue('data')
+    getGasLimit({
+      tx: {
+        from: addr,
+        to: to,
+        value: value,
+        data: data
+      }
+    })
   }
   return (
     <Form hideRequiredMark={true} {...formItemLayout} onSubmit={handleSubmit}>
@@ -100,13 +90,15 @@ const SendForm = Form.create({ name: 'login' })(props => {
         label={<BaseLabel style={{ lineHeight: '.4rem' }} label={'发送至：'} />}
       >
         {getFieldDecorator('to', {
+          initialValue: to,
           rules: [{ validator: validateToAddr }]
         })(<Input placeholder="请输入接收地址" size="large" />)}
       </FormItem>
       <FormItem
         label={<BaseLabel style={{ lineHeight: '.4rem' }} label={'数量：'} />}
       >
-        {getFieldDecorator('balance', {
+        {getFieldDecorator('value', {
+          initialValue: value,
           rules: [{ validator: validateBalance }]
         })(<Input placeholder="请输入发送数量" size="large" suffix={'VNT'} />)}
       </FormItem>
@@ -116,6 +108,21 @@ const SendForm = Form.create({ name: 'login' })(props => {
         </a>
         <span className={styles.info}>{`￥ ${balanceCNY}`}</span>
       </div>
+      <FormItem
+        label={
+          <BaseLabel style={{ lineHeight: '.4rem' }} label={'备注数据：'} />
+        }
+      >
+        {getFieldDecorator('data', {
+          initialValue: data
+        })(
+          <TexeArea
+            placeholder="请填写交易备注数据，非必填。"
+            size="large"
+            onChange={handleGetGasLimit}
+          />
+        )}
+      </FormItem>
       <FormItem label={<BaseLabel label={'手续费:'} />}>
         <div className={styles.between}>
           <span className={styles.commission}>
@@ -128,15 +135,6 @@ const SendForm = Form.create({ name: 'login' })(props => {
           </span>
           <Link to={paths.commission}>自定义</Link>
         </div>
-      </FormItem>
-      <FormItem
-        label={
-          <BaseLabel style={{ lineHeight: '.4rem' }} label={'备注数据：'} />
-        }
-      >
-        {getFieldDecorator('remark')(
-          <TexeArea placeholder="请填写交易备注数据，非必填。" size="large" />
-        )}
       </FormItem>
       <Button type="primary" onClick={handleSubmit}>
         发送
@@ -153,15 +151,20 @@ const Send = function(props) {
     })
   }, [])
   const getGasLimit = data => {
+    //同步数据
+    dispatch({
+      type: 'send/merge',
+      payload: data
+    })
+    //获取gasLimit
     dispatch({
       type: 'send/getGasLimit',
       payload: data
     })
   }
-  const handleSend = data => {
+  const handleSend = () => {
     dispatch({
-      type: 'send/sendTx',
-      payload: data
+      type: 'send/sendTx'
     })
   }
   return (

@@ -83,7 +83,9 @@ const Home = function(props) {
                     <span className={styles.vnt}>{`${item.value} VNT`}</span>
                   </li>
                   <li>
-                    <span className={styles.code}>{splitLongStr(item.id)}</span>
+                    <Link to={`/detail/${item.id}`} className={styles.code}>
+                      {splitLongStr(item.id)}
+                    </Link>
                     <span className={styles.currency}>
                       {`￥ ${calBigMulti(item.value, vntToCny)}`}
                     </span>

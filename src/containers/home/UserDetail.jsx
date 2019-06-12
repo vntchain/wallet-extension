@@ -24,10 +24,15 @@ const UserDetail = function(props) {
   const linkToVnt = () => {
     push(paths.vnt)
   }
-  useEffect(async function() {
-    const qr = await genQRCode(addr)
-    setQrCode(qr)
-  }, [])
+  useEffect(() => {
+    async function fetchData() {
+      if (addr) {
+        const qr = await genQRCode(addr)
+        setQrCode(qr)
+      }
+    }
+    fetchData()
+  }, [addr])
   return (
     <Modal
       visible={visible}

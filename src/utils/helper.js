@@ -23,9 +23,6 @@ export const calCommission = (gasPrice, gasLimit) => {
 
 //大数相乘
 export const calBigMulti = (num1, num2) => {
-  if (typeof num1 !== 'number' || typeof num2 !== 'number') {
-    return '--'
-  }
   const numStr1 = num1.toString()
   const numStr2 = num2.toString()
   const numArr1 = numStr1.split('.')
