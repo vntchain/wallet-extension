@@ -7,7 +7,7 @@ import CommonPadding from '../component/layout/CommonPadding'
 import Header from '../component/layout/Header'
 import BaseLabel from '../component/layout/BaseLabel'
 import paths from '../utils/paths'
-import { splitLongStr, calCommission } from '../utils/helper'
+import { splitLongStr, calCommission, calBigMulti } from '../utils/helper'
 import styles from './Send.scss'
 
 const FormItem = Form.Item
@@ -69,7 +69,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
       callback('请输入正确的数量')
     } else {
       //设置vnt对应cny
-      setBalanceCNY(value * vntToCny)
+      setBalanceCNY(calBigMulti(value, vntToCny))
       handleGetGasLimit()
       callback()
     }
@@ -92,7 +92,9 @@ const SendForm = Form.create({ name: 'login' })(props => {
       <FormItem label={<BaseLabel label={'来自:'} />}>
         <span className={styles.value}>{splitLongStr(addr)}</span>
         <span className={styles.info}>{`${accountBalance} VNT`}</span>
-        <span className={styles.info}>{`￥ ${accountBalance * vntToCny}`}</span>
+        <span className={styles.info}>
+          {`￥ ${calBigMulti(accountBalance, vntToCny)}`}
+        </span>
       </FormItem>
       <FormItem
         label={<BaseLabel style={{ lineHeight: '.4rem' }} label={'发送至：'} />}
@@ -120,10 +122,9 @@ const SendForm = Form.create({ name: 'login' })(props => {
             <span className={styles.value}>
               {`${calCommission(gasPrice, gasLimit)} VNT`}
             </span>
-            <span className={styles.info}>{`￥ ${calCommission(
-              gasPrice,
-              gasLimit
-            ) * vntToCny}`}</span>
+            <span className={styles.info}>
+              {`￥ ${calBigMulti(calCommission(gasPrice, gasLimit), vntToCny)}`}
+            </span>
           </span>
           <Link to={paths.commission}>自定义</Link>
         </div>

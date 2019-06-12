@@ -11,7 +11,7 @@ export default {
     isConfirmDisable: false,
     word: ''
   },
-  reducer: {},
+  reducers: {},
   effects: ({ takeLatest }) => ({
     create: takeLatest(function*({ payload }) {
       yield put({
@@ -46,6 +46,7 @@ export default {
       }
     }),
     confirmWord: takeLatest(function*({ payload }) {
+      //todo： 确认逻辑，确认后真正创建
       try {
         yield put({
           type: 'wallet/setIsConfirmDisable',
@@ -56,7 +57,7 @@ export default {
           message.success('助记词确认成功！')
           yield put(push(paths.home))
         } else {
-          message.error('请输入正确助记词！')
+          message.error('抱歉！助记词错误！')
         }
       } catch (e) {
         console.log(e) //eslint-disable-line

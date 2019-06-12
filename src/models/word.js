@@ -8,7 +8,7 @@ export default {
     hasGetWord: false,
     word: ''
   },
-  reducer: {},
+  reducers: {},
   effects: ({ takeLatest }) => ({
     fetchWord: takeLatest(function*({ payload }) {
       try {

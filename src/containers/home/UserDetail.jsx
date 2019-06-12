@@ -1,14 +1,15 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Modal, Button } from 'antd-mobile'
 import Copier from '../../component/Copier'
 import styles from './UserDetail.scss'
-import imgs from '../../utils/imgs'
+import genQRCode from '../../utils/genQRCode'
 import paths from '../../utils/paths'
 
 const UserDetail = function(props) {
   const copyRef = React.createRef()
+  const [QRCode, setQrCode] = useState('')
   const {
     visible,
     onClose,
@@ -23,6 +24,10 @@ const UserDetail = function(props) {
   const linkToVnt = () => {
     push(paths.vnt)
   }
+  useEffect(async function() {
+    const qr = await genQRCode(addr)
+    setQrCode(qr)
+  }, [])
   return (
     <Modal
       visible={visible}
@@ -32,7 +37,7 @@ const UserDetail = function(props) {
       className={styles.detail}
       wrapClassName={styles.wrap}
     >
-      <img className={styles.qrcode} src={imgs.qrcode} alt="qrcode" />
+      <img className={styles.qrcode} src={QRCode} alt="qrcode" />
       <div className={styles.code}>
         <span className={styles.str}>{addr}</span>
         <Copier text={addr} copyRef={copyRef}>

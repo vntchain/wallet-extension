@@ -14,11 +14,13 @@ export default {
     gasPriceDefault: 0,
     gasLimitDefault: 0,
     gasPrice: 0,
-    gasLimit: 0,
-    price: 0,
+    gasLimit: 21000,
+    to: '',
+    balance: 0,
+    remark: '',
     isSendLoading: false
   },
-  reducer: {},
+  reducers: {},
   effects: ({ takeLatest }) => ({
     sendTx: takeLatest(function*({ payload }) {
       try {
@@ -57,7 +59,6 @@ export default {
     getGasLimit: takeLatest(function*({ payload }) {
       try {
         const res = yield getEstimateGas(payload)
-        console.log(res) //eslint-disable-line
         yield put({
           type: 'send/merge',
           payload: {

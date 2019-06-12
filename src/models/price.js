@@ -7,7 +7,7 @@ export default {
   state: {
     vntToCny: 1
   },
-  reducer: {},
+  reducers: {},
   effects: ({ takeLatest }) => ({
     getVntToCny: takeLatest(function*() {
       try {

@@ -6,7 +6,7 @@ import CommonPadding from '../component/layout/CommonPadding'
 import Header from '../component/layout/Header'
 import BaseLabel from '../component/layout/BaseLabel'
 import BaseTip from '../component/layout/BaseTip'
-import { calCommission } from '../utils/helper'
+import { calCommission, calBigMulti } from '../utils/helper'
 import paths from '../utils/paths'
 import styles from './Commission.scss'
 
@@ -92,8 +92,9 @@ const Send = function(props) {
               <BaseLabel label={'手续费：'} />
               <span>
                 <div className={styles.value}>{`${commission} VNT`}</div>
-                <div className={styles.info}>{`￥ ${commission *
-                  vntToCny}`}</div>
+                <div className={styles.info}>
+                  {`￥ ${calBigMulti(commission, vntToCny)}`}
+                </div>
               </span>
             </div>
             <a

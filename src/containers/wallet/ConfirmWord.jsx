@@ -6,14 +6,22 @@ import { Button, TextareaItem } from 'antd-mobile'
 const FormItem = Form.Item
 
 const WordForm = Form.create({ name: 'word' })(props => {
-  const { form, onSubmit } = props
-  const { getFieldDecorator } = form
+  const { form, onSubmit, word } = props
+  const { getFieldDecorator, setFields } = form
   const handleSubmit = e => {
     e.preventDefault()
     form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values) //eslint-disable-line
-        onSubmit(values.word)
+        if (word === values.word) {
+          onSubmit()
+        } else {
+          setFields([
+            {
+              word: { errors: ['抱歉！助记词错误！'] }
+            }
+          ])
+        }
       }
     })
   }
@@ -38,18 +46,22 @@ const WordForm = Form.create({ name: 'word' })(props => {
 })
 
 const ConfirmWord = function(props) {
-  const { dispatch } = props
-  const handleConfirmWord = word => {
+  const {
+    wallet: { word },
+    dispatch
+  } = props
+  const handleConfirmWord = () => {
     dispatch({
-      type: 'wallet/confirmWord',
-      payload: word
+      type: 'wallet/confirmWord'
     })
   }
   return (
     <Fragment>
-      <WordForm onSubmit={handleConfirmWord} />
+      <WordForm onSubmit={handleConfirmWord} word={word} />
     </Fragment>
   )
 }
 
-export default connect()(ConfirmWord)
+export default connect(({ wallet }) => ({
+  wallet
+}))(ConfirmWord)
