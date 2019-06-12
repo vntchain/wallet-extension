@@ -51692,7 +51692,7 @@ window.signThenSendTransaction = async function signThenSendTransaction(obj) {
         }
 
         tx.nonce = getNonce(addr)
-        var storetx = tx
+        var storetx = Object.assign({}, tx)
 
         tx.value = util.fromDecimal(util.toWei(tx.value), 'vnt')
         tx.gas = util.fromDecimal(tx.gas)
@@ -51712,11 +51712,16 @@ window.signThenSendTransaction = async function signThenSendTransaction(obj) {
         storetx.id = trx_id.result
         updateTrxs(addr, storetx)
         updateState()
-        return Promise.resolve(trx_id.result)
+        if (!!trx_id.result) {
+            return Promise.resolve(trx_id.result)
+        } else {
+            return Promise.reject(trx_id.error)
+        }
+        
     
 
     } catch (error) {
-        return Promise.resolve(error)
+        return Promise.reject(error)
     }
    
 }
