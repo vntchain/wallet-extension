@@ -14,3 +14,7 @@ export const fileReaderAsText = fileBlod => {
     }
   })
 }
+
+export const calCommission = (gasPrice, gasLimit) => {
+  return (gasPrice * gasLimit) / 1000000000
+}

@@ -14,6 +14,7 @@ import About from './About'
 import ImportKeystone from './ImportKeystone'
 import Send from './Send'
 import Commission from './Commission'
+import TxDetail from './TxDetail'
 
 class App extends Component {
   render() {
@@ -34,7 +35,11 @@ class App extends Component {
           path={paths.commission}
           component={requireAuth(Commission)}
         />
-        <Route exact path={paths.txDetail} component={requireAuth(Send)} />
+        <Route
+          exact
+          path={`${paths.txDetail}/:id`}
+          component={requireAuth(TxDetail)}
+        />
         <Route path={paths.wallet} component={Wallet} />
         <Redirect to="/" />
       </Switch>

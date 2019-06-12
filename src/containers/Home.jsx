@@ -8,6 +8,7 @@ import UserDetail from './home/UserDetail'
 import ExportKeystone from './home/ExportKeystone'
 import { splitLongStr } from '../utils/helper'
 import imgs from '../utils/imgs'
+import paths from '../utils/paths'
 
 const Home = function(props) {
   const {
@@ -20,6 +21,9 @@ const Home = function(props) {
   useEffect(() => {
     dispatch({
       type: 'user/getAccounts'
+    })
+    dispatch({
+      type: 'price/getVntToCny'
     })
     return () => {
       console.log('leave home page') //eslint-disable-line
@@ -47,11 +51,15 @@ const Home = function(props) {
           <div className={styles.currency}>{`￥ ${accountBalance *
             vntToCny}`}</div>
           <div className={styles.tx}>
-            <a href="javascript:" className={styles['tx-btn']}>
+            <a
+              href="javascript:"
+              className={styles['tx-btn']}
+              onClick={() => setUserVisible(true)}
+            >
               <img src={imgs.rollIn} alt="转入" />
               转入
             </a>
-            <Link to="/" href="javascript:" className={styles['tx-btn']}>
+            <Link to={paths.send} className={styles['tx-btn']}>
               <img src={imgs.rollOut} alt="转出" />
               转出
             </Link>

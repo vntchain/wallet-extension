@@ -84,7 +84,7 @@ export default {
           type: 'user/getAddr'
         })
         //跳转页面
-        yield put(push(paths.word))
+        yield put(push(paths.home))
       } catch (e) {
         console.log(e) //eslint-disable-line
       } finally {

@@ -20,6 +20,10 @@
     display: flex;
     justify-content: space-between;
   }
+  .all {
+    position: relative;
+    top: -0.25rem;
+  }
   .commission {
     text-align: right;
   }

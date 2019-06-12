@@ -44,7 +44,13 @@ const Setting = function(props) {
     }
   ]
   const handleChangeEnv = () => {}
-  const handleChangeWallet = () => {}
+  const handleChangeWallet = currAddr => {
+    dispatch({
+      type: 'user/setUserAddr',
+      payload: currAddr
+    })
+    setIsSetShow(false)
+  }
   return (
     <div className={styles.setting}>
       <img
@@ -70,7 +76,7 @@ const Setting = function(props) {
                   env === item ? styles['setting-item_active'] : ''
                 }`}
                 key={item}
-                onClick={handleChangeEnv}
+                onClick={() => handleChangeEnv}
               >
                 {enviromentList[item]}
               </div>
@@ -85,7 +91,7 @@ const Setting = function(props) {
                   addr === item.addr ? styles['setting-item_active'] : ''
                 }`}
                 key={item.addr}
-                onClick={handleChangeWallet}
+                onClick={() => handleChangeWallet(item.addr)}
               >
                 <p>
                   <span>{splitLongStr(item.addr)}</span>

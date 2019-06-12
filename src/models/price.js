@@ -9,7 +9,7 @@ export default {
   },
   reducer: {},
   effects: ({ takeLatest }) => ({
-    getAccountBalance: takeLatest(function*() {
+    getVntToCny: takeLatest(function*() {
       try {
         const data = yield getVntPrice()
         yield put({

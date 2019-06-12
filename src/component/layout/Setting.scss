@@ -15,7 +15,7 @@
   }
   &-cont {
     position: absolute;
-    width: 2.6rem;
+    width: 2.8rem;
     height: 5rem;
     border-radius: 0.04rem;
     top: 0.5rem;
@@ -39,6 +39,7 @@
     line-height: 0.16rem;
     font-size: 0.16rem;
     color: $font-color;
+    cursor: pointer;
     p {
       margin-bottom: 0;
       display: flex;
@@ -53,7 +54,7 @@
       color: $font-color-light;
     }
     .import {
-      padding: 0.04rem 0.12rem;
+      padding: 0.04rem 0.1rem;
       line-height: 0.14rem;
       font-size: 0.14rem;
       border-radius: 0.16rem;

@@ -23,6 +23,14 @@ const createGetPromise = function(getName) {
     })
   })
 }
+
+const createSetPromise = function(obj) {
+  return new Promise(resolve => {
+    chrome.storage.sync.set(obj, function() {
+      resolve('success')
+    })
+  })
+}
 //登录
 export const login = function*(payload) {
   return yield createFuncPromise('login', payload)
@@ -67,6 +75,18 @@ export const getKeyringOfAccount = function*(payload) {
 export const getVntPrice = function*(payload) {
   return yield createFuncPromise('getVntPrice', payload)
 }
+//发送交易
+export const signThenSendTransaction = function*(payload) {
+  return yield createFuncPromise('signThenSendTransaction', payload)
+}
+//获取gasprice
+export const getGasPrice = function*(payload) {
+  return yield createFuncPromise('getGasPrice', payload)
+}
+//获取gaslimit
+export const getEstimateGas = function*(payload) {
+  return yield createFuncPromise('getEstimateGas', payload)
+}
 
 //获取地址信息
 export const getAddr = function*() {
@@ -75,4 +95,9 @@ export const getAddr = function*() {
 //获取账户信息
 export const getAccounts = function*() {
   return yield createGetPromise('account_info')
+}
+
+//同步地址
+export const setAddr = function*(payload) {
+  return yield createSetPromise({ selectedAddr: payload })
 }

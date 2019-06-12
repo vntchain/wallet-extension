@@ -6,14 +6,15 @@ import {
   logout,
   getAddr,
   getAccounts,
-  getAccountBalance
+  getAccountBalance,
+  setAddr
 } from '../utils/chrome'
 import { message } from 'antd'
 
 const { put } = effects
 export default {
   state: {
-    isAuth: false,
+    isAuth: true,
     addr: '',
     accountBalance: 0,
     accounts: [],
@@ -73,6 +74,24 @@ export default {
     getAddr: takeLatest(function*() {
       try {
         const addr = yield getAddr()
+        yield put({
+          type: 'user/setAddr',
+          payload: addr
+        })
+        //拿到地址后获取当前账户vnt
+        yield put({
+          type: 'user/getAccountBalance',
+          payload: { addr }
+        })
+      } catch (e) {
+        message.error(e.message)
+        console.log(e) //eslint-disable-line
+      }
+    }),
+    setUserAddr: takeLatest(function*({ payload }) {
+      try {
+        const addr = payload
+        yield setAddr(addr)
         yield put({
           type: 'user/setAddr',
           payload: addr

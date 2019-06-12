@@ -1,11 +1,11 @@
 import { effects } from 'redux-sirius'
 import { message } from 'antd'
-import { push } from 'react-router-redux'
-import paths from '../utils/paths'
+// import { push } from 'react-router-redux'
+// import paths from '../utils/paths'
 import {
   signThenSendTransaction,
   getGasPrice,
-  getGasLimit
+  getEstimateGas
 } from '../utils/chrome'
 const { put } = effects
 
@@ -27,10 +27,11 @@ export default {
           payload: true
         })
         const id = yield signThenSendTransaction(payload)
-        yield put(push(`${paths.txDetail}/${id}`))
+        console.log(1111, id) //eslint-disable-line
+        // yield put(push(`${paths.txDetail}/${id}`))
       } catch (e) {
         message.error(e.message)
-        console.log(e) //eslint-disable-line
+        console.log('send:'+e) //eslint-disable-line
       } finally {
         yield put({
           type: 'send/setIsSendLoading',
@@ -53,9 +54,10 @@ export default {
         console.log(e) //eslint-disable-line
       }
     }),
-    getGasLimit: takeLatest(function*() {
+    getGasLimit: takeLatest(function*({ payload }) {
       try {
-        const res = yield getGasLimit()
+        const res = yield getEstimateGas(payload)
+        console.log(res) //eslint-disable-line
         yield put({
           type: 'send/merge',
           payload: {
