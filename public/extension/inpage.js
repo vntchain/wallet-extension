@@ -750,6 +750,7 @@ InpageHttpProvider.prototype.send = function (payload) {
   if (!walletUnlock) {
     throw errors.walletLocked()
   }
+  // console.log(payload)
 
   switch (payload.method) {
     case 'core_accounts':

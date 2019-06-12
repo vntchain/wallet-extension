@@ -51683,14 +51683,21 @@ Date.prototype.Format = function (fmt) {
 window.signThenSendTransaction = async function signThenSendTransaction(obj) {
     var tx = obj.tx
     var addr = obj.addr
-    var trx_value = tx.value 
-
+    
     try {
         
         if (addr !== selectedAddr) throw new Error("sign addr and selected addr not the same.")
+        if (tx.data === undefined) {
+            delete tx.data
+        }
 
         tx.nonce = getNonce(addr)
         var storetx = tx
+
+        tx.value = util.fromDecimal(util.toWei(tx.value), 'vnt')
+        tx.gas = util.fromDecimal(tx.gas)
+        tx.gasPrice = util.fromDecimal(util.toWei(tx.gasPrice, 'gwei'))
+        tx.chainId = getChainId()
         tx = new Tx(tx)
         var privatekey = await extension_wallet.exportAccount(addr)
         var privatebuffer = new Buffer(privatekey, 'hex')
@@ -51730,6 +51737,16 @@ function getNonce(addr) {
             
     var nonce = provider.send(payload)
     return nonce.result
+}
+
+/**
+ * get the chainid
+ */
+function getChainId() {
+    var payload = {jsonrpc: "2.0", id: 1, method: "net_version", params:[]}
+    var version = provider.send(payload)
+
+    return util.fromDecimal(version.result)
 }
 
 /**
@@ -51828,6 +51845,9 @@ window.getGasPrice = function getGasPrice() {
 window.getEstimateGas = function getEstimateGas(obj) {
     
     try {
+
+        obj.tx.value = util.fromDecimal(util.toWei(obj.tx.value, 'vnt'))
+
         var payload = {jsonrpc: "2.0", id: 1, method: "core_estimateGas", params:[]}
         payload.params[0] = obj.tx
 
@@ -52634,7 +52654,7 @@ var fromDecimal = function (value) {
     var number = toBigNumber(value);
     var result = number.toString(16);
 
-    return number.lessThan(0) ? '-0x' + result.substr(1) : '0x' + result;
+    return number.isLessThan(0) ? '-0x' + result.substr(1) : '0x' + result;
 };
 
 /**
