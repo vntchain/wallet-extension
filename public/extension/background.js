@@ -51362,7 +51362,9 @@ var wallet_passwd = ''
  *      "the account addr": [
  *      {
  *      time: the time of the trx,
+ *      id: the id of the trx,
  *      trx //transaction obj
+ *      state: the trx state
  *      },
  *      ......
  *      ],
@@ -51708,6 +51710,7 @@ window.signThenSendTransaction = async function signThenSendTransaction(obj) {
         var trx_id = sendRawTransaction(rawTransactionParam)
 
         var date = new Date().Format("yyyy-MM-dd hh:mm:ss")
+        storetx.state = "pending"
         storetx.time = date
         storetx.id = trx_id.result
         updateTrxs(addr, storetx)
@@ -51725,10 +51728,6 @@ window.signThenSendTransaction = async function signThenSendTransaction(obj) {
     }
    
 }
-
-
-
-
 
 
 /**
@@ -51931,6 +51930,52 @@ window.createPopup = function createPopup(url, cb) {
 
 
 /**
+ * timer function to update trx state
+ * 
+ */
+function trxStateTimer() {
+
+    var trxs = account_info.trxs[selectedAddr]
+    var stateChanged = false
+    if (trxs === undefined) {
+        return 
+    } else {
+        for (var i = 0; i < trxs.length; i++) {
+
+            if (trxs[i].state === 'pending') {
+
+                var payload = {jsonrpc: "2.0", id: 1, method: "core_getTransactionReceipt", params:[]}
+                payload.params[0] = trxs[i].id
+                
+                var trxobj = provider.send(payload)
+            
+                // trxobj is null, means in pending
+                if (!trxobj.result) {
+                    continue
+                } else if (trxobj.result.status === "0x0"){
+                    trxs[i].state = 'error'
+                    stateChanged = true
+                    updateState()
+                    break
+
+                } else if (trxobj.result.status === "0x1"){
+                    trxs[i].state = 'success'
+                    stateChanged = true
+                    updateState()
+                    break
+                    
+                }
+            }
+    
+        }
+
+        if (stateChanged) {
+            chrome.runtime.sendMessage({type: "trx_state_changed"})
+        }
+    }
+}
+
+/**
  *  update the acccounts in account_info
  */
 function updateAccounts(isImport, addr) {
@@ -52087,6 +52132,7 @@ window.addEventListener("load", function() {
 chrome.runtime.onInstalled.addListener(({reason}) => {
     console.log("background: in onInstalled")
 
+    setInterval(trxStateTimer, 3000)
     // chrome.storage.sync.set({selectedAccount: "", : false}, function() {
     //     console.log('initial state value');
     // })
@@ -52134,7 +52180,14 @@ chrome.runtime.onConnect.addListener(function(port) {
                 // chrome.rutime.sendMessage({type: "requesetAuthorization", url: msg.data.data.url, addr: selectedAddr})
                 // createPopup("notification.html", function(window){
                 // })
+            } 
+            else if (msg.data.method === "inpage_login") {
+
+                var url = chrome.extension.getURL('index.html/login')
+                createPopup(url, function(window){
+                })
             }
+
         } else if (msg.src === 'popup') { // from popup
             if (msg.data.type === "confirm_send_trx") {
 
