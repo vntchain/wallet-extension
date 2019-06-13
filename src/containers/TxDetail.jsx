@@ -1,15 +1,26 @@
 import React, { Fragment } from 'react'
+import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import Header from '../component/layout/Header'
+import CommonPadding from '../component/layout/CommonPadding'
 import Copier from '../component/Copier'
 import styles from './TxDetail.scss'
 
 const TxDetail = function(props) {
-  const idCopyRef = React.createRef() //eslint-disable-line
-  const fromCopyRef = React.createRef() //eslint-disable-line
-  const toCopyRef = React.createRef() //eslint-disable-line
-  const { txDetail } = props
-  // const id = props.match.params.id
+  const idCopyRef = React.createRef()
+  const fromCopyRef = React.createRef()
+  const toCopyRef = React.createRef()
+  const refObj = {
+    idCopyRef,
+    fromCopyRef,
+    toCopyRef
+  }
+  const {
+    user: { currTrade }
+  } = props
+  console.log(props) //eslint-disable-line
+  const id = props.match.params.id
+  const txDetail = currTrade.find(item => item.id === id)
   const DetailList = [
     {
       status: {
@@ -47,35 +58,40 @@ const TxDetail = function(props) {
   ]
   return (
     <Fragment>
-      <Header title={'发送VNT'} hasBack={true} />
+      <Header title={'交易详情'} hasBack={true} />
       <div className={styles.container}>
-        {DetailList.map((blocks, index) => (
-          <div className={styles.block} key={index}>
-            {Object.keys(blocks).map(item => {
-              const val = blocks.item
-              return (
-                <div className={styles['block-item']} key={item}>
-                  <label>{typeof val === 'string' ? val : val.label}</label>
-                  {val.render ? (
-                    val.render(txDetail[item])
-                  ) : val.hasCopy ? (
-                    <div className={styles.inner}>
+        <CommonPadding>
+          {DetailList.map((blocks, index) => (
+            <div className={styles.block} key={index}>
+              {Object.keys(blocks).map(item => {
+                const val = blocks[item]
+                return (
+                  <div className={styles['block-item']} key={item}>
+                    <label>{typeof val === 'string' ? val : val.label}</label>
+                    {val.render ? (
+                      val.render(txDetail[item])
+                    ) : val.hasCopy ? (
+                      <div className={styles.inner}>
+                        <span className={styles.cont}>{txDetail[item]}</span>
+                        <Copier
+                          text={txDetail[item]}
+                          ref={refObj[`${item}CopyRef`]}
+                        >
+                          <span className={styles.copy}>复制</span>
+                        </Copier>
+                      </div>
+                    ) : (
                       <span className={styles.cont}>{txDetail[item]}</span>
-                      <Copier text={txDetail[item]} copyRef={`${item}CopyRef`}>
-                        <span className={styles.copy}>复制</span>
-                      </Copier>
-                    </div>
-                  ) : (
-                    <span className={styles.cont}>{txDetail[item]}</span>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        ))}
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+          ))}
+        </CommonPadding>
       </div>
     </Fragment>
   )
 }
 
-export default withRouter(TxDetail)
+export default withRouter(connect(({ user }) => ({ user }))(TxDetail))

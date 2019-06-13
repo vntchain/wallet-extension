@@ -7,31 +7,44 @@ import {
   getGasPrice,
   getEstimateGas
 } from '../utils/chrome'
-const { put } = effects
+const { put, select } = effects
+
+const defaultTx = {
+  gasPrice: 0,
+  gas: 21000, //gasLimit
+  from: '',
+  to: '',
+  value: 0,
+  data: ''
+}
 
 export default {
   state: {
     gasPriceDefault: 0,
     gasLimitDefault: 21000,
-    tx: {
-      gasPrice: 0,
-      gas: 21000, //gasLimit
-      from: '',
-      to: '',
-      value: 0,
-      data: ''
-    },
+    tx: defaultTx,
     isSendLoading: false
   },
-  reducers: {},
+  reducers: {
+    clearTx: state => {
+      return {
+        ...state,
+        tx: defaultTx
+      }
+    }
+  },
   effects: ({ takeLatest }) => ({
-    sendTx: takeLatest(function*({ payload }) {
+    sendTx: takeLatest(function*() {
       try {
         yield put({
           type: 'send/setIsSendLoading',
           payload: true
         })
-        const id = yield signThenSendTransaction(payload)
+        const tx = yield select(state => state.send.tx)
+        const id = yield signThenSendTransaction({ tx: { ...tx } })
+        yield put({
+          type: 'send/clearTx'
+        })
         yield put(push(`${paths.txDetail}/${id}`))
       } catch (e) {
         message.error(e.message)
@@ -47,13 +60,8 @@ export default {
       try {
         const res = yield getGasPrice()
         yield put({
-          type: 'send/merge',
-          payload: {
-            gasPriceDefault: res,
-            tx: {
-              gasPrice: res
-            }
-          }
+          type: 'send/setGasPriceDefault',
+          payload: res
         })
       } catch (e) {
         message.error(e.message)

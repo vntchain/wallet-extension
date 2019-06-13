@@ -2,10 +2,10 @@ import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { message } from 'antd'
 
-const Copier = props => {
-  const { text, copyRef } = props
+const Copier = React.forwardRef((props, ref) => {
+  const { text } = props
   const handleCopy = () => {
-    copyRef.current.select()
+    ref.current.select()
     document.execCommand('copy')
     message.info('复制成功！')
   }
@@ -20,16 +20,16 @@ const Copier = props => {
         }}
         value={text}
         readOnly
-        ref={copyRef}
+        ref={ref}
       />
       <span onClick={handleCopy}>{props.children}</span>
     </Fragment>
   )
-}
+})
 
 Copier.propType = {
   text: PropTypes.string.isRequired,
-  copyRef: PropTypes.object.isRequired
+  ref: PropTypes.object.isRequired
 }
 
 export default Copier

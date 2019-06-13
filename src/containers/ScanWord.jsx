@@ -49,7 +49,7 @@ const ScanWord = function(props) {
                   <Fragment key={item}>{`${item} `}</Fragment>
                 ))}
               </div>
-              <Copier text={word} copyRef={copyRef}>
+              <Copier text={word} ref={copyRef}>
                 <a className={styles.copy} href="javascript:">
                   复制到剪贴板
                 </a>

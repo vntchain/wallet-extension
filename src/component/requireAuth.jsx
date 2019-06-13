@@ -15,9 +15,9 @@ function requireAuth(WrappedComponent) {
     if (!isAuth) {
       dispatch(push(paths['login']))
     } else {
-      dispatch({
-        type: 'user/getAddr'
-      })
+      // dispatch({
+      //   type: 'user/getAddr'
+      // })
     }
     return isAuth ? <WrappedComponent /> : null
   })

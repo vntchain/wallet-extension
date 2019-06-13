@@ -45,7 +45,7 @@ const UserDetail = function(props) {
       <img className={styles.qrcode} src={QRCode} alt="qrcode" />
       <div className={styles.code}>
         <span className={styles.str}>{addr}</span>
-        <Copier text={addr} copyRef={copyRef}>
+        <Copier text={addr} ref={copyRef}>
           <span className={styles.copy} />
         </Copier>
       </div>

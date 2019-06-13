@@ -13,5 +13,8 @@ export default {
   commission: '/commission', //自定义手续费
   txDetail: '/detail', //交易详情
 
+  outerAuth: '/auth', //dapp授权
+  outerSend: '/outer-send', //dapp发送交易
+
   vnt: '' //vnt detail
 }

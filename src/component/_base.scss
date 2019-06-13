@@ -47,3 +47,9 @@ $error-color: #ff0201;
   border: none;
   outline: none;
 }
+
+@mixin ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

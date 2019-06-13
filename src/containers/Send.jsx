@@ -18,7 +18,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
     form,
     user: { addr, accountBalance },
     price: { vntToCny },
-    send: { tx },
+    send: { tx, gasPriceDefault },
     getGasLimit,
     onSubmit
   } = props
@@ -73,7 +73,8 @@ const SendForm = Form.create({ name: 'login' })(props => {
         from: addr,
         to: to,
         value: value,
-        data: data
+        data: data,
+        gasPrice: gasPriceDefault //修改时设置gasPrice为默认值
       }
     })
   }

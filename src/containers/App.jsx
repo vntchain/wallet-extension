@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Route, withRouter, Switch, Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-// import InnerWidthWatcher from '../component/InnerWidthWatcher'
 import requireAuth from '../component/requireAuth'
 import paths from '../utils/paths'
 
@@ -15,6 +14,8 @@ import ImportKeystone from './ImportKeystone'
 import Send from './Send'
 import Commission from './Commission'
 import TxDetail from './TxDetail'
+import OuterAuth from './OuterAuth'
+import OuterSend from './OuterSend'
 
 class App extends Component {
   render() {
@@ -40,6 +41,8 @@ class App extends Component {
           path={`${paths.txDetail}/:id`}
           component={requireAuth(TxDetail)}
         />
+        <Route exact path={paths.outerAuth} component={OuterAuth} />
+        <Route exact path={paths.outerSend} component={OuterSend} />
         <Route path={paths.wallet} component={Wallet} />
         <Redirect to="/" />
       </Switch>

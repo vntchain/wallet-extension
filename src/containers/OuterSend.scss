@@ -1,36 +1,41 @@
 @import "../component/base";
 .container {
   margin-top: $header-height;
+  padding: 0.4rem 0;
   overflow-y: auto;
 }
-.block {
-  padding: 0.4rem 0;
-  &:not(:last-child) {
-    border-bottom: 1px solid $border-color;
-  }
+.send {
   &-item {
+    margin-bottom: 0.4rem;
     display: flex;
-    justify-content: space-between;
     font-size: 0.16rem;
     line-height: 0.16rem;
     .inner {
+      flex: 1;
       display: flex;
+      justify-content: space-between;
     }
     label {
-      color: $font-color-light;
+      width: 0.7rem;
+      margin-right: 0.1rem;
+      color: $font-color;
+      font-weight: 600;
     }
     .cont {
       max-width: 2.2rem;
       color: $font-color;
-      @include ellipsis;
     }
-    .copy {
+    .info {
+      color: $font-color-light;
+    }
+    .remarks {
+      font-size: 0.14rem;
+      color: $font-color-light;
+    }
+    .commission {
       font-size: 0.14rem;
       color: $primary-blue;
       cursor: pointer;
-    }
-    &:not(:last-child) {
-      margin-bottom: 0.2rem;
     }
   }
 }

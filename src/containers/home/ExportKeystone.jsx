@@ -59,7 +59,7 @@ const UserDetail = function(props) {
           <Fragment>
             <div className={styles.title}>
               <BaseLabel>地址</BaseLabel>
-              <Copier text={addr} copyRef={addrCopyRef}>
+              <Copier text={addr} ref={addrCopyRef}>
                 <a href="javascript:">复制地址</a>
               </Copier>
             </div>
@@ -74,7 +74,7 @@ const UserDetail = function(props) {
                 >
                   下载JSON文件
                 </Downloader>
-                <Copier text={privateKey} copyRef={privateCopyRef}>
+                <Copier text={privateKey} ref={privateCopyRef}>
                   <a href="javascript:">复制私钥</a>
                 </Copier>
               </span>
