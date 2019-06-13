@@ -743,13 +743,14 @@ InpageHttpProvider.prototype.prepareRequest = function (async) {
  */
 InpageHttpProvider.prototype.send = function (payload) { 
 
+  if (!walletUnlock) {
+    throw errors.walletLocked()
+  }
+
   if (authUrl.indexOf(window.location.host) == -1) {
     throw errors.authorizationError('request Authorization first.')
   }
 
-  if (!walletUnlock) {
-    throw errors.walletLocked()
-  }
   // console.log(payload)
 
   switch (payload.method) {
@@ -798,13 +799,13 @@ var jsonrpc = "2.0"
 
 InpageHttpProvider.prototype.sendAsync = function (payload, callback) {
 
+  if (!walletUnlock) {
+    throw errors.walletLocked()
+  }
+
   if (authUrl.indexOf(window.location.host) == -1) {
     callback(errors.authorizationError('request Authorization first.'))
     return
-  }
-
-  if (!walletUnlock) {
-    throw errors.walletLocked()
   }
 
   console.log(payload)
@@ -834,25 +835,27 @@ InpageHttpProvider.prototype.sendAsync = function (payload, callback) {
 
     case 'core_accounts':
       console.log('inpage: core_accounts:')
-  
-      window.postMessage({
-        "target": "contentscript",
-        "data":{"payload": payload},
-        "method": "inpage_accounts",
-      }, "*");
+      var result = {id: id, jsonrpc: jsonrpc, result: [selectedAccount]}
+      callback(null, result)
+      // window.postMessage({
+      //   "target": "contentscript",
+      //   "data":{"payload": payload},
+      //   "method": "inpage_accounts",
+      // }, "*");
 
       // listen message from contentscript
       window.addEventListener('message', function(e) {
         // e.detail contains the transferred data (can
-        if (e.data.src ==="content" && e.data.type === "get_accounts_response" && !!e.data.data) {
-          console.log('inpage: message get_accounts_response')
-          if (!!e.data.data.confirmGetAccounts) {
-            var result = {id: id, jsonrpc: jsonrpc, result: [selectedAccount]}
-            callback(null, result)
-          } else {
-            callback(errors.authorizationError("user denied."))
-          }
-        } else if (e.data.src ==="content" && e.data.type === "web_account_change" && !!e.data.data){
+        // if (e.data.src ==="content" && e.data.type === "get_accounts_response" && !!e.data.data) {
+        //   console.log('inpage: message get_accounts_response')
+        //   if (!!e.data.data.confirmGetAccounts) {
+        //     var result = {id: id, jsonrpc: jsonrpc, result: [selectedAccount]}
+        //     callback(null, result)
+        //   } else {
+        //     callback(errors.authorizationError("user denied."))
+        //   }
+        // } else 
+        if (e.data.src ==="content" && e.data.type === "web_account_change" && !!e.data.data){
           console.log('inpage: message web_account_change')
           var result = {id: id, jsonrpc: jsonrpc, result: [selectedAccount]}
           callback(null, result)
@@ -865,7 +868,27 @@ InpageHttpProvider.prototype.sendAsync = function (payload, callback) {
        console.log('inpage: core_coinbase')
        var result = {id: id, jsonrpc: jsonrpc, result: selectedAccount}
        callback(null, result)
-       return
+
+        // listen message from contentscript
+      window.addEventListener('message', function(e) {
+        // e.detail contains the transferred data (can
+        // if (e.data.src ==="content" && e.data.type === "get_accounts_response" && !!e.data.data) {
+        //   console.log('inpage: message get_accounts_response')
+        //   if (!!e.data.data.confirmGetAccounts) {
+        //     var result = {id: id, jsonrpc: jsonrpc, result: [selectedAccount]}
+        //     callback(null, result)
+        //   } else {
+        //     callback(errors.authorizationError("user denied."))
+        //   }
+        // } else 
+        if (e.data.src ==="content" && e.data.type === "web_account_change" && !!e.data.data){
+          console.log('inpage: message web_account_change')
+          var result = {id: id, jsonrpc: jsonrpc, result: selectedAccount}
+          callback(null, result)
+        }
+      })
+
+      return
   }
 
   var request = this.prepareRequest(true);
@@ -953,31 +976,42 @@ window.vnt = new Vnt(new InpageHttpProvider(curProviderUrl))
 var authUrl = []
 window.vnt.requesetAuthorization = function(callback) {
 
-    const url = window.location.host
+    if (!walletUnlock) {
 
-    window.postMessage({
-      "target": "contentscript",
-      "data": {"url": url},
-      "method": "inpage_requesetAuthorization",
-    }, "*");
+      window.postMessage({
+        "target": "contentscript",
+        "data": {"url": url},
+        "method": "inpage_login",
+      }, "*");
 
-    window.addEventListener('message', function(e) {
-      //  e.data.data contain the passed data
-      if (e.data.src ==="content" && e.data.type === "requesetAuthorization_response" && !!e.data.data) {
-        console.log('inpage: message requesetAuthorization_response')
-        if (!!e.data.data.confirmAuthorization) {
-          if ( (e.data.data.url == window.location.host) && (authUrl.indexOf(e.data.data.url) == -1)) {
-            authUrl.push(e.data.data.url)
-            localStorage.setItem('authUrl', authUrl.join(','))
+    } else {
+
+      const url = window.location.host
+
+      window.postMessage({
+        "target": "contentscript",
+        "data": {"url": url},
+        "method": "inpage_requesetAuthorization",
+      }, "*");
+
+      window.addEventListener('message', function(e) {
+        //  e.data.data contain the passed data
+        if (e.data.src ==="content" && e.data.type === "requesetAuthorization_response" && !!e.data.data) {
+          console.log('inpage: message requesetAuthorization_response')
+          if (!!e.data.data.confirmAuthorization) {
+            if ( (e.data.data.url == window.location.host) && (authUrl.indexOf(e.data.data.url) == -1)) {
+              authUrl.push(e.data.data.url)
+              localStorage.setItem('authUrl', authUrl.join(','))
+            }
+            var result = {id: id, jsonrpc: jsonrpc, result: e.data.data.confirmAuthorization}
+            callback(null, result)
+          } else {
+            callback(errors.authorizationError('user denied.'))
           }
-          var result = {id: id, jsonrpc: jsonrpc, result: e.data.data.confirmAuthorization}
-          callback(null, result)
-        } else {
-          callback(errors.authorizationError('user denied.'))
         }
-      }
-    })
+      })
 
+    }
 
 }
 
