@@ -13,9 +13,13 @@ const Header = function(props) {
   }
   return (
     <CommonPadding className={`${styles.header} ${styles[theme]}`}>
-      <span className={styles.back} onClick={handleBack}>
-        {hasBack ? <img src={imgs.back} alt="back" /> : ''}
-      </span>
+      {hasBack ? (
+        <span className={styles.back} onClick={handleBack}>
+          <img src={imgs.back} alt="back" />
+        </span>
+      ) : (
+        ''
+      )}
       <span className={styles.title}>
         {typeof title === 'function' ? title() : <h1>{title}</h1>}
       </span>

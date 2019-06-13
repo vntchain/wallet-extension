@@ -9,7 +9,7 @@ import styles from './About.scss'
 const About = function() {
   return (
     <div className={styles.about}>
-      <Header title={'关于我们'} />
+      <Header title={'关于我们'} hasBack={true} />
       <div className={styles.container}>
         <CommonPadding>
           <div className={styles.block}>

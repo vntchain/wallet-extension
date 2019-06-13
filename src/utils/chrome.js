@@ -96,6 +96,10 @@ export const getAddr = function*() {
 export const getAccounts = function*() {
   return yield createGetPromise('account_info')
 }
+//获取钱包登录信息
+export const getIsWalletUnlock = function*() {
+  return yield createGetPromise('isWalletUnlock')
+}
 
 //同步地址
 export const setAddr = function*(payload) {

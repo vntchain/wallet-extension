@@ -13,6 +13,7 @@ const WordForm = Form.create({ name: 'word' })(props => {
     form.validateFields((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values) //eslint-disable-line
+        console.log(word, values.word) //eslint-disable-line
         if (word === values.word) {
           onSubmit()
         } else {

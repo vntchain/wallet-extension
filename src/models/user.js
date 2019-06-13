@@ -7,6 +7,7 @@ import {
   getAddr,
   getAccounts,
   getAccountBalance,
+  getIsWalletUnlock,
   setAddr
 } from '../utils/chrome'
 import { message } from 'antd'
@@ -15,6 +16,7 @@ const { put } = effects
 export default {
   state: {
     isAuth: false,
+    isWalletUnlock: false,
     addr: '',
     accountBalance: 0,
     accounts: [],
@@ -137,6 +139,18 @@ export default {
       } catch (e) {
         message.error(e.message)
         console.log('getAccountBalance' + e) //eslint-disable-line
+      }
+    }),
+    getIsWalletUnlock: takeLatest(function*() {
+      try {
+        const data = yield getIsWalletUnlock()
+        yield put({
+          type: 'user/setIsWalletUnlock',
+          payload: data
+        })
+      } catch (e) {
+        message.error(e.message)
+        console.log('getIsWalletUnlock' + e) //eslint-disable-line
       }
     })
   })

@@ -4,7 +4,7 @@ import paths from '../utils/paths'
 import { createWallet, restoreFromSeed } from '../utils/chrome'
 import { message } from 'antd'
 
-const { put, select } = effects
+const { put } = effects
 export default {
   state: {
     isCreateDisable: false,
@@ -45,20 +45,14 @@ export default {
         })
       }
     }),
-    confirmWord: takeLatest(function*({ payload }) {
+    confirmWord: takeLatest(function*() {
       //todo： 确认逻辑，确认后真正创建
       try {
         yield put({
           type: 'wallet/setIsConfirmDisable',
           payload: true
         })
-        const word = yield select(state => state.wallet.word)
-        if (word === payload) {
-          message.success('助记词确认成功！')
-          yield put(push(paths.home))
-        } else {
-          message.error('抱歉！助记词错误！')
-        }
+        yield put(push(paths.home))
       } catch (e) {
         console.log(e) //eslint-disable-line
       } finally {
