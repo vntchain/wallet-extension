@@ -19,7 +19,7 @@ export default {
     isDownload: false,
     isImportLoading: false
   },
-  reducer: {},
+  reducers: {},
   effects: ({ takeLatest }) => ({
     getPrivateKey: takeLatest(function*({ payload }) {
       yield put({

@@ -14,7 +14,7 @@ import { message } from 'antd'
 const { put } = effects
 export default {
   state: {
-    isAuth: true,
+    isAuth: false,
     addr: '',
     accountBalance: 0,
     accounts: [],
@@ -22,8 +22,9 @@ export default {
     currTrade: [],
     isLoginDisable: false
   },
-  reducer: {
+  reducers: {
     filterCurrentTrade: (state, { payload }) => {
+      console.log(state) //eslint-disable-line
       const addr = payload || state.addr
       const currTrade = state.trades[addr] || []
       return {

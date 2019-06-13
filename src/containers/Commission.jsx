@@ -6,20 +6,22 @@ import CommonPadding from '../component/layout/CommonPadding'
 import Header from '../component/layout/Header'
 import BaseLabel from '../component/layout/BaseLabel'
 import BaseTip from '../component/layout/BaseTip'
-import { calCommission } from '../utils/helper'
+import { calCommission, calBigMulti } from '../utils/helper'
 import paths from '../utils/paths'
 import styles from './Commission.scss'
 
 const Send = function(props) {
   const {
     price: { vntToCny },
-    send: { gasPrice, gasLimit, price, gasPriceDefault, gasLimitDefault },
+    send: {
+      tx: { gasPrice, gas, value },
+      gasPriceDefault,
+      gasLimitDefault
+    },
     dispatch,
     history
   } = props
-  const [commission, setCommission] = useState(
-    calCommission(gasPrice, gasLimit)
-  )
+  const [commission, setCommission] = useState(calCommission(gasPrice, gas))
   const [state, innerDispatch] = useReducer(
     (state, action) => {
       switch (action.type) {
@@ -31,7 +33,7 @@ const Send = function(props) {
         case 'setGasLimit':
           return {
             ...state,
-            gasLimit: action.payload
+            gas: action.payload
           }
         case 'merge':
           return {
@@ -44,16 +46,18 @@ const Send = function(props) {
     },
     {
       gasPrice,
-      gasLimit
+      gas
     }
   )
   const handleSubmit = () => {
-    const { gasPrice, gasLimit } = state
+    const { gasPrice, gas } = state
     dispatch({
       type: 'send/merge',
       payload: {
-        gasPrice,
-        gasLimit
+        tx: {
+          gasPrice,
+          gas
+        }
       }
     })
     history.push(paths.send)
@@ -63,7 +67,7 @@ const Send = function(props) {
       type: 'merge',
       payload: {
         gasPrice: gasPriceDefault,
-        gasLimit: gasLimitDefault
+        gas: gasLimitDefault
       }
     })
   }
@@ -73,7 +77,7 @@ const Send = function(props) {
       type: 'setGasPrice',
       payload: val
     })
-    setCommission(calCommission(val, gasLimit))
+    setCommission(calCommission(val, gas))
   }
   const handleLimitChange = val => {
     innerDispatch({
@@ -92,8 +96,9 @@ const Send = function(props) {
               <BaseLabel label={'手续费：'} />
               <span>
                 <div className={styles.value}>{`${commission} VNT`}</div>
-                <div className={styles.info}>{`￥ ${commission *
-                  vntToCny}`}</div>
+                <div className={styles.info}>
+                  {`￥ ${calBigMulti(commission, vntToCny)}`}
+                </div>
               </span>
             </div>
             <a
@@ -118,7 +123,7 @@ const Send = function(props) {
                 <label>Gas Limit</label>
                 <Input
                   size="large"
-                  value={state.gasLimit}
+                  value={state.gas}
                   onChange={e => handleLimitChange(e.target.value)}
                 />
               </div>
@@ -135,7 +140,7 @@ const Send = function(props) {
           <div className={`${styles.blocks} ${styles.total}`}>
             <div className={styles.outlineFlex}>
               <span className={styles.info}>转账数量</span>
-              <span className={styles.value}>{price}</span>
+              <span className={styles.value}>{value}</span>
             </div>
             <div className={styles.outlineFlex}>
               <span className={styles.info}>手续费</span>
@@ -143,7 +148,7 @@ const Send = function(props) {
             </div>
             <div className={styles.outlineFlex}>
               <span className={styles.info}>总计</span>
-              <span className={styles.value}>{price + commission}</span>
+              <span className={styles.value}>{value + commission}</span>
             </div>
           </div>
           <Button

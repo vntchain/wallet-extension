@@ -6,7 +6,7 @@ import Header from '../component/layout/Header'
 import CommonPadding from '../component/layout/CommonPadding'
 import UserDetail from './home/UserDetail'
 import ExportKeystone from './home/ExportKeystone'
-import { splitLongStr } from '../utils/helper'
+import { splitLongStr, calBigMulti } from '../utils/helper'
 import imgs from '../utils/imgs'
 import paths from '../utils/paths'
 
@@ -48,8 +48,9 @@ const Home = function(props) {
             </a>
           </div>
           <div className={styles.vnt}>{`${accountBalance} VNT`}</div>
-          <div className={styles.currency}>{`￥ ${accountBalance *
-            vntToCny}`}</div>
+          <div className={styles.currency}>
+            {`￥ ${calBigMulti(accountBalance, vntToCny)}`}
+          </div>
           <div className={styles.tx}>
             <a
               href="javascript:"
@@ -82,9 +83,12 @@ const Home = function(props) {
                     <span className={styles.vnt}>{`${item.value} VNT`}</span>
                   </li>
                   <li>
-                    <span className={styles.code}>{splitLongStr(item.id)}</span>
-                    <span className={styles.currency}>{`￥ ${item.value *
-                      vntToCny}`}</span>
+                    <Link to={`/detail/${item.id}`} className={styles.code}>
+                      {splitLongStr(item.id)}
+                    </Link>
+                    <span className={styles.currency}>
+                      {`￥ ${calBigMulti(item.value, vntToCny)}`}
+                    </span>
                   </li>
                 </ul>
               ))
