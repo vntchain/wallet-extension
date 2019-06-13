@@ -18,7 +18,7 @@ const createGetPromise = function(getName) {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(getName, function(obj) {
       const result = obj[getName]
-      if (result) resolve(result)
+      if (result !== 'undefined') resolve(result)
       else reject({ message: '网络错误' })
     })
   })
@@ -86,6 +86,10 @@ export const getGasPrice = function*(payload) {
 //获取gaslimit
 export const getEstimateGas = function*(payload) {
   return yield createFuncPromise('getEstimateGas', payload)
+}
+//创建账户
+export const addNewAccount = function*(payload) {
+  return yield createFuncPromise('addNewAccount', payload)
 }
 
 //获取地址信息

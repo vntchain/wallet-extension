@@ -29,9 +29,14 @@ const Setting = function(props) {
       type: 'user/logout'
     })
   }
+  const createNewAddr = () => {
+    dispatch({
+      type: 'user/addNewAccount'
+    })
+  }
   const LinkList = [
     {
-      创建新地址: () => linkTo(paths.create),
+      创建新地址: () => createNewAddr(),
       导入地址: () => linkTo(paths.importKeystone)
     },
     {
@@ -40,7 +45,7 @@ const Setting = function(props) {
     },
     {
       查看助记词: () => linkTo(paths.word),
-      登出钱包: loginOut
+      登出钱包: () => loginOut()
     }
   ]
   const handleChangeEnv = () => {}

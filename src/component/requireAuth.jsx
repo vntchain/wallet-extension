@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 
@@ -15,12 +15,14 @@ function requireAuth(WrappedComponent) {
     const { isAuth, isWalletUnlock, dispatch } = props
     const handleLocateHome = () => {
       dispatch(push(paths['login']))
+      return null
     }
-    return isAuth || isWalletUnlock ? (
-      <WrappedComponent />
-    ) : (
-      <Fragment>{handleLocateHome}</Fragment>
-    )
+    useEffect(() => {
+      if (!isAuth && !isWalletUnlock) {
+        handleLocateHome()
+      }
+    }, [isAuth, isWalletUnlock])
+    return isAuth || isWalletUnlock ? <WrappedComponent /> : null
   })
 }
 

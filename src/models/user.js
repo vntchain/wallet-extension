@@ -8,7 +8,8 @@ import {
   getAccounts,
   getAccountBalance,
   getIsWalletUnlock,
-  setAddr
+  setAddr,
+  addNewAccount
 } from '../utils/chrome'
 import { message } from 'antd'
 
@@ -147,6 +148,18 @@ export default {
         yield put({
           type: 'user/setIsWalletUnlock',
           payload: data
+        })
+      } catch (e) {
+        message.error(e.message)
+        console.log('getIsWalletUnlock' + e) //eslint-disable-line
+      }
+    }),
+    addNewAccount: takeLatest(function*() {
+      try {
+        const addr = yield addNewAccount()
+        yield put({
+          type: 'user/setUserAddr',
+          payload: addr
         })
       } catch (e) {
         message.error(e.message)
