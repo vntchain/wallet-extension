@@ -21,11 +21,14 @@ import Law from './Law'
 const App = function(props) {
   const { dispatch } = props
   useEffect(() => {
-    //获取是否有登录状态
+    //获取主网环境
     dispatch({
-      type: 'user/getIsWalletUnlock'
+      type: 'user/getProviderUrl'
     })
-    console.log('search', window.location.search) //eslint-disable-line
+    //获取地址-已登录状态初始化
+    dispatch({
+      type: 'user/getAddr'
+    })
   }, [])
   return (
     <Switch>

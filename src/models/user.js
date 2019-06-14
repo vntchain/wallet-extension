@@ -7,7 +7,7 @@ import {
   getAddr,
   getAccounts,
   getAccountBalance,
-  getIsWalletUnlock,
+  getProviderUrl,
   setAddr,
   addNewAccount
 } from '../utils/chrome'
@@ -17,7 +17,7 @@ const { put } = effects
 export default {
   state: {
     isAuth: false,
-    isWalletUnlock: false,
+    providerUrl: '',
     addr: '',
     accountBalance: 0,
     accounts: [],
@@ -70,6 +70,7 @@ export default {
           type: 'user/setIsAuth',
           payload: false
         })
+        yield put(push(paths.login))
       } catch (e) {
         message.error(e.message)
         console.log(e) //eslint-disable-line
@@ -142,16 +143,16 @@ export default {
         console.log('getAccountBalance' + e) //eslint-disable-line
       }
     }),
-    getIsWalletUnlock: takeLatest(function*() {
+    getProviderUrl: takeLatest(function*() {
       try {
-        const data = yield getIsWalletUnlock()
+        const data = yield getProviderUrl()
         yield put({
-          type: 'user/setIsWalletUnlock',
+          type: 'user/setProviderUrl',
           payload: data
         })
       } catch (e) {
         message.error(e.message)
-        console.log('getIsWalletUnlock' + e) //eslint-disable-line
+        console.log('getProviderUrl' + e) //eslint-disable-line
       }
     }),
     addNewAccount: takeLatest(function*() {
