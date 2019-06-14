@@ -1097,7 +1097,7 @@ window.onload = function() {
   }
 
   if (!!localStorage.getItem('walletUnlock')) {
-    walletLocked = localStorage.getItem('walletUnlock')
+    walletUnlock = localStorage.getItem('walletUnlock')
   }
 
 }
