@@ -51410,6 +51410,10 @@ window.logout = async function logout() {
     updateState()
     await extension_wallet.setLocked()
     delete wallet_passwd
+
+    chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
+        chrome.tabs.sendMessage(tabArray[0].id, {logout: true});
+    });
 }
 
 
@@ -51437,6 +51441,13 @@ window.createWallet = async function createWallet(obj) {
 
     var keyring = await getWalletKeyring('HD Key Tree')
     return Promise.resolve(keyring[0].mnemonic)
+}
+
+/**
+ * clear keyring for not create
+ */
+window.clearKeyrings = function clearKeyrings() {
+    extension_wallet.clearKeyrings()
 }
 
 /**
@@ -51556,7 +51567,7 @@ function getWalletKeyring(type) {
 window.addNewAccount = async function addNewAccount() {
     
     var account_keyring = await getWalletKeyring('HD Key Tree')
-    await extension_wallet.addNewAccount(account_keyring)
+    await extension_wallet.addNewAccount(account_keyring[0])
 
     var addrs = await extension_wallet.getAccounts()
     selectedAddr = addrs[addrs.length - 1]
@@ -52176,6 +52187,9 @@ chrome.runtime.onConnect.addListener(function(port) {
                 console.log("background: receive inpage request authorization")
                 console.log(msg) 
 
+                var url = chrome.extension.getURL('index.html')
+
+
                 // create confirm_get_accounts popup window
                 // chrome.rutime.sendMessage({type: "requesetAuthorization", url: msg.data.data.url, addr: selectedAddr})
                 // createPopup("notification.html", function(window){
@@ -52183,9 +52197,13 @@ chrome.runtime.onConnect.addListener(function(port) {
             } 
             else if (msg.data.method === "inpage_login") {
 
-                var url = chrome.extension.getURL('index.html/login')
+                // var url = chrome.extension.getURL('index.html')
+                var url = chrome.extension.getURL('index.html?redirect=about')
                 createPopup(url, function(window){
                 })
+
+                // window.postMessage({target: "popup_inpage"})
+                // chrome.runtime.sendMessage({type:"inpage_requesetAuthorization", route: "/auth", url: "test"})
             }
 
         } else if (msg.src === 'popup') { // from popup
