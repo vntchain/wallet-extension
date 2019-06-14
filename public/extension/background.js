@@ -52233,33 +52233,20 @@ chrome.runtime.onConnect.addListener(function(port) {
             if (msg.data.type === "confirm_send_trx") {
 
                 if (!!msg.data.data.confirmSendTrx) {
-                    chrome.storage.sync.get('selectedAccount', function(item){
-                        var addr = item.selectedAccount
-        
-                        // toDo: 
-                        // get trx from confirm_send_trx message
-                        // check some parameter validation
-                        // chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
-                        //     chrome.tabs.sendMessage(tabArray[0].id, {confirmSendTrx: false, trxid: ""});
-                        // });
-                        // account_store value
-                        var tx = new Tx(request.payload.params[0])
-                        var signedtx = signTransaction(tx, addr)
-                        var hash = signedtx.hash(true)
-                        var serializedTx = signedtx.serialize()
-                        var payload = {jsonrpc: "2.0", id: 1, method: "core_sendRawTransaction", params:[]}
-                        var rawTransactionParam = '0x' + serializedTx.toString('hex');
-                        payload.params[0] = rawTransactionParam;
-                        provider.send(payload)
-        
-                        // in-memory store account trx info
-                        var date = new Date()
-                        account_store.updateState({addr: [{time: date.toLocaleString(), id: hash, value: value}]})
-        
+
+                    var tx = msg.data.data.trx
+                    var addr = selectedAddr
+                    
+                    signThenSendTransaction({addr: addr, tx: tx}).then((trx_id) => {
                         chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
-                            chrome.tabs.sendMessage(tabArray[0].id, {confirmSendTrx: true, trxid: hash});
+                            chrome.tabs.sendMessage(tabArray[0].id, {confirmSendTrx: false, trxid: trx_id});
+                        });
+                    }).catch((error) => {
+                        chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
+                            chrome.tabs.sendMessage(tabArray[0].id, {confirmSendTrx: false, error: error});
                         });
                     })
+        
 
                 } else {
                     chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
