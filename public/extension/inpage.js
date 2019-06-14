@@ -1078,6 +1078,14 @@ window.addEventListener('message', function(e) {
     console.log('inpage: message change_walletUnlock')
     walletUnlock = e.data.data.isWalletUnlock 
     localStorage.setItem('walletUnlock', e.data.data.isWalletUnlock)
+
+   
+    window.postMessage({
+      "src": "inpage",
+      "type": "web_logout",
+      "data": {logout: true}
+    }, "*")
+    
   }
 })
 
