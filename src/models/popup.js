@@ -5,7 +5,7 @@ import { message } from 'antd'
 const { put } = effects
 export default {
   state: {
-    popup: 1
+    popup: {}
   },
   reducers: {},
   effects: ({ takeLatest }) => ({
@@ -13,7 +13,7 @@ export default {
       try {
         const data = yield popup()
         yield put({
-          type: 'price/setPopup',
+          type: 'popup/setPopup',
           payload: data
         })
       } catch (e) {

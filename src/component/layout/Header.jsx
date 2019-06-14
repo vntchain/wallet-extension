@@ -23,7 +23,7 @@ const Header = function(props) {
       <span className={styles.title}>
         {typeof title === 'function' ? title() : <h1>{title}</h1>}
       </span>
-      <span className={styles.settign}>{hasSetting ? <Setting /> : ''}</span>
+      <span className={styles.setting}>{hasSetting ? <Setting /> : ''}</span>
     </CommonPadding>
   )
 }

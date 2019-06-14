@@ -143,6 +143,7 @@ export default {
         console.log('getAccountBalance' + e) //eslint-disable-line
       }
     }),
+    // setProviderUrl: {},
     getProviderUrl: takeLatest(function*() {
       try {
         const data = yield getProviderUrl()

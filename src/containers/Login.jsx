@@ -2,14 +2,16 @@ import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Button, InputItem } from 'antd-mobile'
-import { Form } from 'antd'
+import { Form, Select } from 'antd'
 import styles from './Login.scss'
 import Header from '../component/layout/Header'
 import CommonPadding from '../component/layout/CommonPadding'
 import BaseLabel from '../component/layout/BaseLabel'
 import paths from '../utils/paths'
 import imgs from '../utils/imgs'
+import { netList } from '../constants/net'
 const FormItem = Form.Item
+const Option = Select.Option
 
 const LoginForm = Form.create({ name: 'login' })(props => {
   const { form, onSubmit, isLoginDisable } = props
@@ -44,7 +46,7 @@ const LoginForm = Form.create({ name: 'login' })(props => {
 const Login = function(props) {
   const {
     dispatch,
-    user: { isLoginDisable }
+    user: { isLoginDisable, providerUrl }
   } = props
   const handleLogin = data => {
     dispatch({
@@ -52,9 +54,28 @@ const Login = function(props) {
       payload: data
     })
   }
+  const handleNetChange = () => {}
+  const renderTitle = () => {
+    return (
+      <Select
+        onChange={handleNetChange}
+        suffixIcon={<img src={imgs.suffix} alt="" />}
+        value={providerUrl}
+      >
+        {Object.keys(netList).map(key => {
+          const item = netList[key]
+          return (
+            <Option value={item.url} key={key}>
+              {item.label}
+            </Option>
+          )
+        })}
+      </Select>
+    )
+  }
   return (
     <Fragment>
-      <Header title={'主网'} theme={'trans'} />
+      <Header title={renderTitle} theme={'trans'} />
       <div className={styles.banner} />
       <div className={styles.container}>
         <CommonPadding>
