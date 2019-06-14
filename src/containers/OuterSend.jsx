@@ -10,36 +10,31 @@ import styles from './OuterSend.scss'
 
 const OuterSend = function(props) {
   const {
+    dispatch,
     price: { vntToCny = 1 },
     send: {
       tx: { gasPrice, gas }
-    }
+    },
+    popup: { popup: trx }
   } = props
+  const port = global.chrome.runtime.connect({ name: 'popup' })
   const [tx, setTx] = useState(null)
-  const handleCancel = () => {}
-  const handleOk = () => {}
+  const handleSend = status => {
+    port.postMessage({
+      src: 'popup',
+      dst: 'background',
+      type: 'confirm_send_trx',
+      data: { confirmSendTrx: status, trx: tx }
+    })
+  }
   useEffect(() => {
-    // global.chrome.runtime.onMessage.addListener(
-    //   function(request, sender, sendResponse) {
-    //     if(request.type === 'requesetAuthorization') {
-    //     }
-    //   }
-    // )
-    setTx(
-      Object.assign(
-        {
-          from: '0x111111111111111111111',
-          balance: '111',
-          value: '111',
-          to: '0x111111111111111111111',
-          gasPrice: '50',
-          gas: '21000',
-          remarks: '111'
-        },
-        { gasPrice, gas }
-      )
-    )
+    dispatch({
+      type: 'popup/getPopup'
+    })
   }, [])
+  useEffect(() => {
+    setTx(Object.assign(trx, { gasPrice, gas }))
+  }, [trx])
   return (
     <Fragment>
       <Header title={'发送VNT（VNT主网）'} />
@@ -93,8 +88,8 @@ const OuterSend = function(props) {
               <div className={styles.remarks}>{tx.remarks}</div>
             </div>
             <BaseModalFooter
-              onCancel={handleCancel}
-              onOk={handleOk}
+              onCancel={handleSend(false)}
+              onOk={handleSend(true)}
               cancelText="拒绝"
               okText="同意"
             />

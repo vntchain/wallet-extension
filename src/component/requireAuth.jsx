@@ -15,10 +15,6 @@ function requireAuth(WrappedComponent) {
     const { isAuth, dispatch } = props
     const [isWalletUnlock, setIsWalletUnlock] = useState(false)
     useEffect(() => {
-      // console.log(isAuth, isWalletUnlock) //eslint-disable-line
-      // if (!isAuth && !isWalletUnlock) {
-      //   dispatch(push(paths['login']))
-      // }
       if (!isAuth) {
         global.chrome.storage.sync.get('isWalletUnlock', function(obj) {
           if (obj['isWalletUnlock']) {

@@ -104,6 +104,10 @@ export const getAccounts = function*() {
 export const getProviderUrl = function*() {
   return yield createGetPromise('providerUrl')
 }
+//获取钱包登录信息
+export const popup = function*() {
+  return yield createGetPromise('popup')
+}
 
 //同步地址
 export const setAddr = function*(payload) {

@@ -1,20 +1,31 @@
 import React, { Fragment, useEffect } from 'react'
+import { connect } from 'react-redux'
 import Header from '../component/layout/Header'
 import CommonPadding from '../component/layout/CommonPadding'
 import BaseTip from '../component/layout/BaseTip'
 import BaseModalFooter from '../component/layout/BaseModalFooter'
+import { splitLongStr } from '../utils/helper'
 import styles from './OuterAuth.scss'
 
-const OuterAuth = function() {
-  const handleCancel = () => {}
-  const handleOk = () => {}
+const OuterAuth = function(props) {
+  const {
+    dispatch,
+    user: { addr },
+    popup: { popup }
+  } = props
+  const port = global.chrome.runtime.connect({ name: 'popup' })
+  const handleAuth = status => {
+    port.postMessage({
+      src: 'popup',
+      dst: 'background',
+      type: 'confirm_request_authorization',
+      data: { confirmAuthorization: status }
+    })
+  }
   useEffect(() => {
-    // global.chrome.runtime.onMessage.addListener(
-    //   function(request, sender, sendResponse) {
-    //     if(request.type === 'requesetAuthorization') {
-    //     }
-    //   }
-    // )
+    dispatch({
+      type: 'popup/getPopup'
+    })
   }, [])
   return (
     <Fragment>
@@ -25,11 +36,11 @@ const OuterAuth = function() {
           <div className={styles.info}>
             <div className={styles['info-item']}>
               <label>请求来源:</label>
-              <span>{'111'}</span>
+              <span>{popup.url}</span>
             </div>
             <div className={styles['info-item']}>
               <label>您的地址:</label>
-              <span>{'111'}</span>
+              <span>{splitLongStr(addr)}</span>
             </div>
           </div>
           <BaseTip
@@ -39,8 +50,8 @@ const OuterAuth = function() {
             ]}
           />
           <BaseModalFooter
-            onCancel={handleCancel}
-            onOk={handleOk}
+            onCancel={handleAuth(false)}
+            onOk={handleAuth(true)}
             cancelText="拒绝"
             okText="同意"
           />
@@ -50,4 +61,4 @@ const OuterAuth = function() {
   )
 }
 
-export default OuterAuth
+export default connect(({ user, popup }) => ({ user, popup }))(OuterAuth)
