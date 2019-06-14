@@ -5,6 +5,6 @@ export const netList = {
   },
   test: {
     label: '测试网',
-    url: 'test'
+    url: 'http://47.104.173.117:8880'
   }
 }

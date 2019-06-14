@@ -59,7 +59,7 @@ const Login = function(props) {
     return (
       <Select
         onChange={handleNetChange}
-        suffixIcon={imgs.suffix}
+        suffixIcon={<img src={imgs.suffix} alt="" />}
         value={providerUrl}
       >
         {Object.keys(netList).map(key => {
