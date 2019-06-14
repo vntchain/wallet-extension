@@ -7,6 +7,7 @@ import set from '@images/set.svg'
 import qrcode from '@images/qrcode.png'
 import warning from '@images/warning.png'
 import logo from '@images/logo.png'
+import suffix from '@images/suffix.svg'
 
 export default {
   back,
@@ -17,5 +18,6 @@ export default {
   set,
   qrcode,
   warning,
-  logo
+  logo,
+  suffix
 }
