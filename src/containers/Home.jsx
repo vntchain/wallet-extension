@@ -25,9 +25,6 @@ const Home = function(props) {
     dispatch({
       type: 'price/getVntToCny'
     })
-    return () => {
-      console.log('leave home page') //eslint-disable-line
-    }
   }, [])
   return (
     <Fragment>
