@@ -51374,6 +51374,8 @@ var wallet_passwd = ''
  */
 var account_info = {accounts:[], trxs:{}}
 
+var popup = {url: "", trx: {}}
+
 
 /*********************************************/
 /************  account management  ***********/
@@ -51440,9 +51442,13 @@ window.createWallet = async function createWallet(obj) {
 }
 
 /**
+ *  
+ */
+
+/**
  * clear keyring for not create
  */
-window.clearKeyrings = function clearKeyrings() {
+function clearKeyrings() {
     extension_wallet.clearKeyrings()
     resetState()
 }
@@ -52169,6 +52175,14 @@ chrome.runtime.onConnect.addListener(function(port) {
                 console.log("background: receive inpage sendTransaction")
                 console.log(msg) 
 
+                popup.trx = msg.data.data
+                chrome.storage.sync.set({'popup': popup}, function(){
+                    console.log('updateState: update popup info')
+                })
+               
+                var url = chrome.extension.getURL('index.html/#/outer-send')
+                createPopup(url, function(window){
+                })
                 // create confirm_send_trx popup window
                 // chrome.rutime.sendMessage({type: "sendTransaction", trx: msg.data.data})
                 // createPopup("notification.html", function(window){
@@ -52191,9 +52205,14 @@ chrome.runtime.onConnect.addListener(function(port) {
                 console.log("background: receive inpage request authorization")
                 console.log(msg) 
 
-                var url = chrome.extension.getURL('index.html')
-
-
+                popup.url = msg.data.data.url
+                chrome.storage.sync.set({'popup': popup}, function(){
+                    console.log('updateState: update popup info')
+                })
+               
+                var url = chrome.extension.getURL('index.html/#/auth')
+                createPopup(url, function(window){
+                })
                 // create confirm_get_accounts popup window
                 // chrome.rutime.sendMessage({type: "requesetAuthorization", url: msg.data.data.url, addr: selectedAddr})
                 // createPopup("notification.html", function(window){
@@ -52201,8 +52220,8 @@ chrome.runtime.onConnect.addListener(function(port) {
             } 
             else if (msg.data.method === "inpage_login") {
 
-                // var url = chrome.extension.getURL('index.html')
-                var url = chrome.extension.getURL('index.html?redirect=about')
+
+                var url = chrome.extension.getURL('index.html')
                 createPopup(url, function(window){
                 })
 
