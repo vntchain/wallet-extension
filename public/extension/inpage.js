@@ -974,8 +974,10 @@ window.vnt = new Vnt(new InpageHttpProvider(curProviderUrl))
 
 
 var authUrl = []
-window.vnt.requesetAuthorization = function(callback) {
+window.vnt.requestAuthorization = function(callback) {
 
+    const url = window.location.host
+    
     if (!walletUnlock) {
 
       window.postMessage({
@@ -985,8 +987,6 @@ window.vnt.requesetAuthorization = function(callback) {
       }, "*");
 
     } else {
-
-      const url = window.location.host
 
       window.postMessage({
         "target": "contentscript",
