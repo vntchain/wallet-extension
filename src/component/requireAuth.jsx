@@ -21,7 +21,6 @@ function requireAuth(WrappedComponent) {
       // }
       if (!isAuth) {
         global.chrome.storage.sync.get('isWalletUnlock', function(obj) {
-          console.log(WrappedComponent) //eslint-disable-line
           if (obj['isWalletUnlock']) {
             setIsWalletUnlock(true)
           } else {

@@ -8,14 +8,15 @@ import {
   ConnectedRouter,
   routerMiddleware as RouterMiddleware
 } from 'react-router-redux'
-import createHistory from 'history/createBrowserHistory'
-// import registerServiceWorker from 'registerServiceWorker'
+// import createHistory from 'history/createBrowserHistory'
+import { createHashHistory } from 'history'
 
 import App from './containers/App'
 import 'normalize.css'
 import './index.scss'
 
-const history = createHistory()
+// const history = createHistory()
+const history = createHashHistory()
 const routerMiddleware = RouterMiddleware(history)
 
 let mode = process.env.NODE_ENV // eslint-disable-line no-undef
@@ -29,17 +30,17 @@ const store = new Sirius({
   middleware
 }).store()
 
-const { chrome } = global
-
-//通信连接
-chrome.runtime.onMessage.addListener(function(request) {
-  console.log('request', request) //eslint-disable-line
-  const { type, router } = request
-  console.log('type & router', type, router) //eslint-disable-line
-  if (type === 'requesetAuthorization') {
-    console.log('requesetAuthorization') //eslint-disable-line
-  }
-})
+// const { chrome } = global
+//
+// //通信连接
+// chrome.runtime.onMessage.addListener(function(request) {
+//   console.log('request', request) //eslint-disable-line
+//   const { type, router } = request
+//   console.log('type & router', type, router) //eslint-disable-line
+//   if (type === 'requesetAuthorization') {
+//     console.log('requesetAuthorization') //eslint-disable-line
+//   }
+// })
 
 ReactDOM.render(
   <Provider store={store}>
