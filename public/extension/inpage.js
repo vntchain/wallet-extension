@@ -855,8 +855,8 @@ InpageHttpProvider.prototype.sendAsync = function (payload, callback) {
         //     callback(errors.authorizationError("user denied."))
         //   }
         // } else 
-        if (e.data.src ==="content" && e.data.type === "web_account_change" && !!e.data.data){
-          console.log('inpage: message web_account_change')
+        if (e.data.src ==="inpage" && e.data.type === "web_core_accounts_change" && !!e.data.data){
+          console.log('inpage: message web_core_accounts_change')
           var result = {id: id, jsonrpc: jsonrpc, result: [selectedAccount]}
           callback(null, result)
         }
@@ -881,8 +881,8 @@ InpageHttpProvider.prototype.sendAsync = function (payload, callback) {
         //     callback(errors.authorizationError("user denied."))
         //   }
         // } else 
-        if (e.data.src ==="content" && e.data.type === "web_account_change" && !!e.data.data){
-          console.log('inpage: message web_account_change')
+        if (e.data.src ==="inpage" && e.data.type === "web_core_coinbase_change" && !!e.data.data){
+          console.log('inpage: message web_core_coinbase_change')
           var result = {id: id, jsonrpc: jsonrpc, result: selectedAccount}
           callback(null, result)
         }
@@ -1003,8 +1003,8 @@ window.vnt.requesetAuthorization = function(callback) {
               authUrl.push(e.data.data.url)
               localStorage.setItem('authUrl', authUrl.join(','))
             }
-            var result = {id: id, jsonrpc: jsonrpc, result: e.data.data.confirmAuthorization}
-            callback(null, result)
+            // var result = {id: id, jsonrpc: jsonrpc, result: e.data.data.confirmAuthorization}
+            callback(null, e.data.data.confirmAuthorization)
           } else {
             callback(errors.authorizationError('user denied.'))
           }
@@ -1015,6 +1015,36 @@ window.vnt.requesetAuthorization = function(callback) {
 
 }
 
+window.vnt.getNetworkUrl = function(callback) {
+
+  callback(null, curProviderUrl)
+
+  window.addEventListener('message', function(e) {
+  
+    if (e.data.src ==="inpage" && e.data.type === "web_network_change" && !!e.data.data){
+      console.log('inpage: message web_account_change')
+      // var result = {id: id, jsonrpc: jsonrpc, result: e.data.data.networkChange}
+      callback(null, e.data.data.networkChange)
+    }
+  })
+
+
+}
+
+
+window.vnt.logout = function(callback) {
+
+  window.addEventListener('message', function(e) {
+  
+    if (e.data.src ==="content" && e.data.type === "web_logout" && !!e.data.data){
+      console.log('inpage: message web_logout')
+      // var result = {id: id, jsonrpc: jsonrpc, result: e.data.data.logout}
+      callback(null, e.data.data.logout)
+    }
+  })
+
+}
+
 window.addEventListener('message', function(e) {
   // e  contains the transferred data 
   if (e.data.src ==="content" && e.data.type === "change_providerUrl" && !!e.data.data) {
@@ -1022,9 +1052,28 @@ window.addEventListener('message', function(e) {
     curProviderUrl = e.data.data.providerUrl || network.testnet
     window.vnt.setProvider(new InpageHttpProvider(curProviderUrl))
 
+    window.postMessage({
+      "src": "inpage",
+      "type": "web_network_change",
+      "data": {networkChange: curProviderUrl}
+    }, "*")
+
   } else if (e.data.src ==="content" && e.data.type === "change_selectedAddr" && !!e.data.data){
     console.log('inpage: message change_selectedAddr')
     selectedAccount = e.data.data.selectedAddr || ''
+
+    window.postMessage({
+      "src": "inpage",
+      "type": "web_core_accounts_change",
+      "data": {selectedAddr: storageChange.newValue}
+    }, "*")
+
+    window.postMessage({
+      "src": "inpage",
+      "type": "web_core_coinbase_change",
+      "data": {selectedAddr: storageChange.newValue}
+    }, "*")
+
   } else if (e.data.src ==="content" && e.data.type === "change_walletUnlock") {
     console.log('inpage: message change_walletUnlock')
     walletUnlock = e.data.data.isWalletUnlock 
