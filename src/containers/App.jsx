@@ -16,26 +16,16 @@ import Commission from './Commission'
 import TxDetail from './TxDetail'
 import OuterAuth from './OuterAuth'
 import OuterSend from './OuterSend'
-
-const { chrome } = global
+import Law from './Law'
 
 const App = function(props) {
-  const { dispatch, push } = props
+  const { dispatch } = props
   useEffect(() => {
     //获取是否有登录状态
     dispatch({
       type: 'user/getIsWalletUnlock'
     })
-    //通信连接
-    chrome.runtime.onMessage.addListener(function(request) {
-      console.log('request', request) //eslint-disable-line
-      const { type, router } = request
-      console.log('type & router', type, router) //eslint-disable-line
-      push(router)
-      if (type === 'requesetAuthorization') {
-        console.log('requesetAuthorization') //eslint-disable-line
-      }
-    })
+    console.log('search', window.location.search) //eslint-disable-line
   }, [])
   return (
     <Switch>
@@ -43,6 +33,7 @@ const App = function(props) {
       <Route exact path={paths.home} component={requireAuth(Home)} />
       <Route exact path={paths.scanWord} component={requireAuth(ScanWord)} />
       <Route exact path={paths.about} component={About} />
+      <Route exact path={paths.law} component={Law} />
       <Route
         exact
         path={paths.importKeystone}

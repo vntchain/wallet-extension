@@ -1,8 +1,10 @@
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { Form, Checkbox, message } from 'antd'
 import { Button, InputItem } from 'antd-mobile'
 import BaseLabel from '../../component/layout/BaseLabel'
+import paths from '../../utils/paths'
 import styles from './Create.scss'
 const FormItem = Form.Item
 
@@ -63,7 +65,7 @@ const CreateForm = function(props) {
           <Checkbox>
             <span>
               我已阅读并同意
-              <a href="javascript:">服务条款</a>
+              <Link to={paths.law}>服务条款</Link>
             </span>
           </Checkbox>
         )}

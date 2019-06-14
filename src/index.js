@@ -29,6 +29,18 @@ const store = new Sirius({
   middleware
 }).store()
 
+const { chrome } = global
+
+//通信连接
+chrome.runtime.onMessage.addListener(function(request) {
+  console.log('request', request) //eslint-disable-line
+  const { type, router } = request
+  console.log('type & router', type, router) //eslint-disable-line
+  if (type === 'requesetAuthorization') {
+    console.log('requesetAuthorization') //eslint-disable-line
+  }
+})
+
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>

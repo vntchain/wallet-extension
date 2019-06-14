@@ -1,0 +1,9 @@
+@import "../component/base";
+.container {
+  margin-top: $header-height;
+  overflow-y: auto;
+}
+.law {
+  font-size: 0.14rem;
+  color: $font-color-light;
+}

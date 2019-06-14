@@ -7,6 +7,7 @@ export default {
   regainWord: '/wallet/regain', //恢复钱包
   home: '/', //首页,
   about: '/about', //关于我们,
+  law: '/law', //关于我们,
   scanWord: '/word', //查看助记词
   importKeystone: '/import', //导入地址
   send: '/send', //发送vnt

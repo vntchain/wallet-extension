@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom'
 import paths from '../../utils/paths'
 import imgs from '../../utils/imgs'
 import { splitLongStr } from '../../utils/helper'
+import { netList } from '../../constants/net'
 import styles from './Setting.scss'
 
 const Setting = function(props) {
@@ -16,10 +17,6 @@ const Setting = function(props) {
   const [isSetShow, setIsSetShow] = useState(false)
   const showDisplay = () => {
     return isSetShow ? 'block' : 'none'
-  }
-  const enviromentList = {
-    maintain: '主网',
-    test: '测试网'
   }
   const linkTo = link => {
     history.push(link)
@@ -74,16 +71,17 @@ const Setting = function(props) {
         style={{ display: showDisplay() }}
       >
         <div className={styles['setting-list']}>
-          {Object.keys(enviromentList).map(item => {
+          {Object.keys(netList).map(item => {
+            const net = netList[item]
             return (
               <div
                 className={`${styles['setting-item']} ${
-                  env === item ? styles['setting-item_active'] : ''
+                  env === net.url ? styles['setting-item_active'] : ''
                 }`}
                 key={item}
-                onClick={() => handleChangeEnv}
+                onClick={() => handleChangeEnv(net.url)}
               >
-                {enviromentList[item]}
+                {net.label}
               </div>
             )
           })}
