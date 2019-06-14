@@ -51410,10 +51410,6 @@ window.logout = async function logout() {
     updateState()
     await extension_wallet.setLocked()
     delete wallet_passwd
-
-    chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
-        chrome.tabs.sendMessage(tabArray[0].id, {logout: true});
-    });
 }
 
 
@@ -51448,6 +51444,7 @@ window.createWallet = async function createWallet(obj) {
  */
 window.clearKeyrings = function clearKeyrings() {
     extension_wallet.clearKeyrings()
+    resetState()
 }
 
 /**
@@ -52017,6 +52014,13 @@ function updateTrxs(addr, trx) {
  */
 function resetState() {
     chrome.storage.sync.clear()
+
+    account_info = {accounts:[], trxs:{}}
+    selectedAddr = ''
+    providerUrl = network.testnet
+    is_wallet_exist = false
+    is_wallet_unlock = false
+
 }
 
 /**
