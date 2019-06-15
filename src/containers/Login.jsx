@@ -46,7 +46,7 @@ const LoginForm = Form.create({ name: 'login' })(props => {
 const Login = function(props) {
   const {
     dispatch,
-    user: { isLoginDisable, providerUrl }
+    user: { isLoginDisable, envUrl }
   } = props
   const handleLogin = data => {
     dispatch({
@@ -54,13 +54,20 @@ const Login = function(props) {
       payload: data
     })
   }
-  const handleNetChange = () => {}
+  const handleNetChange = val => {
+    dispatch({
+      type: 'user/setProviderUrl',
+      payload: {
+        newprovider: val
+      }
+    })
+  }
   const renderTitle = () => {
     return (
       <Select
         onChange={handleNetChange}
         suffixIcon={<img src={imgs.suffix} alt="" />}
-        value={providerUrl}
+        value={envUrl}
       >
         {Object.keys(netList).map(key => {
           const item = netList[key]

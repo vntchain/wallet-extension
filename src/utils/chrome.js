@@ -8,7 +8,7 @@ const createFuncPromise = function(funcName, payload) {
           resolve(res)
         })
         .catch(e => {
-          reject(e)
+          reject(`${funcName}: ${e}`)
         })
     })
   })
@@ -90,6 +90,19 @@ export const getEstimateGas = function*(payload) {
 //创建账户
 export const addNewAccount = function*(payload) {
   return yield createFuncPromise('addNewAccount', payload)
+}
+//网络选择
+export const changeProvider = function*(payload) {
+  return yield new Promise((resolve, reject) => {
+    chrome.runtime.getBackgroundPage(function(bg) {
+      try {
+        bg['changeProvider'](payload)
+        resolve('success')
+      } catch (e) {
+        reject(e)
+      }
+    })
+  })
 }
 
 //获取地址信息

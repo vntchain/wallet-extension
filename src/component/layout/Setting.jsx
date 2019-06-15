@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import paths from '../../utils/paths'
@@ -9,12 +9,18 @@ import styles from './Setting.scss'
 
 const Setting = function(props) {
   const {
-    user: { addr, accounts },
-    env,
+    user: { addr, accounts, envUrl },
     history,
     dispatch
   } = props
   const [isSetShow, setIsSetShow] = useState(false)
+  useEffect(() => {
+    if (isSetShow) {
+      dispatch({
+        type: 'user/getAccountBalanceAll'
+      })
+    }
+  }, [isSetShow])
   const showDisplay = () => {
     return isSetShow ? 'block' : 'none'
   }
@@ -45,7 +51,16 @@ const Setting = function(props) {
       登出钱包: () => loginOut()
     }
   ]
-  const handleChangeEnv = () => {}
+  const handleChangeEnv = url => {
+    if (url !== envUrl) {
+      dispatch({
+        type: 'user/setProviderUrl',
+        payload: {
+          newprovider: url
+        }
+      })
+    }
+  }
   const handleChangeWallet = currAddr => {
     dispatch({
       type: 'user/setUserAddr',
@@ -76,7 +91,7 @@ const Setting = function(props) {
             return (
               <div
                 className={`${styles['setting-item']} ${
-                  env === net.url ? styles['setting-item_active'] : ''
+                  envUrl === net.url ? styles['setting-item_active'] : ''
                 }`}
                 key={item}
                 onClick={() => handleChangeEnv(net.url)}
@@ -131,7 +146,6 @@ const Setting = function(props) {
 
 export default withRouter(
   connect(({ user }) => ({
-    user,
-    env: 'maintain'
+    user
   }))(Setting)
 )
