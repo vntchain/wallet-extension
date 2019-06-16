@@ -971,9 +971,8 @@ var selectedAccount = '';
 var curProviderUrl = network.testnet
 var walletUnlock = false;
 window.vnt = new Vnt(new InpageHttpProvider(curProviderUrl))
-
-
 var authUrl = []
+
 window.vnt.requestAuthorization = function(callback) {
 
     const url = window.location.host
@@ -991,17 +990,17 @@ window.vnt.requestAuthorization = function(callback) {
       window.postMessage({
         "target": "contentscript",
         "data": {"url": url},
-        "method": "inpage_requesetAuthorization",
+        "method": "inpage_requestAuthorization",
       }, "*");
 
       window.addEventListener('message', function(e) {
         //  e.data.data contain the passed data
-        if (e.data.src ==="content" && e.data.type === "requesetAuthorization_response" && !!e.data.data) {
-          console.log('inpage: message requesetAuthorization_response')
+        if (e.data.src ==="content" && e.data.type === "requestAuthorization_response" && !!e.data.data) {
+          console.log('inpage: message requestAuthorization_response')
           if (!!e.data.data.confirmAuthorization) {
             if ( (e.data.data.url == window.location.host) && (authUrl.indexOf(e.data.data.url) == -1)) {
               authUrl.push(e.data.data.url)
-              localStorage.setItem('authUrl', authUrl.join(','))
+              // localStorage.setItem('authUrl', authUrl.join(','))
             }
             // var result = {id: id, jsonrpc: jsonrpc, result: e.data.data.confirmAuthorization}
             callback(null, e.data.data.confirmAuthorization)
@@ -1047,7 +1046,7 @@ window.vnt.logout = function(callback) {
 
 window.addEventListener('message', function(e) {
   // e  contains the transferred data 
-  if (e.data.src ==="content" && e.data.type === "change_providerUrl" && !!e.data.data) {
+  if (e.data.src === "content" && e.data.type === "change_providerUrl" && !!e.data.data) {
     console.log('inpage: message change_providerUrl')
     curProviderUrl = e.data.data.providerUrl || network.testnet
     window.vnt.setProvider(new InpageHttpProvider(curProviderUrl))
@@ -1058,26 +1057,27 @@ window.addEventListener('message', function(e) {
       "data": {networkChange: curProviderUrl}
     }, "*")
 
-  } else if (e.data.src ==="content" && e.data.type === "change_selectedAddr" && !!e.data.data){
+  } else if (e.data.src === "content" && e.data.type === "change_selectedAddr" && !!e.data.data){
     console.log('inpage: message change_selectedAddr')
     selectedAccount = e.data.data.selectedAddr || ''
+    // localStorage.setItem('selectedAddr', e.data.data.selectedAddr)
 
     window.postMessage({
       "src": "inpage",
       "type": "web_core_accounts_change",
-      "data": {selectedAddr: storageChange.newValue}
+      "data": {selectedAddr: selectedAccount}
     }, "*")
 
     window.postMessage({
       "src": "inpage",
       "type": "web_core_coinbase_change",
-      "data": {selectedAddr: storageChange.newValue}
+      "data": {selectedAddr: selectedAccount}
     }, "*")
 
-  } else if (e.data.src ==="content" && e.data.type === "change_walletUnlock") {
+  } else if (e.data.src === "content" && e.data.type === "change_walletUnlock" && !!e.data.data) {
     console.log('inpage: message change_walletUnlock')
     walletUnlock = e.data.data.isWalletUnlock 
-    localStorage.setItem('walletUnlock', e.data.data.isWalletUnlock)
+    // localStorage.setItem('walletUnlock', e.data.data.isWalletUnlock)
 
    
     window.postMessage({
@@ -1086,19 +1086,36 @@ window.addEventListener('message', function(e) {
       "data": {logout: true}
     }, "*")
     
+  } else if (e.data.src === "background" && e.data.data.type === "inpage_get_walletUnlock_response"){
+    console.log('inpage: message inpage_get_walletUnlock_response')
+    walletUnlock = e.data.data.walletUnlock
+  } else if (e.data.src === "background" && e.data.data.type === "inpage_get_selectedAddr_response"){
+    console.log('inpage: message inpage_get_selectedAddr_response')
+    selectedAccount = e.data.data.selectedAddr
+  } else if (e.data.src === "background" && e.data.data.type === "inpage_get_authUrl_response") {
+    console.log('inpage: message inpage_get_authUrl_response')
+    authUrl = e.data.data.authUrl
   }
 })
 
 
 window.onload = function() {
-  var store = localStorage.getItem('authUrl')
-  if (!!store) {
-    authUrl = store.split(',')
-  }
 
-  if (!!localStorage.getItem('walletUnlock')) {
-    walletUnlock = localStorage.getItem('walletUnlock')
-  }
+  window.postMessage({
+    "target": "contentscript",
+    "method": "inpage_get_authUrl",
+  }, "*");
+
+  window.postMessage({
+    "target": "contentscript",
+    "method": "inpage_get_walletUnlock",
+  }, "*");
+
+  window.postMessage({
+    "target": "contentscript",
+    "method": "inpage_get_selectedAddr",
+  }, "*");
+
 
 }
 }).call(this,require("buffer").Buffer)

@@ -51351,6 +51351,7 @@ var is_wallet_exist = false
 var is_wallet_unlock = false
 var extension_wallet = new walletManage({})
 var wallet_passwd = ''
+var authUrl = []
 /**
  *  two item: 1. accounts   2. trxs   {accounts: accounts, trxs: trxs}
  *  accounts: [{
@@ -51912,11 +51913,18 @@ window.changeProvider = function changeProvider(obj) {
         provider = new vntProvider(providerUrl)
         console.log("function: changeProvider")
             
-        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.sendMessage(tabs[0].id, {type: "changeProvider", provider: newprovider}, function(response) {
-                console.log(response);
-            });
-        });
+        // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        //     chrome.tabs.sendMessage(tabs[0].id, {type: "changeProvider", provider: newprovider}, function(response) {
+        //         console.log(response);
+        //     });
+        // });
+
+        // provoidUrl
+        chrome.storage.sync.set({'providerUrl': providerUrl}, function(){
+            console.log('updateState: update providerUrl')
+        })
+
+
     }
    
 }
@@ -52026,7 +52034,7 @@ function resetState() {
     providerUrl = network.testnet
     is_wallet_exist = false
     is_wallet_unlock = false
-
+    authUrl = []
 }
 
 /**
@@ -52089,6 +52097,13 @@ function restoreState() {
         }
     })
 
+    chrome.storage.sync.get('authUrl', function(obj){
+        var backup_authUrl = obj.authUrl
+        if (backup_authUrl !== undefined){
+            console.log('restoreState: auth url')
+            authUrl = backup_authUrl
+        }
+    })
     
 
 }
@@ -52126,6 +52141,10 @@ function updateState() {
         console.log('updateState: update wallet unlock state')
     })
 
+    // authurl
+    chrome.storage.sync.set({'authUrl': authUrl}, function(){
+        console.log('updateState: update extension authUrl state')
+    })
 
 
 }
@@ -52200,7 +52219,7 @@ chrome.runtime.onConnect.addListener(function(port) {
             //     // })
 
             // } 
-            else if (msg.data.method === "inpage_requesetAuthorization") {
+            else if (msg.data.method === "inpage_requestAuthorization") {
                 
                 console.log("background: receive inpage request authorization")
                 console.log(msg) 
@@ -52214,7 +52233,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                 createPopup(url, function(window){
                 })
                 // create confirm_get_accounts popup window
-                // chrome.rutime.sendMessage({type: "requesetAuthorization", url: msg.data.data.url, addr: selectedAddr})
+                // chrome.rutime.sendMessage({type: "requestAuthorization", url: msg.data.data.url, addr: selectedAddr})
                 // createPopup("notification.html", function(window){
                 // })
             } 
@@ -52226,31 +52245,60 @@ chrome.runtime.onConnect.addListener(function(port) {
                 })
 
                 // window.postMessage({target: "popup_inpage"})
-                // chrome.runtime.sendMessage({type:"inpage_requesetAuthorization", route: "/auth", url: "test"})
+                // chrome.runtime.sendMessage({type:"inpage_requestAuthorization", route: "/auth", url: "test"})
+            }  
+            else if (msg.data.method === "inpage_get_walletUnlock") {
+                port.postMessage({
+                    type: "inpage_get_walletUnlock_response",
+                    walletUnlock: is_wallet_unlock
+                })
+            }
+            else if (msg.data.method === "inpage_get_selectedAddr") {
+                port.postMessage({
+                    type: "inpage_get_selectedAddr_response",
+                    selectedAddr: selectedAddr
+                })
+            }
+            else if (msg.data.method === "inpage_get_authUrl") {
+                port.postMessage({
+                    type: "inpage_get_authUrl_response",
+                    authUrl: authUrl
+                })
             }
 
         } else if (msg.src === 'popup') { // from popup
-            if (msg.data.type === "confirm_send_trx") {
+            if (msg.type === "confirm_send_trx") {
 
+                chrome.windows.getLastFocused({windowTypes: ['popup']}, function(window){
+                    extension.windows.remove(window.id)
+                })
+                console.log("confirm_send_trx")
                 if (!!msg.data.data.confirmSendTrx) {
 
                     var tx = msg.data.data.trx
                     var addr = selectedAddr
                     
                     signThenSendTransaction({addr: addr, tx: tx}).then((trx_id) => {
-                        chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
-                            chrome.tabs.sendMessage(tabArray[0].id, {confirmSendTrx: false, trxid: trx_id});
+                        chrome.tabs.query({active: true},function(tabArray) {
+                            for (var i = 0; i < tabArray.length; i++) {
+                                chrome.tabs.sendMessage(tabArray[i].id, {confirmSendTrx: false, trxid: trx_id});
+                            }
                         });
                     }).catch((error) => {
-                        chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
-                            chrome.tabs.sendMessage(tabArray[0].id, {confirmSendTrx: false, error: error});
+                        chrome.tabs.query({currentWindow: false, active: true},function(tabArray) {
+                            for (var i = 0; i < tabArray.length; i++) {
+                                chrome.tabs.sendMessage(tabArray[i].id, {confirmSendTrx: false, error: error});
+                            }
                         });
                     })
         
 
                 } else {
-                    chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
-                            chrome.tabs.sendMessage(tabArray[0].id, {confirmSendTrx: false, trxid: ""});
+                    chrome.tabs.query({active: true},function(tabArray) {
+                        for (var i = 0; i < tabArray.length; i++) {
+                            chrome.tabs.sendMessage(tabArray[i].id, {confirmSendTrx: false, trxid: ""});
+                        }
+                
                         });
                 }
                 
@@ -52271,16 +52319,30 @@ chrome.runtime.onConnect.addListener(function(port) {
 
                
             // } 
-            else if (msg.data.type === "confirm_request_authorization") {
+            else if (msg.type === "confirm_request_authorization") {
 
-                if (!!msg.data.data.confirmAuthorization) {
-                    chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
-                        chrome.tabs.sendMessage(tabArray[0].id, {confirmAuthorization: true});
+                chrome.windows.getLastFocused({windowTypes: ['popup']}, function(window){
+                    extension.windows.remove(window.id)
+                })
+
+                console.log("confirm_request_authorization")
+                if (!!msg.data.confirmAuthorization) {
+
+                    authUrl.push(msg.data.url)
+                    updateState()
+                    chrome.tabs.query({active: true},function(tabArray) {
+                        for (var i = 0; i < tabArray.length; i++) {
+                            chrome.tabs.sendMessage(tabArray[i].id, {confirmAuthorization: true});
+                        }
+                        
                     });
     
                 } else {
-                    chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
-                        chrome.tabs.sendMessage(tabArray[0].id, {confirmAuthorization: false});
+    
+                    chrome.tabs.query({active: true},function(tabArray) {
+                        for (var i = 0; i < tabArray.length; i++) {
+                            chrome.tabs.sendMessage(tabArray[i].id, {confirmAuthorization: false});
+                        }
                     });
                 }
 
