@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import styles from './Home.scss'
 import Header from '../component/layout/Header'
 import CommonPadding from '../component/layout/CommonPadding'
@@ -14,7 +14,8 @@ const Home = function(props) {
   const {
     user: { addr, currTrade, accountBalance },
     price: { vntToCny },
-    dispatch
+    dispatch,
+    history
   } = props
   const [userVisible, setUserVisible] = useState(false)
   const [keystoneVisible, setKeystoneVisible] = useState(false)
@@ -26,6 +27,12 @@ const Home = function(props) {
       type: 'price/getVntToCny'
     })
   }, [])
+  const handleOpenSend = () => {
+    dispatch({
+      type: 'send/clearTx'
+    })
+    history.push(paths.send)
+  }
   return (
     <Fragment>
       <Header title={'首页'} theme={'trans'} hasSetting={true} />
@@ -57,10 +64,14 @@ const Home = function(props) {
               <img src={imgs.rollIn} alt="转入" />
               转入
             </a>
-            <Link to={paths.send} className={styles['tx-btn']}>
+            <a
+              href="javascript:"
+              className={styles['tx-btn']}
+              onClick={() => handleOpenSend()}
+            >
               <img src={imgs.rollOut} alt="转出" />
               转出
-            </Link>
+            </a>
           </div>
         </CommonPadding>
       </div>
@@ -108,8 +119,10 @@ const Home = function(props) {
   )
 }
 
-export default connect(({ user, home, price }) => ({
-  user,
-  home,
-  price
-}))(Home)
+export default withRouter(
+  connect(({ user, home, price }) => ({
+    user,
+    home,
+    price
+  }))(Home)
+)

@@ -9,15 +9,16 @@ import {
   getAccountBalance,
   getProviderUrl,
   setAddr,
-  addNewAccount
+  addNewAccount,
+  changeProvider
 } from '../utils/chrome'
 import { message } from 'antd'
 
-const { put } = effects
+const { put, all, select } = effects
 export default {
   state: {
     isAuth: false,
-    providerUrl: '',
+    envUrl: '',
     addr: '',
     accountBalance: 0,
     accounts: [],
@@ -131,7 +132,6 @@ export default {
       }
     }),
     getAccountBalance: takeLatest(function*({ payload }) {
-      console.log(payload) //eslint-disable-line
       try {
         const data = yield getAccountBalance(payload)
         yield put({
@@ -143,12 +143,41 @@ export default {
         console.log('getAccountBalance' + e) //eslint-disable-line
       }
     }),
-    // setProviderUrl: {},
+    getAccountBalanceAll: takeLatest(function*() {
+      try {
+        const accounts = yield select(state => state.user.accounts)
+        const objAll = {}
+        accounts.map(
+          item => (objAll[item.addr] = getAccountBalance({ addr: item.addr }))
+        )
+        const result = yield all(objAll)
+        accounts.map(item => (item.vnt = result[item.addr]))
+        yield put({
+          type: 'user/setAccounts',
+          payload: accounts
+        })
+      } catch (e) {
+        message.error(e.message)
+        console.log('getAccountBalanceAll' + e) //eslint-disable-line
+      }
+    }),
+    setProviderUrl: takeLatest(function*({ payload }) {
+      try {
+        yield changeProvider(payload)
+        yield put({
+          type: 'user/setEnvUrl',
+          payload: payload.newprovider
+        })
+      } catch (e) {
+        message.error(e.message)
+        console.log('getProviderUrl' + e) //eslint-disable-line
+      }
+    }),
     getProviderUrl: takeLatest(function*() {
       try {
         const data = yield getProviderUrl()
         yield put({
-          type: 'user/setProviderUrl',
+          type: 'user/setEnvUrl',
           payload: data
         })
       } catch (e) {

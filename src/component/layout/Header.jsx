@@ -7,9 +7,20 @@ import Setting from './Setting'
 import CommonPadding from './CommonPadding'
 
 const Header = function(props) {
-  const { hasBack, title, hasSetting, theme = 'white', history } = props
+  const {
+    hasBack,
+    title,
+    hasSetting,
+    theme = 'white',
+    backUrl,
+    history
+  } = props
   const handleBack = () => {
-    history.goBack()
+    if (backUrl) {
+      history.push(backUrl)
+    } else {
+      history.goBack()
+    }
   }
   return (
     <CommonPadding className={`${styles.header} ${styles[theme]}`}>
@@ -31,6 +42,7 @@ const Header = function(props) {
 Header.propType = {
   title: PropTypes.string.isRequired || PropTypes.func.isRequired,
   hasBack: PropTypes.bool,
+  backUrl: PropTypes.string,
   hasSetting: PropTypes.bool,
   theme: PropTypes.string
 }
