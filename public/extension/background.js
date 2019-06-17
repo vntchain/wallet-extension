@@ -51930,6 +51930,24 @@ window.changeProvider = function changeProvider(obj) {
 }
 
 /**
+ *  change the addr
+ * 
+ * @param {string} addr  the account addr
+ */
+window.changeAddress = function changeAddress(obj) {
+
+    selectedAddr = obj.addr
+
+    // provoidUrl
+    chrome.storage.sync.set({'selectedAddr': selectedAddr}, function(){
+        console.log('updateState: update selectedAddr')
+    })
+
+
+}
+
+
+/**
  * create window
  */
 window.createPopup = function createPopup(url, cb) {
@@ -52195,6 +52213,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                 console.log(msg) 
 
                 popup.trx = msg.data.data.payload.params[0]
+                popup.trx.value = util.fromWei(popup.trx.value, 'vnt')
                 chrome.storage.sync.set({'popup': popup}, function(){
                     console.log('updateState: update popup info')
                 })
@@ -52273,21 +52292,21 @@ chrome.runtime.onConnect.addListener(function(port) {
                     extension.windows.remove(window.id)
                 })
                 console.log("confirm_send_trx")
-                if (!!msg.data.data.confirmSendTrx) {
+                if (!!msg.data.confirmSendTrx) {
 
-                    var tx = msg.data.data.trx
+                    var tx = msg.data.trx
                     var addr = selectedAddr
                     
                     signThenSendTransaction({addr: addr, tx: tx}).then((trx_id) => {
                         chrome.tabs.query({active: true},function(tabArray) {
                             for (var i = 0; i < tabArray.length; i++) {
-                                chrome.tabs.sendMessage(tabArray[i].id, {confirmSendTrx: false, trxid: trx_id});
+                                chrome.tabs.sendMessage(tabArray[i].id, {confirmSendTrx: true, trxid: trx_id});
                             }
                         });
                     }).catch((error) => {
-                        chrome.tabs.query({currentWindow: false, active: true},function(tabArray) {
+                        chrome.tabs.query({active: true},function(tabArray) {
                             for (var i = 0; i < tabArray.length; i++) {
-                                chrome.tabs.sendMessage(tabArray[i].id, {confirmSendTrx: false, error: error});
+                                chrome.tabs.sendMessage(tabArray[i].id, {confirmSendTrx: true, error: error.message});
                             }
                         });
                     })

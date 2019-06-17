@@ -824,8 +824,14 @@ InpageHttpProvider.prototype.sendAsync = function (payload, callback) {
         if (e.data.src ==="content" && e.data.type === "send_trx_response" && !!e.data.data) {
           console.log('inpage: message send_trx_response')
           if (!!e.data.data.confirmSendTrx) {
-            var result = {id: id, jsonrpc: jsonrpc, result: e.data.data.trxid}
-            callback(null, result)
+            if (e.data.data.error !== undefined) {
+              // var result = {id: id, jsonrpc: jsonrpc, result: e.data.data.error}
+              callback(e.data.data.error)
+            } else {
+              var result = {id: id, jsonrpc: jsonrpc, result: e.data.data.trxid}
+              callback(null, result)
+            }
+
           } else {
             callback(errors.authorizationError('user denied.'))
           }
