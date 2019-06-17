@@ -51995,14 +51995,14 @@ function trxStateTimer() {
                     continue
                 } else if (trxobj.result.status === "0x0"){
                     trxs[i].state = 'error'
-                    trxs[i].gasUsed = trxobj.result.gasUsed
+                    trxs[i].gasUsed = util.toDecimal(trxobj.result.gasUsed)
                     stateChanged = true
                     updateState()
                     break
 
                 } else if (trxobj.result.status === "0x1"){
                     trxs[i].state = 'success'
-                    trxs[i].gasUsed = trxobj.result.gasUsed
+                    trxs[i].gasUsed = util.toDecimal(trxobj.result.gasUsed)
                     stateChanged = true
                     updateState()
                     break
