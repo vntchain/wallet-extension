@@ -51727,6 +51727,7 @@ window.signThenSendTransaction = async function signThenSendTransaction(obj) {
         var date = new Date().Format("yyyy-MM-dd hh:mm:ss")
         storetx.state = "pending"
         storetx.time = date
+        storetx.gasUsed = 0
         storetx.id = trx_id.result
         updateTrxs(addr, storetx)
         updateState()
@@ -51994,12 +51995,14 @@ function trxStateTimer() {
                     continue
                 } else if (trxobj.result.status === "0x0"){
                     trxs[i].state = 'error'
+                    trxs[i].gasUsed = trxobj.result.gasUsed
                     stateChanged = true
                     updateState()
                     break
 
                 } else if (trxobj.result.status === "0x1"){
                     trxs[i].state = 'success'
+                    trxs[i].gasUsed = trxobj.result.gasUsed
                     stateChanged = true
                     updateState()
                     break
@@ -52346,8 +52349,10 @@ chrome.runtime.onConnect.addListener(function(port) {
 
                 console.log("confirm_request_authorization")
                 if (!!msg.data.confirmAuthorization) {
+                   if (authUrl.indexOf(e.data.data.url) == -1) {
+                        authUrl.push(msg.data.url)
+                   }
 
-                    authUrl.push(msg.data.url)
                     updateState()
                     chrome.tabs.query({active: true},function(tabArray) {
                         for (var i = 0; i < tabArray.length; i++) {
