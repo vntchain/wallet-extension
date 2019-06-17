@@ -26,7 +26,7 @@ const OuterAuth = function(props) {
       src: 'popup',
       dst: 'background',
       type: 'confirm_request_authorization',
-      data: { confirmAuthorization: status }
+      data: { url: popup.url, confirmAuthorization: status }
     })
   }
   useEffect(() => {
@@ -53,9 +53,9 @@ const OuterAuth = function(props) {
           <BaseTip
             className={styles.tip}
             tips={[
-              `${
-                popup.url
-              }正在请求获得您的地址，以便它提供后续服务。这意味着它能够查询到您在该地址的资产数量及相关交易。如果它想从您的地址转移资产，那么每次转账都需要您重新批准。`
+              `${popup.url}正在请求获得您的地址，以便它提供后续服务。
+            这意味着它能够查询到您在该地址的资产数量及相关交易。
+            如果它想从您的地址转移资产，那么每次转账都需要您重新批准。`
             ]}
           />
           <BaseModalFooter
