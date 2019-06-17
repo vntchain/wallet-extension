@@ -46,6 +46,9 @@ export default {
         yield put({
           type: 'send/clearTx'
         })
+        yield put({
+          type: 'user/getAccounts'
+        })
         yield put(push(`${paths.txDetail}/${id}`))
       } catch (e) {
         message.error(e.message || e)

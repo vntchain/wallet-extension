@@ -74,33 +74,39 @@ const TxDetail = function(props) {
       <Header title={'交易详情'} hasBack={true} backUrl={paths.home} />
       <div className={styles.container}>
         <CommonPadding>
-          {DetailList.map((blocks, index) => (
-            <div className={styles.block} key={index}>
-              {Object.keys(blocks).map(item => {
-                const val = blocks[item]
-                return (
-                  <div className={styles['block-item']} key={item}>
-                    <label>{typeof val === 'string' ? val : val.label}</label>
-                    {val.render ? (
-                      val.render(txDetail[item], txDetail)
-                    ) : val.hasCopy ? (
-                      <div className={styles.inner}>
-                        <span className={styles.cont}>{txDetail[item]}</span>
-                        <Copier
-                          text={txDetail[item]}
-                          ref={refObj[`${item}CopyRef`]}
-                        >
-                          <span className={styles.copy}>复制</span>
-                        </Copier>
+          {txDetail
+            ? DetailList.map((blocks, index) => (
+                <div className={styles.block} key={index}>
+                  {Object.keys(blocks).map(item => {
+                    const val = blocks[item]
+                    return (
+                      <div className={styles['block-item']} key={item}>
+                        <label>
+                          {typeof val === 'string' ? val : val.label}
+                        </label>
+                        {val.render ? (
+                          val.render(txDetail[item], txDetail)
+                        ) : val.hasCopy ? (
+                          <div className={styles.inner}>
+                            <span className={styles.cont}>
+                              {txDetail[item]}
+                            </span>
+                            <Copier
+                              text={txDetail[item]}
+                              ref={refObj[`${item}CopyRef`]}
+                            >
+                              <span className={styles.copy}>复制</span>
+                            </Copier>
+                          </div>
+                        ) : (
+                          <span className={styles.cont}>{txDetail[item]}</span>
+                        )}
                       </div>
-                    ) : (
-                      <span className={styles.cont}>{txDetail[item]}</span>
-                    )}
-                  </div>
-                )
-              })}
-            </div>
-          ))}
+                    )
+                  })}
+                </div>
+              ))
+            : ''}
         </CommonPadding>
       </div>
     </Fragment>

@@ -29,6 +29,15 @@ const App = function(props) {
     dispatch({
       type: 'user/getAddr'
     })
+    global.chrome.runtime.onMessage.addListener(function(request) {
+      console.log('message connect') //eslint-disable-line
+      if (request.type === 'trx_state_changed') {
+        console.log('changed') //eslint-disable-line
+        dispatch({
+          type: 'user/getAccounts'
+        })
+      }
+    })
   }, [])
   return (
     <Switch>
