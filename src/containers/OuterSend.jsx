@@ -49,7 +49,7 @@ const OuterSend = function(props) {
     })
   }, [])
   useEffect(() => {
-    if (!isEmptyObject(trx)) {
+    if (trx && !isEmptyObject(trx)) {
       const trxTemp = Object.assign(trx, { gasPrice, gas })
       console.log(trxTemp) //eslint-disable-line
       setTx(trxTemp)
