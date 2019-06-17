@@ -51724,14 +51724,14 @@ window.signThenSendTransaction = async function signThenSendTransaction(obj) {
         var rawTransactionParam = '0x' + serializedTx.toString('hex');
         var trx_id = sendRawTransaction(rawTransactionParam)
 
-        var date = new Date().Format("yyyy-MM-dd hh:mm:ss")
-        storetx.state = "pending"
-        storetx.time = date
-        storetx.gasUsed = 0
-        storetx.id = trx_id.result
-        updateTrxs(addr, storetx)
-        updateState()
         if (!!trx_id.result) {
+            var date = new Date().Format("yyyy-MM-dd hh:mm:ss")
+            storetx.state = "pending"
+            storetx.time = date
+            storetx.gasUsed = 0
+            storetx.id = trx_id.result
+            updateTrxs(addr, storetx)
+            updateState()
             return Promise.resolve(trx_id.result)
         } else {
             return Promise.reject(trx_id.error)
