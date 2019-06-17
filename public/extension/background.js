@@ -52194,7 +52194,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                 console.log("background: receive inpage sendTransaction")
                 console.log(msg) 
 
-                popup.trx = msg.data.data
+                popup.trx = msg.data.data.payload.params[0]
                 chrome.storage.sync.set({'popup': popup}, function(){
                     console.log('updateState: update popup info')
                 })
