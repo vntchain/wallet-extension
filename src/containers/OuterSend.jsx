@@ -4,7 +4,12 @@ import { Link } from 'react-router-dom'
 import Header from '../component/layout/Header'
 import CommonPadding from '../component/layout/CommonPadding'
 import BaseModalFooter from '../component/layout/BaseModalFooter'
-import { splitLongStr, calBigMulti, calCommission } from '../utils/helper'
+import {
+  splitLongStr,
+  calBigMulti,
+  calCommission,
+  isEmptyObject
+} from '../utils/helper'
 import paths from '../utils/paths'
 import styles from './OuterSend.scss'
 
@@ -39,7 +44,7 @@ const OuterSend = function(props) {
     })
   }, [])
   useEffect(() => {
-    setTx(Object.assign(trx, { gasPrice, gas }))
+    if (!isEmptyObject(trx)) setTx(Object.assign(trx, { gasPrice, gas }))
   }, [trx])
   return (
     <Fragment>

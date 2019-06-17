@@ -12,6 +12,7 @@ export default {
     getPopup: takeLatest(function*() {
       try {
         const data = yield popup()
+        console.log('response of popup',data) //eslint-disable-line
         yield put({
           type: 'popup/setPopup',
           payload: data

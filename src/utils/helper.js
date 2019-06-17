@@ -34,3 +34,7 @@ export const calBigMulti = (num1, num2) => {
     Math.pow(10, floatLen1 + floatLen2)
   )
 }
+
+export const isEmptyObject = obj => {
+  return Object.keys(obj).length === 0 && obj.constructor === Object
+}
