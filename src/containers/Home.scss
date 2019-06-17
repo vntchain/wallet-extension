@@ -103,6 +103,19 @@
         font-size: 0.16rem;
         color: $font-color;
       }
+      .status {
+        margin-left: 0.1rem;
+        font-size: 0.14rem;
+        &.pending {
+          color: $warn-color;
+        }
+        &.success {
+          color: $success-color;
+        }
+        &.error {
+          color: $error-color;
+        }
+      }
       &:not(:last-child) {
         margin-bottom: 0.15rem;
       }

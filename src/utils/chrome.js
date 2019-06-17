@@ -90,6 +90,7 @@ export const getGasPrice = function*(payload) {
 }
 //获取gaslimit
 export const getEstimateGas = function*(payload) {
+  console.log(payload) //eslint-disable-line
   return yield createFuncPromise('getEstimateGas', payload)
 }
 //创建账户

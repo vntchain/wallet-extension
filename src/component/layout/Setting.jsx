@@ -48,7 +48,7 @@ const Setting = function(props) {
       服务条款: () => linkTo(paths.services)
     },
     {
-      查看助记词: () => linkTo(paths.word),
+      查看助记词: () => linkTo(paths.scanWord),
       登出钱包: () => loginOut()
     }
   ]
@@ -66,7 +66,7 @@ const Setting = function(props) {
   const handleChangeWallet = currAddr => {
     dispatch({
       type: 'user/setUserAddr',
-      payload: currAddr
+      payload: { addr: currAddr }
     })
     setIsSetShow(false)
   }

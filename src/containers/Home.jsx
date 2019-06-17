@@ -84,10 +84,18 @@ const Home = function(props) {
                 <ul className={styles['history-item']} key={index}>
                   <li>
                     <span className={styles.date}>{item.time}</span>
-                    <Link to={'/'}>去浏览器查看</Link>
+                    {/*todo:打开对应web页面，location。href*/}
+                    <Link to={`/transaction${item.id}`}>去浏览器查看</Link>
                   </li>
                   <li>
-                    <span className={styles.txid}>交易id</span>
+                    <span className={styles.txid}>
+                      交易id
+                      <span
+                        className={`${styles.status} ${styles[item.state]}`}
+                      >
+                        {item.state}
+                      </span>
+                    </span>
                     <span className={styles.vnt}>{`${item.value} VNT`}</span>
                   </li>
                   <li>

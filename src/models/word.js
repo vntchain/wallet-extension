@@ -14,7 +14,7 @@ export default {
       try {
         const data = yield getKeyringOfAccount(payload)
         yield put({
-          type: 'user/merge',
+          type: 'word/merge',
           payload: {
             hasGetWord: true,
             word: data

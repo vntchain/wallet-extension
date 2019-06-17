@@ -30,10 +30,11 @@ const ScanWord = function(props) {
   const handleBack = () => {
     history.goBack()
   }
-  const handleFetchWord = () => {
+  const handleFetchWord = values => {
+    const { password: passwd } = values
     dispatch({
-      type: '',
-      payload: { addr }
+      type: 'word/fetchWord',
+      payload: { addr, passwd }
     })
   }
   return (
@@ -44,11 +45,7 @@ const ScanWord = function(props) {
           <BaseWarn warns={['不要对任何人展示助记词！']} />
           {hasGetWord ? (
             <Fragment>
-              <div className={styles.cont}>
-                {word.map(item => (
-                  <Fragment key={item}>{`${item} `}</Fragment>
-                ))}
-              </div>
+              <div className={styles.cont}>{word}</div>
               <Copier text={word} ref={copyRef}>
                 <a className={styles.copy} href="javascript:">
                   复制到剪贴板

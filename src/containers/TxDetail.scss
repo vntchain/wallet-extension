@@ -16,6 +16,9 @@
     .inner {
       display: flex;
     }
+    .total {
+      text-align: right;
+    }
     label {
       color: $font-color-light;
     }

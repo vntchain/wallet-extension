@@ -5,7 +5,7 @@ import Header from '../component/layout/Header'
 import CommonPadding from '../component/layout/CommonPadding'
 import Copier from '../component/Copier'
 import paths from '../utils/paths'
-import { calBigMulti } from '../utils/helper'
+import { calBigMulti, calCommission } from '../utils/helper'
 import styles from './TxDetail.scss'
 
 const TxDetail = function(props) {
@@ -21,18 +21,21 @@ const TxDetail = function(props) {
     user: { currTrade },
     price: { vntToCny }
   } = props
-  console.log(props) //eslint-disable-line
   const id = props.match.params.id
   const txDetail = currTrade.find(item => item.id === id)
-  const renderTotal = total => (
-    <div>
-      <div className={styles.cont}>{total}</div>
-      <div className={styles.info}>{calBigMulti(total, vntToCny)}</div>
-    </div>
-  )
+  const renderTotal = (text, record) => {
+    const { value, gas, gasPrice } = record
+    const total = value + calCommission(gas, gasPrice)
+    return (
+      <div className={styles.total}>
+        <div className={styles.cont}>{total}</div>
+        <div className={styles.info}>{calBigMulti(total, vntToCny)}</div>
+      </div>
+    )
+  }
   const DetailList = [
     {
-      status: {
+      state: {
         label: '状态'
       },
       id: {
@@ -62,7 +65,7 @@ const TxDetail = function(props) {
       gasPrice: 'Gas Price（GWEI）',
       total: {
         label: '总量',
-        render: text => renderTotal(text)
+        render: (text, record) => renderTotal(text, record)
       }
     }
   ]
@@ -79,7 +82,7 @@ const TxDetail = function(props) {
                   <div className={styles['block-item']} key={item}>
                     <label>{typeof val === 'string' ? val : val.label}</label>
                     {val.render ? (
-                      val.render(txDetail[item])
+                      val.render(txDetail[item], txDetail)
                     ) : val.hasCopy ? (
                       <div className={styles.inner}>
                         <span className={styles.cont}>{txDetail[item]}</span>

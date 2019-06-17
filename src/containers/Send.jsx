@@ -19,7 +19,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
     form,
     user: { addr, accountBalance },
     price: { vntToCny },
-    send: { tx, gasPriceDefault },
+    send: { tx },
     getGasLimit,
     onSubmit
   } = props
@@ -65,8 +65,9 @@ const SendForm = Form.create({ name: 'login' })(props => {
       callback('请输入正确的数量')
       return
     }
-    if (value > accountBalance) {
+    if (value > Number(accountBalance)) {
       callback('发送数量大于持有余额')
+      return
     }
     //设置vnt对应cny
     setBalanceCNY(calBigMulti(value, vntToCny))
@@ -78,13 +79,10 @@ const SendForm = Form.create({ name: 'login' })(props => {
     const value = getFieldValue('value')
     const data = getFieldValue('data')
     getGasLimit({
-      tx: {
-        from: addr,
-        to: to,
-        value: value,
-        data: data,
-        gasPrice: gasPriceDefault //修改时设置gasPrice为默认值
-      }
+      from: addr,
+      to: to,
+      value: value,
+      data: data
     })
   }
   return (
@@ -160,16 +158,23 @@ const Send = function(props) {
       type: 'send/getGasPrice'
     })
   }, [])
-  const getGasLimit = data => {
+  const getGasLimit = txObj => {
     //同步数据
     dispatch({
       type: 'send/merge',
-      payload: data
+      payload: {
+        tx: {
+          ...txObj,
+          gasPrice: send.gasPriceDefault //修改时设置gasPrice为默认值
+        }
+      }
     })
     //获取gasLimit
     dispatch({
       type: 'send/getGasLimit',
-      payload: data
+      payload: {
+        tx: txObj
+      }
     })
   }
   const handleSend = () => {

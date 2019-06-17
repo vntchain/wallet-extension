@@ -55,7 +55,7 @@ export default {
         })
         yield put(push(paths.home))
       } catch (e) {
-        message.error(e.message)
+        message.error(e.message || e)
         console.log(e) //eslint-disable-line
       } finally {
         yield put({
@@ -73,7 +73,7 @@ export default {
         })
         yield put(push(paths.login))
       } catch (e) {
-        message.error(e.message)
+        message.error(e.message || e)
         console.log(e) //eslint-disable-line
       }
     }),
@@ -90,13 +90,13 @@ export default {
           payload: { addr }
         })
       } catch (e) {
-        message.error(e.message)
+        message.error(e.message || e)
         console.log(e) //eslint-disable-line
       }
     }),
     setUserAddr: takeLatest(function*({ payload }) {
       try {
-        const addr = payload
+        const { addr } = payload
         yield changeAddress(payload)
         yield put({
           type: 'user/setAddr',
@@ -112,7 +112,7 @@ export default {
           type: 'user/filterCurrentTrade'
         })
       } catch (e) {
-        message.error(e.message)
+        message.error(e.message || e)
         console.log(e) //eslint-disable-line
       }
     }),
@@ -131,7 +131,7 @@ export default {
           type: 'user/filterCurrentTrade'
         })
       } catch (e) {
-        message.error(e.message)
+        message.error(e.message || e)
         console.log(e) //eslint-disable-line
       }
     }),
@@ -143,8 +143,8 @@ export default {
           payload: data
         })
       } catch (e) {
-        message.error(e.message)
-        console.log('getAccountBalance' + e) //eslint-disable-line
+        message.error(e.message || e)
+        console.log(e) //eslint-disable-line
       }
     }),
     getAccountBalanceAll: takeLatest(function*() {
@@ -161,8 +161,8 @@ export default {
           payload: accounts
         })
       } catch (e) {
-        message.error(e.message)
-        console.log('getAccountBalanceAll' + e) //eslint-disable-line
+        message.error(e.message || e)
+        console.log(e) //eslint-disable-line
       }
     }),
     setProviderUrl: takeLatest(function*({ payload }) {
@@ -173,8 +173,8 @@ export default {
           payload: payload.newprovider
         })
       } catch (e) {
-        message.error(e.message)
-        console.log('getProviderUrl' + e) //eslint-disable-line
+        message.error(e.message || e)
+        console.log(e) //eslint-disable-line
       }
     }),
     getProviderUrl: takeLatest(function*() {
@@ -185,8 +185,8 @@ export default {
           payload: data
         })
       } catch (e) {
-        message.error(e.message)
-        console.log('getProviderUrl' + e) //eslint-disable-line
+        message.error(e.message || e)
+        console.log(e) //eslint-disable-line
       }
     }),
     addNewAccount: takeLatest(function*() {
@@ -200,8 +200,8 @@ export default {
           type: 'user/getAccounts'
         })
       } catch (e) {
-        message.error(e.message)
-        console.log('addNewAccount' + e) //eslint-disable-line
+        message.error(e.message || e)
+        console.log(e) //eslint-disable-line
       }
     })
   })
