@@ -194,7 +194,7 @@ export default {
         })
       } catch (e) {
         message.error(e.message)
-        console.log('getIsWalletUnlock' + e) //eslint-disable-line
+        console.log('addNewAccount' + e) //eslint-disable-line
       }
     })
   })

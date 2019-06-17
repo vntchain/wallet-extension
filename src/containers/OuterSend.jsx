@@ -42,9 +42,15 @@ const OuterSend = function(props) {
     dispatch({
       type: 'popup/getPopup'
     })
+    dispatch({
+      type: 'popup/getGasPrice'
+    })
   }, [])
   useEffect(() => {
-    if (!isEmptyObject(trx)) setTx(Object.assign(trx, { gasPrice, gas }))
+    if (!isEmptyObject(trx)) {
+      console.log(Object.assign(trx, { gasPrice, gas })) //eslint-disable-line
+      setTx(Object.assign(trx, { gasPrice, gas }))
+    }
   }, [trx])
   return (
     <Fragment>

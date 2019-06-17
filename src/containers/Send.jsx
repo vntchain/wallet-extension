@@ -49,7 +49,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
       callback('请输入地址')
       return
     }
-    if (!value.test(addrPatten)) {
+    if (!addrPatten.test(value)) {
       callback('请输入正确的地址')
       return
     }
