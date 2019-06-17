@@ -98,16 +98,7 @@ export const addNewAccount = function*(payload) {
 }
 //网络选择
 export const changeProvider = function*(payload) {
-  return yield new Promise((resolve, reject) => {
-    chrome.runtime.getBackgroundPage(function(bg) {
-      try {
-        bg['changeProvider'](payload)
-        resolve('success')
-      } catch (e) {
-        reject(e)
-      }
-    })
-  })
+  return yield createChangePromise('changeProvider', payload)
 }
 //同步地址
 export const changeAddress = function*(payload) {

@@ -48,8 +48,8 @@ export default {
         })
         yield put(push(`${paths.txDetail}/${id}`))
       } catch (e) {
-        message.error(e.message)
-        console.log('send:'+e) //eslint-disable-line
+        message.error(e.message || e)
+        console.log(e) //eslint-disable-line
       } finally {
         yield put({
           type: 'send/setIsSendLoading',
@@ -65,7 +65,7 @@ export default {
           payload: res
         })
       } catch (e) {
-        message.error(e.message)
+        message.error(e.message || e)
         console.log(e) //eslint-disable-line
       }
     }),
@@ -82,7 +82,7 @@ export default {
           }
         })
       } catch (e) {
-        message.error(e.message)
+        message.error(e.message || e)
         console.log(e) //eslint-disable-line
       }
     })

@@ -36,6 +36,7 @@ const Setting = function(props) {
     dispatch({
       type: 'user/addNewAccount'
     })
+    setIsSetShow(false)
   }
   const LinkList = [
     {
@@ -59,6 +60,7 @@ const Setting = function(props) {
           newprovider: url
         }
       })
+      setIsSetShow(false)
     }
   }
   const handleChangeWallet = currAddr => {
