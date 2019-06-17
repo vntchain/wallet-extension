@@ -8,7 +8,7 @@ import {
   getAccounts,
   getAccountBalance,
   getProviderUrl,
-  setAddr,
+  changeAddress,
   addNewAccount,
   changeProvider
 } from '../utils/chrome'
@@ -97,7 +97,7 @@ export default {
     setUserAddr: takeLatest(function*({ payload }) {
       try {
         const addr = payload
-        yield setAddr(addr)
+        yield changeAddress(payload)
         yield put({
           type: 'user/setAddr',
           payload: addr

@@ -24,10 +24,15 @@ const createGetPromise = function(getName) {
   })
 }
 
-const createSetPromise = function(obj) {
-  return new Promise(resolve => {
-    chrome.storage.sync.set(obj, function() {
-      resolve('success')
+const createChangePromise = function(funcName, payload) {
+  return new Promise((resolve, reject) => {
+    chrome.runtime.getBackgroundPage(function(bg) {
+      try {
+        bg[funcName](payload)
+        resolve('success')
+      } catch (e) {
+        reject(e)
+      }
     })
   })
 }
@@ -104,6 +109,10 @@ export const changeProvider = function*(payload) {
     })
   })
 }
+//同步地址
+export const changeAddress = function*(payload) {
+  return yield createChangePromise('changeAddress', payload)
+}
 
 //获取地址信息
 export const getAddr = function*() {
@@ -120,9 +129,4 @@ export const getProviderUrl = function*() {
 //获取钱包登录信息
 export const popup = function*() {
   return yield createGetPromise('popup')
-}
-
-//同步地址
-export const setAddr = function*(payload) {
-  return yield createSetPromise({ selectedAddr: payload })
 }
