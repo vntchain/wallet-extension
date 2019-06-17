@@ -12,7 +12,7 @@ import paths from '../utils/paths'
 
 const Home = function(props) {
   const {
-    user: { addr, currTrade, accountBalance },
+    user: { addr, currTrade, accountBalance, envUrl },
     price: { vntToCny },
     dispatch,
     history
@@ -32,6 +32,9 @@ const Home = function(props) {
       type: 'send/clearTx'
     })
     history.push(paths.send)
+  }
+  const handleLink = id => {
+    window.open(`${envUrl}/transaction${id}`)
   }
   return (
     <Fragment>
@@ -85,7 +88,9 @@ const Home = function(props) {
                   <li>
                     <span className={styles.date}>{item.time}</span>
                     {/*todo:打开对应web页面，location。href*/}
-                    <Link to={`/transaction${item.id}`}>去浏览器查看</Link>
+                    <a href="javascript:" onClick={() => handleLink(item.id)}>
+                      去浏览器查看
+                    </a>
                   </li>
                   <li>
                     <span className={styles.txid}>

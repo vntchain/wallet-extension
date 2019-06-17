@@ -1,11 +1,11 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import Header from '../component/layout/Header'
 import CommonPadding from '../component/layout/CommonPadding'
 import Copier from '../component/Copier'
 import paths from '../utils/paths'
-import { calBigMulti, calCommission } from '../utils/helper'
+import { calBigMulti, calCommission, isEmptyObject } from '../utils/helper'
 import styles from './TxDetail.scss'
 
 const TxDetail = function(props) {
@@ -18,11 +18,14 @@ const TxDetail = function(props) {
     toCopyRef
   }
   const {
-    user: { currTrade },
+    dispatch,
+    user: { txDetail },
     price: { vntToCny }
   } = props
   const id = props.match.params.id
-  const txDetail = currTrade.find(item => item.id === id)
+  // const txObj = currTrade.find(item => item.id === id)
+  // const txState = txObj ? txObj.state : ''
+  // const [txDetail, setTxDetail] = useState(txObj)
   const renderTotal = (text, record) => {
     const { value, gas, gasPrice } = record
     const total = value + calCommission(gas, gasPrice)
@@ -33,6 +36,12 @@ const TxDetail = function(props) {
       </div>
     )
   }
+  useEffect(() => {
+    dispatch({
+      type: 'user/filterTradeDetail',
+      payload: id
+    })
+  }, [])
   const DetailList = [
     {
       state: {
@@ -74,7 +83,7 @@ const TxDetail = function(props) {
       <Header title={'交易详情'} hasBack={true} backUrl={paths.home} />
       <div className={styles.container}>
         <CommonPadding>
-          {txDetail
+          {!isEmptyObject(txDetail)
             ? DetailList.map((blocks, index) => (
                 <div className={styles.block} key={index}>
                   {Object.keys(blocks).map(item => {

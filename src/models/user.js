@@ -24,6 +24,7 @@ export default {
     accounts: [],
     trades: [],
     currTrade: [],
+    txDetail: {},
     isLoginDisable: false
   },
   reducers: {
@@ -34,6 +35,15 @@ export default {
       return {
         ...state,
         currTrade
+      }
+    },
+    filterTradeDetail: (state, { payload }) => {
+      console.log(state) //eslint-disable-line
+      const id = payload
+      const txDetail = state.currTrade.find(item => item.id === id)
+      return {
+        ...state,
+        txDetail
       }
     }
   },
