@@ -48,10 +48,25 @@ const OuterSend = function(props) {
   }, [])
   useEffect(() => {
     if (!isEmptyObject(trx)) {
-      console.log(Object.assign(trx, { gasPrice, gas })) //eslint-disable-line
-      setTx(Object.assign(trx, { gasPrice, gas }))
+      const trxTemp = Object.assign(trx, { gasPrice, gas })
+      console.log(trxTemp) //eslint-disable-line
+      setTx(trxTemp)
+      getGasLimit(trxTemp)
     }
   }, [trx])
+
+  const getGasLimit = data => {
+    //同步数据
+    dispatch({
+      type: 'send/merge',
+      payload: data
+    })
+    //获取gasLimit
+    dispatch({
+      type: 'send/getGasLimit',
+      payload: data
+    })
+  }
   return (
     <Fragment>
       <Header title={'发送VNT（VNT主网）'} />

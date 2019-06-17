@@ -41,7 +41,8 @@ export default {
           payload: true
         })
         const tx = yield select(state => state.send.tx)
-        const id = yield signThenSendTransaction({ tx: { ...tx } })
+        const addr = yield select(state => state.user.addr)
+        const id = yield signThenSendTransaction({ tx: { ...tx }, addr })
         yield put({
           type: 'send/clearTx'
         })
