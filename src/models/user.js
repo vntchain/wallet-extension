@@ -107,6 +107,10 @@ export default {
           type: 'user/getAccountBalance',
           payload: { addr }
         })
+        //重新筛选当前addr下的交易列表
+        yield put({
+          type: 'user/filterCurrentTrade'
+        })
       } catch (e) {
         message.error(e.message)
         console.log(e) //eslint-disable-line
@@ -191,6 +195,9 @@ export default {
         yield put({
           type: 'user/setUserAddr',
           payload: addr
+        })
+        yield put({
+          type: 'user/getAccounts'
         })
       } catch (e) {
         message.error(e.message)
