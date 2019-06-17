@@ -52194,7 +52194,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                 console.log("background: receive inpage sendTransaction")
                 console.log(msg) 
 
-                popup.trx = msg.data.data
+                popup.trx = msg.data.data.payload.params[0]
                 chrome.storage.sync.set({'popup': popup}, function(){
                     console.log('updateState: update popup info')
                 })
@@ -52332,7 +52332,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                     updateState()
                     chrome.tabs.query({active: true},function(tabArray) {
                         for (var i = 0; i < tabArray.length; i++) {
-                            chrome.tabs.sendMessage(tabArray[i].id, {confirmAuthorization: true});
+                            chrome.tabs.sendMessage(tabArray[i].id, {url: msg.data.url, confirmAuthorization: true});
                         }
                         
                     });
@@ -52341,7 +52341,7 @@ chrome.runtime.onConnect.addListener(function(port) {
     
                     chrome.tabs.query({active: true},function(tabArray) {
                         for (var i = 0; i < tabArray.length; i++) {
-                            chrome.tabs.sendMessage(tabArray[i].id, {confirmAuthorization: false});
+                            chrome.tabs.sendMessage(tabArray[i].id, {url: msg.data.url, confirmAuthorization: false});
                         }
                     });
                 }
