@@ -108,8 +108,8 @@ const OuterSend = function(props) {
   )
 }
 
-export default connect(({ price, user, popup }) => ({
+export default connect(({ price, send, popup }) => ({
   price,
-  user,
+  send,
   popup
 }))(OuterSend)
