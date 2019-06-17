@@ -18,6 +18,12 @@ const OuterSend = function(props) {
     popup: { popup: trx }
   } = props
   const port = global.chrome.runtime.connect({ name: 'popup' })
+  port.onMessage.addListener(function(msg) {
+    console.log('send msg listened: ' + JSON.stringify(msg)) //eslint-disable-line
+  })
+  port.onDisconnect.addListener(function(msg) {
+    console.log('send Port disconnected: ' + JSON.stringify(msg)) //eslint-disable-line
+  })
   const [tx, setTx] = useState(null)
   const handleSend = status => {
     port.postMessage({
@@ -88,8 +94,8 @@ const OuterSend = function(props) {
               <div className={styles.remarks}>{tx.remarks}</div>
             </div>
             <BaseModalFooter
-              onCancel={handleSend(false)}
-              onOk={handleSend(true)}
+              onCancel={() => handleSend(false)}
+              onOk={() => handleSend(true)}
               cancelText="拒绝"
               okText="同意"
             />

@@ -14,6 +14,12 @@ const OuterAuth = function(props) {
     popup: { popup }
   } = props
   const port = global.chrome.runtime.connect({ name: 'popup' })
+  port.onMessage.addListener(function(msg) {
+    console.log('auth msg listened: ' + JSON.stringify(msg)) //eslint-disable-line
+  })
+  port.onDisconnect.addListener(function(msg) {
+    console.log('auth Port disconnected: ' + JSON.stringify(msg)) //eslint-disable-line
+  })
   const handleAuth = status => {
     port.postMessage({
       src: 'popup',
@@ -50,8 +56,8 @@ const OuterAuth = function(props) {
             ]}
           />
           <BaseModalFooter
-            onCancel={handleAuth(false)}
-            onOk={handleAuth(true)}
+            onCancel={() => handleAuth(false)}
+            onOk={() => handleAuth(true)}
             cancelText="拒绝"
             okText="同意"
           />
