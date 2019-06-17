@@ -21,6 +21,7 @@ const OuterAuth = function(props) {
     console.log('auth Port disconnected: ' + JSON.stringify(msg)) //eslint-disable-line
   })
   const handleAuth = status => {
+    console.log('popup', popup) //eslint-disable-line
     port.postMessage({
       src: 'popup',
       dst: 'background',
@@ -52,7 +53,9 @@ const OuterAuth = function(props) {
           <BaseTip
             className={styles.tip}
             tips={[
-              'Dice2Win.com正在请求获得您的地址，以便它提供后续服务。这意味着它能够查询到您在该地址的资产数量及相关交易。如果它想从您的地址转移资产，那么每次转账都需要您重新批准。'
+              `${
+                popup.url
+              }正在请求获得您的地址，以便它提供后续服务。这意味着它能够查询到您在该地址的资产数量及相关交易。如果它想从您的地址转移资产，那么每次转账都需要您重新批准。`
             ]}
           />
           <BaseModalFooter
