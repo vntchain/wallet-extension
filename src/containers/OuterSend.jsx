@@ -20,7 +20,9 @@ const OuterSend = function(props) {
     send: {
       tx: { gasPrice, gas }
     },
-    popup: { popup: trx }
+    popup: {
+      popup: { trx }
+    }
   } = props
   const port = global.chrome.runtime.connect({ name: 'popup' })
   port.onMessage.addListener(function(msg) {
