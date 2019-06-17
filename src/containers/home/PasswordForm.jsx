@@ -22,11 +22,8 @@ const PasswordForm = Form.create({ name: 'word' })(props => {
     <Form hideRequiredMark={true} onSubmit={handleSubmit}>
       <FormItem label={<BaseLabel label={'请输入密码'} />}>
         {getFieldDecorator('password', {
-          rules: [
-            { required: true, message: '请输入密码' },
-            { min: 8, message: '密码长度不足' }
-          ]
-        })(<InputItem type="password" placeholder="请输入" />)}
+          rules: [{ required: true, message: '请输入密码' }]
+        })(<InputItem type="password" maxLength={16} placeholder="请输入" />)}
       </FormItem>
       <FormItem>
         <BaseModalFooter

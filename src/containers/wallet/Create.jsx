@@ -5,6 +5,7 @@ import { Form, Checkbox, message } from 'antd'
 import { Button, InputItem } from 'antd-mobile'
 import BaseLabel from '../../component/layout/BaseLabel'
 import paths from '../../utils/paths'
+import { passwordPatten } from '../../constants/pattens'
 import styles from './Create.scss'
 const FormItem = Form.Item
 
@@ -39,14 +40,19 @@ const CreateForm = function(props) {
   }
   return (
     <Form hideRequiredMark={true} onSubmit={handleSubmit}>
-      <FormItem label={<BaseLabel label={'新密码'} tip={'(至少8个字符)'} />}>
+      <FormItem
+        label={
+          <BaseLabel label={'新密码'} tip={'(8-16位字符，包含字母和数字)'} />
+        }
+      >
         {getFieldDecorator('password', {
           rules: [
             { required: true, message: '请输入新密码' },
-            { min: 8, message: '密码长度不足' },
+            { min: 8, max: 16, message: '请输入8-16位字符' },
+            { pattern: passwordPatten, message: '密码包含字母和数字' },
             { validator: validateToNextPassword }
           ]
-        })(<InputItem type="password" placeholder="请输入" />)}
+        })(<InputItem type="password" maxLength={16} placeholder="请输入" />)}
       </FormItem>
       <FormItem label={<BaseLabel label={'确认密码'} />}>
         {getFieldDecorator('confirmPassword', {
@@ -54,7 +60,7 @@ const CreateForm = function(props) {
             { required: true, message: '请确认密码' },
             { validator: compareToFirstPassword }
           ]
-        })(<InputItem type="password" placeholder="请输入" />)}
+        })(<InputItem type="password" maxLength={16} placeholder="请输入" />)}
       </FormItem>
       <FormItem>
         {getFieldDecorator('agree', {

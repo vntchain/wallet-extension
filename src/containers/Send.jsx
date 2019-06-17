@@ -7,6 +7,7 @@ import CommonPadding from '../component/layout/CommonPadding'
 import Header from '../component/layout/Header'
 import BaseLabel from '../component/layout/BaseLabel'
 import paths from '../utils/paths'
+import { addrPatten, balancePatten } from '../constants/pattens'
 import { splitLongStr, calCommission, calBigMulti } from '../utils/helper'
 import styles from './Send.scss'
 
@@ -46,23 +47,31 @@ const SendForm = Form.create({ name: 'login' })(props => {
   const validateToAddr = (rule, value, callback) => {
     if (!value) {
       callback('请输入地址')
-    } else {
-      handleGetGasLimit()
-      callback()
+      return
     }
+    if (!value.test(addrPatten)) {
+      callback('请输入正确的地址')
+      return
+    }
+    handleGetGasLimit()
+    callback()
   }
   const validateBalance = (rule, value, callback) => {
-    const balanceReg = new RegExp(/^\d+(.\d+)?$/)
     if (!value) {
       callback('请输入数量')
-    } else if (!balanceReg.test(value)) {
-      callback('请输入正确的数量')
-    } else {
-      //设置vnt对应cny
-      setBalanceCNY(calBigMulti(value, vntToCny))
-      handleGetGasLimit()
-      callback()
+      return
     }
+    if (!balancePatten.test(value)) {
+      callback('请输入正确的数量')
+      return
+    }
+    if (value > accountBalance) {
+      callback('发送数量大于持有余额')
+    }
+    //设置vnt对应cny
+    setBalanceCNY(calBigMulti(value, vntToCny))
+    handleGetGasLimit()
+    callback()
   }
   const handleGetGasLimit = () => {
     const to = getFieldValue('to')

@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import BaseLabel from '../../component/layout/BaseLabel'
 import { Form } from 'antd'
 import { Button, InputItem, TextareaItem } from 'antd-mobile'
+import { passwordPatten } from '../../constants/pattens'
 const FormItem = Form.Item
 // const { TextArea } = Input
 
@@ -42,14 +43,19 @@ const WordForm = Form.create({ name: 'word' })(props => {
           />
         )}
       </FormItem>
-      <FormItem label={<BaseLabel label={'新密码'} tip={'(至少8个字符)'} />}>
+      <FormItem
+        label={
+          <BaseLabel label={'新密码'} tip={'(8-16位字符，包含字母和数字)'} />
+        }
+      >
         {getFieldDecorator('passwd', {
           rules: [
             { required: true, message: '请输入新密码' },
-            { min: 8, message: '密码长度不足' },
+            { min: 8, max: 16, message: '请输入8-16位字符' },
+            { pattern: passwordPatten, message: '密码包含字母和数字' },
             { validator: validateToNextPassword }
           ]
-        })(<InputItem type="password" placeholder="请输入" />)}
+        })(<InputItem type="password" maxLength={16} placeholder="请输入" />)}
       </FormItem>
       <FormItem label={<BaseLabel label={'确认密码'} />}>
         {getFieldDecorator('confirmPassword', {
@@ -57,7 +63,7 @@ const WordForm = Form.create({ name: 'word' })(props => {
             { required: true, message: '请确认密码' },
             { validator: compareToFirstPassword }
           ]
-        })(<InputItem type="password" placeholder="请输入" />)}
+        })(<InputItem type="password" maxLength={16} placeholder="请输入" />)}
       </FormItem>
       <FormItem>
         <Button type="primary" onClick={handleSubmit}>

@@ -41,6 +41,10 @@
     color: $font-color;
     font-weight: 600;
   }
+  .error {
+    font-size: 0.14rem;
+    color: $error-color;
+  }
 }
 .total {
   & > div:not(:last-child) {

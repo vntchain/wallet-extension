@@ -1,17 +1,19 @@
 import React, { Fragment, useState, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { Input, Button } from 'antd'
+import { Input, Button, message } from 'antd'
 import CommonPadding from '../component/layout/CommonPadding'
 import Header from '../component/layout/Header'
 import BaseLabel from '../component/layout/BaseLabel'
 import BaseTip from '../component/layout/BaseTip'
 import { calCommission, calBigMulti } from '../utils/helper'
 import paths from '../utils/paths'
+import { balancePatten } from '../constants/pattens'
 import styles from './Commission.scss'
 
 const Send = function(props) {
   const {
+    user: { accountBalance },
     price: { vntToCny },
     send: {
       tx: { gasPrice, gas, value },
@@ -31,10 +33,20 @@ const Send = function(props) {
             ...state,
             gasPrice: action.payload
           }
+        case 'setPriceError':
+          return {
+            ...state,
+            priceError: action.payload
+          }
         case 'setGasLimit':
           return {
             ...state,
             gas: action.payload
+          }
+        case 'setLimitError':
+          return {
+            ...state,
+            limitError: action.payload
           }
         case 'merge':
           return {
@@ -47,7 +59,9 @@ const Send = function(props) {
     },
     {
       gasPrice,
-      gas
+      priceError: '',
+      gas,
+      limitError: ''
     }
   )
   const handleSubmit = () => {
@@ -73,7 +87,15 @@ const Send = function(props) {
     })
   }
   const handlePriceChange = val => {
-    //todo:验证
+    if (val && !balancePatten.test(val)) {
+      message.info('非法字符')
+      return
+    }
+    const { gas } = state
+    //转账费+手续费不能高于余额
+    if (calCommission(val, gas) > accountBalance) {
+      return
+    }
     innerDispatch({
       type: 'setGasPrice',
       payload: val
@@ -81,6 +103,24 @@ const Send = function(props) {
     setCommission(calCommission(val, gas))
   }
   const handleLimitChange = val => {
+    if (!balancePatten.test(val)) {
+      message.info('非法字符')
+      return
+    }
+    const { gasPrice } = state
+    if (val < 21000) {
+      innerDispatch({
+        type: 'merge',
+        payload: {
+          gas: 21000
+        }
+      })
+      return
+    }
+    //转账费+手续费不能高于余额
+    if (calCommission(gasPrice, val) > accountBalance) {
+      return
+    }
     innerDispatch({
       type: 'setGasLimit',
       payload: val
@@ -119,6 +159,7 @@ const Send = function(props) {
                   value={state.gasPrice}
                   onChange={e => handlePriceChange(e.target.value)}
                 />
+                <span className={styles.error}>{state.priceError}</span>
               </div>
               <div>
                 <label>Gas Limit</label>
@@ -127,6 +168,7 @@ const Send = function(props) {
                   value={state.gas}
                   onChange={e => handleLimitChange(e.target.value)}
                 />
+                <span className={styles.error}>{state.limitError}</span>
               </div>
             </div>
             <BaseTip
@@ -167,7 +209,8 @@ const Send = function(props) {
 }
 
 export default withRouter(
-  connect(({ price, send }) => ({
+  connect(({ user, price, send }) => ({
+    user,
     price,
     send
   }))(Send)
