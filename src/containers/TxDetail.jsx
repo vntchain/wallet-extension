@@ -5,6 +5,7 @@ import Header from '../component/layout/Header'
 import CommonPadding from '../component/layout/CommonPadding'
 import Copier from '../component/Copier'
 import paths from '../utils/paths'
+import { calBigMulti } from '../utils/helper'
 import styles from './TxDetail.scss'
 
 const TxDetail = function(props) {
@@ -17,11 +18,18 @@ const TxDetail = function(props) {
     toCopyRef
   }
   const {
-    user: { currTrade }
+    user: { currTrade },
+    price: { vntToCny }
   } = props
   console.log(props) //eslint-disable-line
   const id = props.match.params.id
   const txDetail = currTrade.find(item => item.id === id)
+  const renderTotal = total => (
+    <div>
+      <div className={styles.cont}>{total}</div>
+      <div className={styles.info}>{calBigMulti(total, vntToCny)}</div>
+    </div>
+  )
   const DetailList = [
     {
       status: {
@@ -53,7 +61,8 @@ const TxDetail = function(props) {
       gasUsed: 'Gas Used',
       gasPrice: 'Gas Price（GWEI）',
       total: {
-        label: '总量'
+        label: '总量',
+        render: text => renderTotal(text)
       }
     }
   ]
@@ -95,4 +104,6 @@ const TxDetail = function(props) {
   )
 }
 
-export default withRouter(connect(({ user }) => ({ user }))(TxDetail))
+export default withRouter(
+  connect(({ user, price }) => ({ user, price }))(TxDetail)
+)

@@ -53,8 +53,8 @@ const App = function(props) {
         path={`${paths.txDetail}/:id`}
         component={requireAuth(TxDetail)}
       />
-      <Route exact path={paths.outerAuth} component={OuterAuth} />
-      <Route exact path={paths.outerSend} component={OuterSend} />
+      <Route exact path={paths.outerAuth} component={requireAuth(OuterAuth)} />
+      <Route exact path={paths.outerSend} component={requireAuth(OuterSend)} />
       <Route path={paths.wallet} component={Wallet} />
       <Redirect to="/" />
     </Switch>
