@@ -16,6 +16,7 @@ import styles from './OuterSend.scss'
 const OuterSend = function(props) {
   const {
     dispatch,
+    user: { accountBalance },
     price: { vntToCny = 1 },
     send: {
       tx: { gasPrice, gas }
@@ -79,9 +80,9 @@ const OuterSend = function(props) {
               <label>来自：</label>
               <div>
                 <div className={styles.cont}>{splitLongStr(tx.from)}</div>
-                <div className={styles.info}>{`${tx.balance} VNT`}</div>
+                <div className={styles.info}>{`${accountBalance} VNT`}</div>
                 <div className={styles.info}>
-                  {`￥ ${calBigMulti(tx.balance, vntToCny)}`}
+                  {`￥ ${calBigMulti(accountBalance, vntToCny)}`}
                 </div>
               </div>
             </div>
@@ -136,7 +137,8 @@ const OuterSend = function(props) {
   )
 }
 
-export default connect(({ price, send, popup }) => ({
+export default connect(({ user, price, send, popup }) => ({
+  user,
   price,
   send,
   popup
