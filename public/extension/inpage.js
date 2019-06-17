@@ -1035,7 +1035,7 @@ window.vnt.logout = function(callback) {
 
   window.addEventListener('message', function(e) {
   
-    if (e.data.src ==="content" && e.data.type === "web_logout" && !!e.data.data){
+    if (e.data.src ==="inpage" && e.data.type === "web_logout" && !!e.data.data){
       console.log('inpage: message web_logout')
       // var result = {id: id, jsonrpc: jsonrpc, result: e.data.data.logout}
       callback(null, e.data.data.logout)
@@ -1079,12 +1079,14 @@ window.addEventListener('message', function(e) {
     walletUnlock = e.data.data.isWalletUnlock 
     // localStorage.setItem('walletUnlock', e.data.data.isWalletUnlock)
 
+    if (!walletUnlock) {
+      window.postMessage({
+        "src": "inpage",
+        "type": "web_logout",
+        "data": {logout: true}
+      }, "*")
+    }
    
-    window.postMessage({
-      "src": "inpage",
-      "type": "web_logout",
-      "data": {logout: true}
-    }, "*")
     
   } else if (e.data.src === "background" && e.data.data.type === "inpage_get_walletUnlock_response"){
     console.log('inpage: message inpage_get_walletUnlock_response')
