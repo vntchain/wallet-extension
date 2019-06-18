@@ -52019,7 +52019,12 @@ function trxStateTimer() {
 
         if (stateChanged) {
             chrome.runtime.sendMessage({type: "trx_state_changed"})
-            chrome.notifications.create({message: "交易成功！"})
+            chrome.notifications.create({
+                'type': 'basic',
+                'title': 'vnt wallet',
+                'iconUrl': chrome.extension.getURL('./extension/demo_extension.png'),
+                'message': "交易成功！",
+                })
         }
     }
 }
