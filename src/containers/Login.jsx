@@ -43,7 +43,7 @@ const LoginForm = Form.create({ name: 'login' })(props => {
 const Login = function(props) {
   const {
     dispatch,
-    user: { isLoginDisable, envUrl }
+    user: { isLoginDisable, envObj }
   } = props
   const handleLogin = data => {
     dispatch({
@@ -64,13 +64,12 @@ const Login = function(props) {
       <Select
         onChange={handleNetChange}
         suffixIcon={<img src={imgs.suffix} alt="" />}
-        value={envUrl}
+        value={envObj.chainId}
       >
-        {Object.keys(netList).map(key => {
-          const item = netList[key]
+        {netList.map((item, index) => {
           return (
-            <Option value={item.url} key={key}>
-              {item.label}
+            <Option value={index + 1} key={index}>
+              {item}
             </Option>
           )
         })}

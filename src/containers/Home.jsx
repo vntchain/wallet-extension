@@ -12,7 +12,7 @@ import paths from '../utils/paths'
 
 const Home = function(props) {
   const {
-    user: { addr, currTrade, accountBalance, envUrl },
+    user: { addr, currTrade, accountBalance, envObj },
     price: { vntToCny },
     dispatch,
     history
@@ -34,7 +34,7 @@ const Home = function(props) {
     history.push(paths.send)
   }
   const handleLink = id => {
-    window.open(`${envUrl}/transaction${id}`)
+    window.open(`${envObj.url}/transaction${id}`)
   }
   return (
     <Fragment>
