@@ -44712,147 +44712,98 @@ utils.encode = function encode(arr, enc) {
 };
 
 },{}],133:[function(require,module,exports){
-'use strict';
+'use strict'
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+const extend = require('xtend')
+const DuplexStream = require('stream').Duplex
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+class ObservableStore extends DuplexStream {
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var extend = require('xtend');
-var DuplexStream = require('stream').Duplex;
-
-var ObservableStore = function (_DuplexStream) {
-  _inherits(ObservableStore, _DuplexStream);
-
-  function ObservableStore() {
-    var initState = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    _classCallCheck(this, ObservableStore);
-
-    // dont buffer outgoing updates
-    var _this = _possibleConstructorReturn(this, (ObservableStore.__proto__ || Object.getPrototypeOf(ObservableStore)).call(this, {
+  constructor (initState = {}) {
+    // construct as duplex stream
+    super({
       // pass values not serializations
       objectMode: true,
       // a writer can end and we are still readable
-      allowHalfOpen: true
-    }));
-    // construct as duplex stream
-
-
-    _this.resume();
+      allowHalfOpen: true,
+    })
+    // dont buffer outgoing updates
+    this.resume()
     // set init state
-    _this._state = initState;
-    return _this;
+    this._state = initState
   }
 
   // wrapper around internal getState
+  getState () {
+    return this._getState()
+  }
+  
+  // wrapper around internal putState
+  putState (newState) {
+    this._putState(newState)
+    this.emit('update', newState)
+    this.push(this.getState())
+  }
 
-
-  _createClass(ObservableStore, [{
-    key: 'getState',
-    value: function getState() {
-      return this._getState();
+  updateState (partialState) {
+    // if non-null object, merge
+    if (partialState && typeof partialState === 'object') {
+      const state = this.getState()
+      const newState = Object.assign({}, state, partialState)
+      this.putState(newState)
+    // if not object, use new value
+    } else {
+      this.putState(partialState)
     }
+  }
 
-    // wrapper around internal putState
+  // subscribe to changes
+  subscribe (handler) {
+    this.on('update', handler)
+  }
 
-  }, {
-    key: 'putState',
-    value: function putState(newState) {
-      this._putState(newState);
-      this.emit('update', newState);
-      this.push(this.getState());
-    }
-  }, {
-    key: 'updateState',
-    value: function updateState(partialState) {
-      // if non-null object, merge
-      if (partialState && (typeof partialState === 'undefined' ? 'undefined' : _typeof(partialState)) === 'object') {
-        var state = this.getState();
-        var newState = Object.assign({}, state, partialState);
-        this.putState(newState);
-        // if not object, use new value
-      } else {
-        this.putState(partialState);
-      }
-    }
+  // unsubscribe to changes
+  unsubscribe (handler) {
+    this.removeListener('update', handler)
+  }
 
-    // subscribe to changes
+  //
+  // private
+  //
 
-  }, {
-    key: 'subscribe',
-    value: function subscribe(handler) {
-      this.on('update', handler);
-    }
+  // read from persistence
+  _getState () {
+    return this._state
+  }
 
-    // unsubscribe to changes
+  // write to persistence
+  _putState (newState) {
+    this._state = newState
+  }
 
-  }, {
-    key: 'unsubscribe',
-    value: function unsubscribe(handler) {
-      this.removeListener('update', handler);
-    }
+  //
+  // stream implementation
+  //
 
-    //
-    // private
-    //
+  // emit current state on new destination
+  pipe (dest, options) {
+    const result = DuplexStream.prototype.pipe.call(this, dest, options)
+    dest.write(this.getState())
+    return result
+  }
 
-    // read from persistence
+  // write from incomming stream to state
+  _write (chunk, encoding, callback) {
+    this.putState(chunk)
+    callback()
+  }
 
-  }, {
-    key: '_getState',
-    value: function _getState() {
-      return this._state;
-    }
+  // noop - outgoing stream is asking us if we have data we arent giving it
+  _read (size) { }
 
-    // write to persistence
+}
 
-  }, {
-    key: '_putState',
-    value: function _putState(newState) {
-      this._state = newState;
-    }
-
-    //
-    // stream implementation
-    //
-
-    // emit current state on new destination
-
-  }, {
-    key: 'pipe',
-    value: function pipe(dest, options) {
-      var result = DuplexStream.prototype.pipe.call(this, dest, options);
-      dest.write(this.getState());
-      return result;
-    }
-
-    // write from incomming stream to state
-
-  }, {
-    key: '_write',
-    value: function _write(chunk, encoding, callback) {
-      this.putState(chunk);
-      callback();
-    }
-
-    // noop - outgoing stream is asking us if we have data we arent giving it
-
-  }, {
-    key: '_read',
-    value: function _read(size) {}
-  }]);
-
-  return ObservableStore;
-}(DuplexStream);
-
-module.exports = ObservableStore;
+module.exports = ObservableStore
 
 },{"stream":335,"xtend":170}],134:[function(require,module,exports){
 exports.pbkdf2 = require('./lib/async')
@@ -45007,8 +44958,8 @@ module.exports = function (password, salt, iterations, keylen) {
   }
 }
 
-}).call(this,{"isBuffer":require("../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":281}],138:[function(require,module,exports){
+}).call(this,{"isBuffer":require("../../../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
+},{"../../../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":281}],138:[function(require,module,exports){
 var md5 = require('create-hash/md5')
 var RIPEMD160 = require('ripemd160')
 var sha = require('sha.js')
@@ -45895,8 +45846,8 @@ exports.isNumberInInterval = function (number, x, y, message) {
   if (number <= x || number >= y) throw RangeError(message)
 }
 
-}).call(this,{"isBuffer":require("../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
-},{"../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":281}],148:[function(require,module,exports){
+}).call(this,{"isBuffer":require("../../../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js")})
+},{"../../../../../../../../../../usr/local/lib/node_modules/browserify/node_modules/is-buffer/index.js":281}],148:[function(require,module,exports){
 'use strict'
 var Buffer = require('safe-buffer').Buffer
 var bip66 = require('bip66')
@@ -52230,7 +52181,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                 popup.trx = msg.data.data.payload.params[0]
                 popup.trx.value = util.fromWei(popup.trx.value, 'vnt')
                 if (popup.trx.gasPrice != undefined) {
-                    popup.trx.gasPrice = util.toDecimal(util.fromWei(tx.gasPrice, 'gwei'))
+                    popup.trx.gasPrice = util.toDecimal(util.fromWei(popup.trx.gasPrice, 'gwei'))
                 }
                 if (popup.trx.gas != undefined) {
                     popup.trx.gas = util.toDecimal(popup.trx.gas)
