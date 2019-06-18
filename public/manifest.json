@@ -1,5 +1,5 @@
 {
-  "name": "vntwallet",
+  "name": "VNT Wallet",
   "description" : "vntchain wallet extension",
   "version": "1.0",
   "browser_action": {
