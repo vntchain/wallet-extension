@@ -52349,7 +52349,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 
                 console.log("confirm_request_authorization")
                 if (!!msg.data.confirmAuthorization) {
-                   if (authUrl.indexOf(e.data.data.url) == -1) {
+                   if (authUrl.indexOf(msg.data.url) == -1) {
                         authUrl.push(msg.data.url)
                    }
 
