@@ -51340,12 +51340,12 @@ const store = require("obs-store")
 
 
 var network = {
-    mainnet: '',
-    testnet: 'http://47.104.173.117:8880'
+    mainnet: {url: 'https://hubscan.vnt.link/', chainId: 1},
+    testnet: {url: 'http://47.104.173.117:8880', chainId: 2}
 }
 // var provider = new vntProvider("http://localhost:8888")
-var providerUrl = network.testnet
-var provider = new vntProvider(providerUrl)
+var providerNet = network.testnet
+var provider = new vntProvider(providerNet.url)
 var selectedAddr = ''
 var is_wallet_exist = false
 var is_wallet_unlock = false
@@ -51903,15 +51903,20 @@ window.getTrxInfo = function getTrxInfo(obj) {
 /**
  * change the provider
  * 
- * @param {string} newprovider the new provider url
+ * @param {string} newprovider the new provider chainId
  */
 window.changeProvider = function changeProvider(obj) {
     var newprovider = obj.newprovider
 
-    if (newprovider != providerUrl) {
+    if (newprovider != providerNet.chainId) {
 
-        providerUrl = newprovider
-        provider = new vntProvider(providerUrl)
+        if (newprovider == network.testnet.chainId) {
+            providerNet = network.testnet
+        } else {
+            providerNet = network.mainnet
+        }
+        
+        provider = new vntProvider(providerNet.url)
         console.log("function: changeProvider")
             
         // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -51921,8 +51926,8 @@ window.changeProvider = function changeProvider(obj) {
         // });
 
         // provoidUrl
-        chrome.storage.sync.set({'providerUrl': providerUrl}, function(){
-            console.log('updateState: update providerUrl')
+        chrome.storage.sync.set({'providerNet': providerNet}, function(){
+            console.log('updateState: update providerNet')
         })
 
 
@@ -52014,6 +52019,7 @@ function trxStateTimer() {
 
         if (stateChanged) {
             chrome.runtime.sendMessage({type: "trx_state_changed"})
+            chrome.notifications.create({message: "交易成功！"})
         }
     }
 }
@@ -52052,7 +52058,7 @@ function resetState() {
 
     account_info = {accounts:[], trxs:{}}
     selectedAddr = ''
-    providerUrl = network.testnet
+    providerNet = network.testnet
     is_wallet_exist = false
     is_wallet_unlock = false
     authUrl = []
@@ -52093,12 +52099,12 @@ function restoreState() {
         }
     })
 
-    chrome.storage.sync.get('providerUrl', function(obj){
-        var backup_providerUrl = obj.providerUrl
-        if (backup_providerUrl !== undefined) {
+    chrome.storage.sync.get('providerNet', function(obj){
+        var backup_providerNet = obj.providerNet
+        if (backup_providerNet !== undefined) {
             console.log("restoreState: provider url")
-            providerUrl = backup_providerUrl
-            provider = new vntProvider(providerUrl)
+            providerNet = backup_providerNet
+            provider = new vntProvider(providerNet.url)
         }
     })
 
@@ -52149,8 +52155,8 @@ function updateState() {
     })
 
     // provoidUrl
-    chrome.storage.sync.set({'providerUrl': providerUrl}, function(){
-        console.log('updateState: update providerUrl')
+    chrome.storage.sync.set({'providerNet': providerNet}, function(){
+        console.log('updateState: update providerNet')
     })
 
     // wallet state
@@ -52194,9 +52200,10 @@ chrome.runtime.onInstalled.addListener(({reason}) => {
     console.log("background: in onInstalled")
 
     setInterval(trxStateTimer, 3000)
-    // chrome.storage.sync.set({selectedAccount: "", : false}, function() {
-    //     console.log('initial state value');
-    // })
+     // provoidUrl
+     chrome.storage.sync.set({'providerNet': providerNet}, function(){
+        console.log('updateState: update providerNet')
+    })
 })
 chrome.runtime.onSuspend.addListener(function(){
     console.log("background: suspend event update state")

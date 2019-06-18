@@ -970,13 +970,13 @@ InpageHttpProvider.prototype.isConnected = function () {
 
 
 var network = {
-  mainnet: '',
-  testnet: 'http://47.104.173.117:8880'
+  mainnet: {url: 'http://mainnet.com', chainId: 1},
+  testnet: {url: 'http://47.104.173.117:8880', chainId: 2}
 }
 var selectedAccount = '';
-var curProviderUrl = network.testnet
+var curProviderNet = network.testnet
 var walletUnlock = false;
-window.vnt = new Vnt(new InpageHttpProvider(curProviderUrl))
+window.vnt = new Vnt(new InpageHttpProvider(curProviderNet.url))
 var authUrl = []
 
 window.vnt.requestAuthorization = function(callback) {
@@ -1022,7 +1022,7 @@ window.vnt.requestAuthorization = function(callback) {
 
 window.vnt.getNetworkUrl = function(callback) {
 
-  callback(null, curProviderUrl)
+  callback(null, curProviderNet)
 
   window.addEventListener('message', function(e) {
   
@@ -1052,15 +1052,15 @@ window.vnt.logout = function(callback) {
 
 window.addEventListener('message', function(e) {
   // e  contains the transferred data 
-  if (e.data.src === "content" && e.data.type === "change_providerUrl" && !!e.data.data) {
-    console.log('inpage: message change_providerUrl')
-    curProviderUrl = e.data.data.providerUrl || network.testnet
-    window.vnt.setProvider(new InpageHttpProvider(curProviderUrl))
+  if (e.data.src === "content" && e.data.type === "change_providerNet" && !!e.data.data) {
+    console.log('inpage: message change_providerNet')
+    curProviderNet = e.data.data.providerNet || network.testnet
+    window.vnt.setProvider(new InpageHttpProvider(curProviderNet.url))
 
     window.postMessage({
       "src": "inpage",
       "type": "web_network_change",
-      "data": {networkChange: curProviderUrl}
+      "data": {networkChange: curProviderNet}
     }, "*")
 
   } else if (e.data.src === "content" && e.data.type === "change_selectedAddr" && !!e.data.data){
