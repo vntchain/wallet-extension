@@ -18,9 +18,7 @@ const OuterSend = function(props) {
     dispatch,
     user: { accountBalance },
     price: { vntToCny = 1 },
-    send: {
-      tx: { gasPrice, gas }
-    },
+    send: { tx },
     popup: {
       popup: { trx }
     }
@@ -32,13 +30,17 @@ const OuterSend = function(props) {
   port.onDisconnect.addListener(function(msg) {
     console.log('send Port disconnected: ' + JSON.stringify(msg)) //eslint-disable-line
   })
-  const [tx, setTx] = useState(null)
+  const [txObj, setTxObj] = useState(tx)
   const handleSend = status => {
     port.postMessage({
       src: 'popup',
       dst: 'background',
       type: 'confirm_send_trx',
       data: { confirmSendTrx: status, trx: tx }
+    })
+    //清除数据
+    dispatch({
+      type: 'send/clearTx'
     })
   }
   useEffect(() => {
@@ -51,9 +53,9 @@ const OuterSend = function(props) {
   }, [])
   useEffect(() => {
     if (trx && !isEmptyObject(trx)) {
-      const trxTemp = Object.assign({}, { gasPrice, gas }, trx)
+      const trxTemp = Object.assign({}, tx, trx)
       console.log(trxTemp) //eslint-disable-line
-      setTx(trxTemp)
+      setTxObj(trxTemp)
       getGasLimit({ tx: trxTemp })
     }
   }, [trx])
@@ -65,21 +67,22 @@ const OuterSend = function(props) {
       payload: data
     })
     //获取gasLimit
-    dispatch({
-      type: 'send/getGasLimit',
-      payload: data
-    })
+    if (!data.tx.gas)
+      dispatch({
+        type: 'send/getGasLimit',
+        payload: data
+      })
   }
   return (
     <Fragment>
       <Header title={'发送VNT（VNT主网）'} />
       <div className={styles.container}>
-        {tx ? (
+        {txObj ? (
           <CommonPadding>
             <div className={styles['send-item']}>
               <label>来自：</label>
               <div>
-                <div className={styles.cont}>{splitLongStr(tx.from)}</div>
+                <div className={styles.cont}>{splitLongStr(txObj.from)}</div>
                 <div className={styles.info}>{`${accountBalance} VNT`}</div>
                 <div className={styles.info}>
                   {`￥ ${calBigMulti(accountBalance, vntToCny)}`}
@@ -88,14 +91,14 @@ const OuterSend = function(props) {
             </div>
             <div className={styles['send-item']}>
               <label>发送至：</label>
-              <div className={styles.cont}>{splitLongStr(tx.to)}</div>
+              <div className={styles.cont}>{splitLongStr(txObj.to)}</div>
             </div>
             <div className={styles['send-item']}>
               <label>数量：</label>
               <div>
-                <div className={styles.info}>{`${tx.value} VNT`}</div>
+                <div className={styles.info}>{`${txObj.value} VNT`}</div>
                 <div className={styles.remarks}>
-                  {`￥ ${calBigMulti(tx.value, vntToCny)}`}
+                  {`￥ ${calBigMulti(txObj.value, vntToCny)}`}
                 </div>
               </div>
             </div>
@@ -104,11 +107,11 @@ const OuterSend = function(props) {
               <div className={styles.inner}>
                 <div>
                   <div className={styles.cont}>
-                    {`${calCommission(tx.gasPrice, tx.gas)} VNT`}
+                    {`${calCommission(txObj.gasPrice, txObj.gas)} VNT`}
                   </div>
                   <div className={styles.remarks}>
                     {`￥ ${calBigMulti(
-                      calCommission(tx.gasPrice, tx.gas),
+                      calCommission(txObj.gasPrice, txObj.gas),
                       vntToCny
                     )}`}
                   </div>
@@ -120,7 +123,7 @@ const OuterSend = function(props) {
             </div>
             <div className={styles['send-item']}>
               <label>备注：</label>
-              <div className={styles.remarks}>{tx.data}</div>
+              <div className={styles.remarks}>{txObj.data}</div>
             </div>
             <BaseModalFooter
               onCancel={() => handleSend(false)}
