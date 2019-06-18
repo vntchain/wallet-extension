@@ -52217,6 +52217,12 @@ chrome.runtime.onConnect.addListener(function(port) {
 
                 popup.trx = msg.data.data.payload.params[0]
                 popup.trx.value = util.fromWei(popup.trx.value, 'vnt')
+                if (popup.trx.gasPrice != undefined) {
+                    popup.trx.gasPrice = util.toDecimal(util.fromWei(tx.gasPrice, 'gwei'))
+                }
+                if (popup.trx.gas != undefined) {
+                    popup.trx.gas = util.toDecimal(popup.trx.gas)
+                }
                 chrome.storage.sync.set({'popup': popup}, function(){
                     console.log('updateState: update popup info')
                 })
