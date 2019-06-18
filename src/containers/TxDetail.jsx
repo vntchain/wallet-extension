@@ -41,6 +41,12 @@ const TxDetail = function(props) {
       type: 'user/filterTradeDetail',
       payload: id
     })
+    return () => {
+      dispatch({
+        type: 'user/setTxDetail',
+        payload: {}
+      })
+    }
   }, [])
   const DetailList = [
     {

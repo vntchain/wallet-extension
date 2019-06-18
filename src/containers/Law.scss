@@ -4,6 +4,11 @@
   overflow-y: auto;
 }
 .law {
+  padding: 0.4rem 0;
   font-size: 0.14rem;
   color: $font-color-light;
+  p {
+    white-space: pre-line;
+    line-height: 0.2rem;
+  }
 }

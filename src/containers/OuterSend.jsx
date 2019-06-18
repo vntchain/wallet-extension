@@ -51,10 +51,10 @@ const OuterSend = function(props) {
   }, [])
   useEffect(() => {
     if (trx && !isEmptyObject(trx)) {
-      const trxTemp = Object.assign(trx, { gasPrice, gas })
+      const trxTemp = Object.assign({}, { gasPrice, gas }, trx)
       console.log(trxTemp) //eslint-disable-line
       setTx(trxTemp)
-      getGasLimit(trxTemp)
+      getGasLimit({ tx: trxTemp })
     }
   }, [trx])
 
@@ -120,7 +120,7 @@ const OuterSend = function(props) {
             </div>
             <div className={styles['send-item']}>
               <label>备注：</label>
-              <div className={styles.remarks}>{tx.remarks}</div>
+              <div className={styles.remarks}>{tx.data}</div>
             </div>
             <BaseModalFooter
               onCancel={() => handleSend(false)}
