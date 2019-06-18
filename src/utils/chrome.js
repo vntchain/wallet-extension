@@ -114,8 +114,8 @@ export const getAccounts = function*() {
   return yield createGetPromise('account_info')
 }
 //获取钱包登录信息
-export const getProviderUrl = function*() {
-  return yield createGetPromise('providerUrl')
+export const providerNet = function*() {
+  return yield createGetPromise('providerNet')
 }
 //获取钱包登录信息
 export const popup = function*() {

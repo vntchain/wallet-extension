@@ -9,7 +9,7 @@ import styles from './Setting.scss'
 
 const Setting = function(props) {
   const {
-    user: { addr, accounts, envUrl },
+    user: { addr, accounts, envObj },
     history,
     dispatch
   } = props
@@ -52,12 +52,12 @@ const Setting = function(props) {
       登出钱包: () => loginOut()
     }
   ]
-  const handleChangeEnv = url => {
-    if (url !== envUrl) {
+  const handleChangeEnv = id => {
+    if (id !== envObj.chainId) {
       dispatch({
         type: 'user/setProviderUrl',
         payload: {
-          newprovider: url
+          newprovider: id
         }
       })
       setIsSetShow(false)
@@ -88,17 +88,17 @@ const Setting = function(props) {
         style={{ display: showDisplay() }}
       >
         <div className={styles['setting-list']}>
-          {Object.keys(netList).map(item => {
-            const net = netList[item]
+          {netList.map((item, index) => {
+            const id = index + 1
             return (
               <div
                 className={`${styles['setting-item']} ${
-                  envUrl === net.url ? styles['setting-item_active'] : ''
+                  envObj.chainId === id ? styles['setting-item_active'] : ''
                 }`}
-                key={item}
-                onClick={() => handleChangeEnv(net.url)}
+                key={index}
+                onClick={() => handleChangeEnv(id)}
               >
-                {net.label}
+                {item}
               </div>
             )
           })}

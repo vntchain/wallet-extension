@@ -7,7 +7,7 @@ import {
   getAddr,
   getAccounts,
   getAccountBalance,
-  getProviderUrl,
+  providerNet,
   changeAddress,
   addNewAccount,
   changeProvider
@@ -18,7 +18,7 @@ const { put, all, select } = effects
 export default {
   state: {
     isAuth: false,
-    envUrl: '',
+    envObj: '',
     addr: '',
     accountBalance: 0,
     accounts: [],
@@ -187,8 +187,7 @@ export default {
       try {
         yield changeProvider(payload)
         yield put({
-          type: 'user/setEnvUrl',
-          payload: payload.newprovider
+          type: 'user/getProviderUrl'
         })
       } catch (e) {
         message.error(e.message || e)
@@ -197,9 +196,9 @@ export default {
     }),
     getProviderUrl: takeLatest(function*() {
       try {
-        const data = yield getProviderUrl()
+        const data = yield providerNet()
         yield put({
-          type: 'user/setEnvUrl',
+          type: 'user/setEnvObj',
           payload: data
         })
       } catch (e) {
