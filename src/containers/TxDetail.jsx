@@ -23,9 +23,6 @@ const TxDetail = function(props) {
     price: { vntToCny }
   } = props
   const id = props.match.params.id
-  // const txObj = currTrade.find(item => item.id === id)
-  // const txState = txObj ? txObj.state : ''
-  // const [txDetail, setTxDetail] = useState(txObj)
   const renderTotal = (text, record) => {
     const { value, gas, gasPrice } = record
     const total = value + calCommission(gas, gasPrice)
