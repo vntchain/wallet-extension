@@ -29,7 +29,6 @@ export default {
   },
   reducers: {
     filterCurrentTrade: (state, { payload }) => {
-      console.log(state) //eslint-disable-line
       const addr = payload || state.addr
       const currTrade = state.trades[addr] || []
       return {
@@ -38,7 +37,6 @@ export default {
       }
     },
     filterTradeDetail: (state, { payload }) => {
-      console.log(state) //eslint-disable-line
       const id = payload
       const txDetail = state.currTrade.find(item => item.id === id)
       return {
@@ -137,9 +135,19 @@ export default {
             trades: trxs
           }
         })
+        //get trade list
         yield put({
           type: 'user/filterCurrentTrade'
         })
+        //get detail
+        const txDetail = yield select(state => state.user.txDetail)
+        const txId = txDetail.id
+        if (txId) {
+          yield put({
+            type: 'user/filterTradeDetail',
+            payload: txId
+          })
+        }
       } catch (e) {
         message.error(e.message || e)
         console.log(e) //eslint-disable-line
