@@ -15,14 +15,14 @@ const About = function() {
             {laws.map((item, index) => {
               if (index === 0) {
                 return (
-                  <Fragment>
+                  <Fragment key={index}>
                     <h2>{item.title}</h2>
                     <p>{item.cont}</p>
                   </Fragment>
                 )
               } else {
                 return (
-                  <section>
+                  <section key={index}>
                     <h3>{item.title}</h3>
                     <p>{item.cont}</p>
                   </section>

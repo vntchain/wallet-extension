@@ -18,7 +18,10 @@ const { put, all, select } = effects
 export default {
   state: {
     isAuth: false,
-    envObj: '',
+    envObj: {
+      url: '',
+      chainId: 1
+    },
     addr: '',
     accountBalance: 0,
     accounts: [],

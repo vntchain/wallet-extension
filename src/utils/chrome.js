@@ -29,6 +29,7 @@ const createChangePromise = function(funcName, payload) {
     chrome.runtime.getBackgroundPage(function(bg) {
       try {
         bg[funcName](payload)
+        debugger //eslint-disable-line
         resolve('success')
       } catch (e) {
         reject(e)
