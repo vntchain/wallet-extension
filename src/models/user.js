@@ -214,7 +214,7 @@ export default {
         const addr = yield addNewAccount()
         yield put({
           type: 'user/setUserAddr',
-          payload: addr
+          payload: { addr }
         })
         yield put({
           type: 'user/getAccounts'
