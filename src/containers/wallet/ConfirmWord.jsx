@@ -17,11 +17,12 @@ const WordForm = Form.create({ name: 'word' })(props => {
         if (word === values.word) {
           onSubmit()
         } else {
-          setFields([
-            {
-              word: { errors: ['抱歉！助记词错误！'] }
+          setFields({
+            word: {
+              value: values.word,
+              errors: [new Error('抱歉！助记词错误！')]
             }
-          ])
+          })
         }
       }
     })

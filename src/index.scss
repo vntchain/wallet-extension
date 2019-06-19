@@ -7,16 +7,21 @@
   box-sizing: inherit;
 }
 
-html {
-  box-sizing: border-box;
-  font-size: 625%;
+html,
+body {
+  height: 6rem;
   overflow-y: auto;
 }
 
+html {
+  box-sizing: border-box;
+  font-size: 625%;
+}
+
 body {
+  position: relative;
   font-family: "Microsoft YaHei", "微软雅黑", "PingFangSC-Regular", sans-serif;
   width: 3.6rem;
-  height: 6rem;
 }
 
 :global {

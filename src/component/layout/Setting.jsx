@@ -45,7 +45,7 @@ const Setting = function(props) {
     },
     {
       关于我们: () => linkTo(paths.about),
-      服务条款: () => linkTo(paths.services)
+      服务条款: () => linkTo(paths.law)
     },
     {
       查看助记词: () => linkTo(paths.scanWord),
