@@ -19,3 +19,15 @@
   font-size: 0.14rem;
   color: $font-color-light;
 }
+.select {
+  :global {
+    //select
+    .ant-select-selection {
+      font-size: 0.17rem;
+      background: transparent;
+      border: none;
+      color: #ffffff;
+      font-weight: 600;
+    }
+  }
+}

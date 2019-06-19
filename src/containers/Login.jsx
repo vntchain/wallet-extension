@@ -65,6 +65,7 @@ const Login = function(props) {
         onChange={handleNetChange}
         suffixIcon={<img src={imgs.suffix} alt="" />}
         value={envObj.chainId}
+        className={styles.select}
       >
         {netList.map((item, index) => {
           return (

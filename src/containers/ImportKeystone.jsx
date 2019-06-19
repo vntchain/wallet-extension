@@ -138,8 +138,8 @@ const ImportKeystone = function(props) {
             </Col>
             <Col span={contCol}>
               <Select
-                value={importType}
                 onChange={e => setImportType(e)}
+                value={importType}
                 className={styles.select}
                 size="large"
               >
