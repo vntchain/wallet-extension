@@ -54,6 +54,7 @@ export default {
         })
         yield put(push(paths.home))
       } catch (e) {
+        message.error(e.message || e)
         console.log(e) //eslint-disable-line
       } finally {
         yield put({
@@ -81,6 +82,7 @@ export default {
         //跳转页面
         yield put(push(paths.home))
       } catch (e) {
+        message.error(e.message || e)
         console.log(e) //eslint-disable-line
       } finally {
         yield put({
