@@ -57,7 +57,7 @@ const CreateForm = function(props) {
       <FormItem label={<BaseLabel label={'确认密码'} />}>
         {getFieldDecorator('confirmPassword', {
           rules: [
-            { required: true, message: '请确认密码' },
+            { required: true, message: '请输入确认密码' },
             { validator: compareToFirstPassword }
           ]
         })(<InputItem type="password" maxLength={16} placeholder="请输入" />)}
