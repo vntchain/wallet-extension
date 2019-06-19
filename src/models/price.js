@@ -17,7 +17,7 @@ export default {
           payload: data
         })
       } catch (e) {
-        message.error(e.message)
+        message.error(e.message || e)
         console.log(e) //eslint-disable-line
       }
     })

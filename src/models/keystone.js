@@ -43,7 +43,7 @@ export default {
           }
         })
       } catch (e) {
-        message.error(e.message)
+        message.error(e.message || e)
         console.log(e) //eslint-disable-line
       } finally {
         yield put({
@@ -68,7 +68,7 @@ export default {
           type: 'keystone/setIsDownload',
           payload: false
         })
-        message.error(e.message)
+        message.error(e.message || e)
         console.log(e) //eslint-disable-line
       }
     }),
@@ -84,7 +84,7 @@ export default {
         })
         yield put(push(paths.home))
       } catch (e) {
-        message.error(e.message)
+        message.error(e.message || e)
         console.log(e) //eslint-disable-line
       } finally {
         yield put({
@@ -106,7 +106,7 @@ export default {
         })
         yield put(push(paths.home))
       } catch (e) {
-        message.error(e.message)
+        message.error(e.message || e)
         console.log(e) //eslint-disable-line
       } finally {
         yield put({
