@@ -95,11 +95,6 @@ export default {
           type: 'user/setAddr',
           payload: addr
         })
-        //拿到地址后获取当前账户vnt
-        yield put({
-          type: 'user/getAccountBalance',
-          payload: { addr }
-        })
       } catch (e) {
         message.error(e.message || e)
         console.log(e) //eslint-disable-line
@@ -112,11 +107,6 @@ export default {
         yield put({
           type: 'user/setAddr',
           payload: addr
-        })
-        //拿到地址后获取当前账户vnt
-        yield put({
-          type: 'user/getAccountBalance',
-          payload: { addr }
         })
         //重新筛选当前addr下的交易列表
         yield put({

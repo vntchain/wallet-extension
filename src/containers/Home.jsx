@@ -28,6 +28,12 @@ const Home = function(props) {
       type: 'price/getVntToCny'
     })
   }, [])
+  useEffect(() => {
+    dispatch({
+      type: 'user/getAccountBalance',
+      payload: { addr }
+    })
+  }, [addr])
   const handleOpenSend = () => {
     dispatch({
       type: 'send/clearTx'
