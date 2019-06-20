@@ -77,6 +77,9 @@ const SendForm = Form.create({ name: 'login' })(props => {
     handleGetGasLimit()
     callback()
   }
+  const validateRemarks = () => {
+    handleGetGasLimit()
+  }
   const handleGetGasLimit = () => {
     const to = getFieldValue('to')
     const value = getFieldValue('value')
@@ -126,13 +129,12 @@ const SendForm = Form.create({ name: 'login' })(props => {
       >
         {getFieldDecorator('data', {
           initialValue: data,
-          rules: [{ max: 200, message: '备注数据要求200字符以内' }]
+          rules: [
+            { max: 200, message: '备注数据要求200字符以内' },
+            { validator: validateRemarks }
+          ]
         })(
-          <TexeArea
-            placeholder="请填写交易备注数据，非必填。"
-            size="large"
-            onChange={handleGetGasLimit}
-          />
+          <TexeArea placeholder="请填写交易备注数据，非必填。" size="large" />
         )}
       </FormItem>
       <FormItem label={<BaseLabel label={'手续费:'} />}>
