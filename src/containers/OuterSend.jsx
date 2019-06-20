@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Header from '../component/layout/Header'
@@ -22,7 +22,7 @@ const OuterSend = function(props) {
       envObj: { chainId }
     },
     price: { vntToCny = 1 },
-    send: { tx },
+    send: { gasPriceDefault, tx },
     popup: {
       popup: { trx }
     }
@@ -34,7 +34,7 @@ const OuterSend = function(props) {
   port.onDisconnect.addListener(function(msg) {
     console.log('send Port disconnected: ' + JSON.stringify(msg)) //eslint-disable-line
   })
-  const [txObj, setTxObj] = useState(tx)
+  // const [txObj, setTxObj] = useState(tx)
   const handleSend = status => {
     port.postMessage({
       src: 'popup',
@@ -51,42 +51,60 @@ const OuterSend = function(props) {
     dispatch({
       type: 'popup/getPopup'
     })
-    dispatch({
-      type: 'popup/getGasPrice'
-    })
+    //没有gasPrice的时候才去获取，防止自定义后数据改动
+    if (!gasPriceDefault) {
+      dispatch({
+        type: 'send/getGasPrice'
+      })
+    }
   }, [])
+  useEffect(() => {
+    dispatch({
+      type: 'send/merge',
+      payload: {
+        tx: {
+          gasPrice: gasPriceDefault //获取到gasPrice设置为默认值
+        }
+      }
+    })
+  }, [gasPriceDefault])
   useEffect(() => {
     if (trx && !isEmptyObject(trx)) {
       const trxTemp = Object.assign({}, tx, trx)
-      console.log(trxTemp) //eslint-disable-line
-      setTxObj(trxTemp)
-      getGasLimit({ tx: trxTemp })
+      // setTxObj(trxTemp)
+      getGasLimit(trxTemp)
     }
   }, [trx])
 
-  const getGasLimit = data => {
+  const getGasLimit = trxTemp => {
     //同步数据
     dispatch({
       type: 'send/merge',
-      payload: data
+      payload: {
+        tx: {
+          ...trxTemp
+        }
+      }
     })
     //获取gasLimit
-    if (!data.tx.gas)
+    if (!trx.gas) {
+      const { data, from, to, value } = trxTemp
       dispatch({
         type: 'send/getGasLimit',
-        payload: data
+        payload: { tx: { data, from, to, value } }
       })
+    }
   }
   return (
     <Fragment>
       <Header title={`发送VNT(${netList[chainId]})`} />
       <div className={styles.container}>
-        {txObj ? (
+        {tx ? (
           <CommonPadding>
             <div className={styles['send-item']}>
               <label>来自：</label>
               <div>
-                <div className={styles.cont}>{splitLongStr(txObj.from)}</div>
+                <div className={styles.cont}>{splitLongStr(tx.from)}</div>
                 <div className={styles.info}>{`${accountBalance} VNT`}</div>
                 <div className={styles.info}>
                   {`￥ ${calBigMulti(accountBalance, vntToCny)}`}
@@ -95,14 +113,14 @@ const OuterSend = function(props) {
             </div>
             <div className={styles['send-item']}>
               <label>发送至：</label>
-              <div className={styles.cont}>{splitLongStr(txObj.to)}</div>
+              <div className={styles.cont}>{splitLongStr(tx.to)}</div>
             </div>
             <div className={styles['send-item']}>
               <label>数量：</label>
               <div>
-                <div className={styles.info}>{`${txObj.value} VNT`}</div>
+                <div className={styles.info}>{`${tx.value} VNT`}</div>
                 <div className={styles.remarks}>
-                  {`￥ ${calBigMulti(txObj.value, vntToCny)}`}
+                  {`￥ ${calBigMulti(tx.value, vntToCny)}`}
                 </div>
               </div>
             </div>
@@ -111,11 +129,11 @@ const OuterSend = function(props) {
               <div className={styles.inner}>
                 <div>
                   <div className={styles.cont}>
-                    {`${calCommission(txObj.gasPrice, txObj.gas)} VNT`}
+                    {`${calCommission(tx.gasPrice, tx.gas)} VNT`}
                   </div>
                   <div className={styles.remarks}>
                     {`￥ ${calBigMulti(
-                      calCommission(txObj.gasPrice, txObj.gas),
+                      calCommission(tx.gasPrice, tx.gas),
                       vntToCny
                     )}`}
                   </div>
@@ -127,7 +145,7 @@ const OuterSend = function(props) {
             </div>
             <div className={styles['send-item']}>
               <label>备注：</label>
-              <div className={styles.remarks}>{txObj.data}</div>
+              <div className={styles.remarks}>{tx.data}</div>
             </div>
             <BaseModalFooter
               onCancel={() => handleSend(false)}
