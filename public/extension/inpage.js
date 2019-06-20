@@ -974,7 +974,7 @@ var network = {
   testnet: {url: 'http://47.104.173.117:8880', chainId: 2}
 }
 var selectedAccount = '';
-var curProviderNet = network.testnet
+var curProviderNet = network.mainnet
 var walletUnlock = false;
 window.vnt = new Vnt(new InpageHttpProvider(curProviderNet.url))
 var authUrl = []
@@ -1054,7 +1054,7 @@ window.addEventListener('message', function(e) {
   // e  contains the transferred data 
   if (e.data.src === "content" && e.data.type === "change_providerNet" && !!e.data.data) {
     console.log('inpage: message change_providerNet')
-    curProviderNet = e.data.data.providerNet || network.testnet
+    curProviderNet = e.data.data.providerNet || network.mainnet
     window.vnt.setProvider(new InpageHttpProvider(curProviderNet.url))
 
     window.postMessage({

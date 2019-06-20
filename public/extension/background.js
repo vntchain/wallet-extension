@@ -51822,6 +51822,12 @@ window.getEstimateGas = function getEstimateGas(obj) {
 
         var payload = {jsonrpc: "2.0", id: 1, method: "core_estimateGas", params:[]}
         payload.params[0] = obj.tx
+        if (payload.params[0].data == undefined || payload.params[0].data == "") {
+           delete payload.params[0].data
+        } else {
+
+            payload.params[0].data = util.fromAscii(payload.params[0].data)
+        }
 
         var gaslimit = provider.send(payload)
         return Promise.resolve(util.toDecimal(gaslimit.result))
