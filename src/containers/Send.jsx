@@ -77,8 +77,9 @@ const SendForm = Form.create({ name: 'login' })(props => {
     handleGetGasLimit()
     callback()
   }
-  const validateRemarks = () => {
+  const validateRemarks = (rule, value, callback) => {
     handleGetGasLimit()
+    callback()
   }
   const handleGetGasLimit = () => {
     const to = getFieldValue('to')
