@@ -65,17 +65,22 @@ const Send = function(props) {
     }
   )
   const handleSubmit = () => {
-    const { gasPrice, gas } = state
-    dispatch({
-      type: 'send/merge',
-      payload: {
-        tx: {
-          gasPrice,
-          gas
+    const { gasPrice, gas, priceError, limitError } = state
+    //todo： 验证后不能及时获取消息
+    validatePrice(gasPrice, gas)
+    validateLimit(gasPrice, gas)
+    if (!priceError && !limitError) {
+      dispatch({
+        type: 'send/merge',
+        payload: {
+          tx: {
+            gasPrice,
+            gas
+          }
         }
-      }
-    })
-    history.push(paths.send)
+      })
+      history.push(paths.send)
+    }
   }
   const handleDefault = () => {
     innerDispatch({
@@ -86,14 +91,37 @@ const Send = function(props) {
       }
     })
   }
+  const setError = (name, message) => {
+    innerDispatch({
+      type: name,
+      payload: message
+    })
+  }
+  const validatePrice = (gasPrice, gas) => {
+    //转账费+手续费不能高于余额
+    if (calCommission(gasPrice, gas) > accountBalance) {
+      setError('setPriceError', '余额不足')
+    } else {
+      setError('setPriceError', '')
+    }
+  }
+  const validateLimit = (gasPrice, gas) => {
+    if (gas < 21000) {
+      setError('setLimitError', 'Gas Limit 过低')
+    } else {
+      setError('setLimitError', '')
+
+      //转账费+手续费不能高于余额
+      if (calCommission(gasPrice, gas) > accountBalance) {
+        setError('setLimitError', '余额不足')
+      } else {
+        setError('setLimitError', '')
+      }
+    }
+  }
   const handlePriceChange = val => {
     if (val && !gasPatten.test(val)) {
       message.info('非法字符')
-      return
-    }
-    const { gas } = state
-    //转账费+手续费不能高于余额
-    if (calCommission(val, gas) > accountBalance) {
       return
     }
     innerDispatch({
@@ -101,24 +129,11 @@ const Send = function(props) {
       payload: val
     })
     setCommission(calCommission(val, gas))
+    validatePrice(val, gas)
   }
   const handleLimitChange = val => {
-    if (!gasPatten.test(val)) {
+    if (val && !gasPatten.test(val)) {
       message.info('非法字符')
-      return
-    }
-    const { gasPrice } = state
-    if (val < 21000) {
-      innerDispatch({
-        type: 'merge',
-        payload: {
-          gas: 21000
-        }
-      })
-      return
-    }
-    //转账费+手续费不能高于余额
-    if (calCommission(gasPrice, val) > accountBalance) {
       return
     }
     innerDispatch({
@@ -126,6 +141,7 @@ const Send = function(props) {
       payload: val
     })
     setCommission(calCommission(gasPrice, val))
+    validateLimit(gasPrice, val)
   }
   return (
     <Fragment>
