@@ -51291,11 +51291,11 @@ const store = require("obs-store")
 
 
 var network = {
-    mainnet: {url: 'https://hubscan.vnt.link/', chainId: 1},
+    mainnet: {url: 'http://39.104.62.26:8880', chainId: 1},
     testnet: {url: 'http://47.104.173.117:8880', chainId: 2}
 }
 // var provider = new vntProvider("http://localhost:8888")
-var providerNet = network.testnet
+var providerNet = network.mainnet
 var provider = new vntProvider(providerNet.url)
 var selectedAddr = ''
 var is_wallet_exist = false
@@ -51524,7 +51524,8 @@ window.addNewAccount = async function addNewAccount() {
     var account_keyring = await getWalletKeyring('HD Key Tree')
     await extension_wallet.addNewAccount(account_keyring[0])
 
-    var addrs = await extension_wallet.getAccounts()
+    // var addrs = await extension_wallet.getAccounts()
+    var addrs = await account_keyring[0].getAccounts()
     selectedAddr = addrs[addrs.length - 1]
     updateAccounts(false, addrs[addrs.length - 1])
     updateState()
@@ -51972,8 +51973,8 @@ function trxStateTimer() {
             chrome.runtime.sendMessage({type: "trx_state_changed"})
             chrome.notifications.create({
                 'type': 'basic',
-                'title': 'vnt wallet',
-                'iconUrl': chrome.extension.getURL('./extension/demo_extension.png'),
+                'title': 'VNT Wallet',
+                'iconUrl': chrome.extension.getURL('./images/icon-64.png'),
                 'message': "交易成功！",
                 })
         }
@@ -52014,7 +52015,7 @@ function resetState() {
 
     account_info = {accounts:[], trxs:{}}
     selectedAddr = ''
-    providerNet = network.testnet
+    providerNet = network.mainnet
     is_wallet_exist = false
     is_wallet_unlock = false
     authUrl = []

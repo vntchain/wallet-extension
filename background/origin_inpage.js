@@ -290,7 +290,7 @@ InpageHttpProvider.prototype.isConnected = function () {
 
 
 var network = {
-  mainnet: {url: 'http://mainnet.com', chainId: 1},
+  mainnet: {url: 'http://39.104.62.26:8880', chainId: 1},
   testnet: {url: 'http://47.104.173.117:8880', chainId: 2}
 }
 var selectedAccount = '';

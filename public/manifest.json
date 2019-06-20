@@ -4,7 +4,10 @@
   "version": "1.0",
   "browser_action": {
     "default_popup": "index.html",
-    "default_icon": "./extension/demo_extension.png"
+    "default_icon": {
+      "19": "./images/icon-19.png",
+      "38": "./images/icon-38.png"
+    }
   },
   "manifest_version": 2,
   "commands": {
@@ -28,7 +31,7 @@
     "notifications"
 
   ],
-  "content_security_policy": "default-src 'self'; script-src 'self' http://localhost:3000 https://localhost:3000 'unsafe-eval'; connect-src http://localhost:3000 https://localhost:3000 http://dncapi.bqiapp.com http://47.104.173.117:8880/ https://47.104.173.117:8880/; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;",
+  "content_security_policy": "default-src 'self'; script-src 'self' http://localhost:3000 https://localhost:3000 'unsafe-eval'; connect-src http://localhost:3000 https://localhost:3000 http://dncapi.bqiapp.com http://47.104.173.117:8880/ http://39.104.62.26:8880; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
