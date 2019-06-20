@@ -34,9 +34,12 @@ export default {
     filterCurrentTrade: (state, { payload }) => {
       const addr = payload || state.addr
       const currTrade = state.trades[addr] || []
+      const filteredTrade = currTrade.filter(
+        item => (item.chainId = state.envObj.chainId)
+      )
       return {
         ...state,
-        currTrade: currTrade.reverse()
+        currTrade: filteredTrade.reverse()
       }
     },
     filterTradeDetail: (state, { payload }) => {
