@@ -18,6 +18,7 @@ const OuterSend = function(props) {
   const {
     dispatch,
     user: {
+      addr,
       accountBalance,
       envObj: { chainId }
     },
@@ -58,6 +59,12 @@ const OuterSend = function(props) {
       })
     }
   }, [])
+  useEffect(() => {
+    dispatch({
+      type: 'user/getAccountBalance',
+      payload: { addr }
+    })
+  }, [addr])
   useEffect(() => {
     dispatch({
       type: 'send/merge',
