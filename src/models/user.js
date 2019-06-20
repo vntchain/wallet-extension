@@ -35,7 +35,7 @@ export default {
       const addr = payload || state.addr
       const currTrade = state.trades[addr] || []
       const filteredTrade = currTrade.filter(
-        item => (item.chainId = state.envObj.chainId)
+        item => item.chainId == state.envObj.chainId
       )
       return {
         ...state,
