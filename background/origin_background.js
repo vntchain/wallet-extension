@@ -401,6 +401,7 @@ window.signThenSendTransaction = async function signThenSendTransaction(obj) {
             storetx.time = date
             storetx.gasUsed = 0
             storetx.id = trx_id.result
+            storetx.chainId = providerNet.chainId
             updateTrxs(addr, storetx)
             updateState()
             return Promise.resolve(trx_id.result)
