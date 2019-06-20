@@ -25,11 +25,14 @@ const TxDetail = function(props) {
   const id = props.match.params.id
   const renderTotal = (text, record) => {
     const { value, gas, gasPrice } = record
-    const total = value + calCommission(gas, gasPrice)
+    const total = Number(value) + Number(calCommission(gas, gasPrice))
     return (
       <div className={styles.total}>
         <div className={styles.cont}>{total}</div>
-        <div className={styles.info}>{calBigMulti(total, vntToCny)}</div>
+        <div className={styles.info}>{`￥ ${calBigMulti(
+          total,
+          vntToCny
+        )}`}</div>
       </div>
     )
   }

@@ -26,10 +26,22 @@ const About = function() {
           </div>
           <div className={styles.block}>
             <h3>链接</h3>
-            <Link to="https://hubscan.vnt.link/" className={styles.link}>
+            <a
+              href="javascript:"
+              onClick={() => {
+                window.open('https://hubscan.vnt.link/')
+              }}
+              className={styles.link}
+            >
               VNT 区块链浏览器
-            </Link>
-            <Link to="http://vntchain.io/" className={styles.link}>
+            </a>
+            <Link
+              href="javascript:"
+              onClick={() => {
+                window.open('http://vntchain.io/')
+              }}
+              className={styles.link}
+            >
               VNT 官方网站
             </Link>
           </div>

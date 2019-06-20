@@ -81,6 +81,7 @@ const UserDetail = function(props) {
             </div>
             <div className={styles.code}>{privateKey}</div>
             <BaseTip
+              className={styles.tips}
               tips={[
                 '注意',
                 '永远不要公开这个私钥。任何拥有你的私钥的人都可以窃取你地址上的资产。'

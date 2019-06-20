@@ -6,6 +6,7 @@ import imgs from '../../utils/imgs'
 import { splitLongStr } from '../../utils/helper'
 import { netList } from '../../constants/net'
 import styles from './Setting.scss'
+import { message } from 'antd'
 
 const Setting = function(props) {
   const {
@@ -38,9 +39,18 @@ const Setting = function(props) {
     })
     setIsSetShow(false)
   }
+  const handleScan = () => {
+    const curAccount = accounts.find(item => item.addr == addr)
+    console.warn(curAccount) //eslint-disable-line
+    if (curAccount.type) {
+      message.error('导入的地址不能查看助记词')
+      return
+    }
+    linkTo(paths.scanWord)
+  }
   const LinkList = [
     {
-      创建新地址: () => createNewAddr(),
+      创建新地址: createNewAddr,
       导入地址: () => linkTo(paths.importKeystone)
     },
     {
@@ -48,8 +58,8 @@ const Setting = function(props) {
       服务条款: () => linkTo(paths.law)
     },
     {
-      查看助记词: () => linkTo(paths.scanWord),
-      登出钱包: () => loginOut()
+      查看助记词: handleScan,
+      登出钱包: loginOut
     }
   ]
   const handleChangeEnv = id => {
@@ -89,17 +99,18 @@ const Setting = function(props) {
       >
         <div className={styles['setting-list']}>
           {netList.map((item, index) => {
-            const id = index + 1
-            return (
+            return item ? (
               <div
                 className={`${styles['setting-item']} ${
-                  envObj.chainId === id ? styles['setting-item_active'] : ''
+                  envObj.chainId === index ? styles['setting-item_active'] : ''
                 }`}
                 key={index}
-                onClick={() => handleChangeEnv(id)}
+                onClick={() => handleChangeEnv(index)}
               >
                 {item}
               </div>
+            ) : (
+              ''
             )
           })}
         </div>

@@ -36,7 +36,7 @@ export default {
       const currTrade = state.trades[addr] || []
       return {
         ...state,
-        currTrade
+        currTrade: currTrade.reverse()
       }
     },
     filterTradeDetail: (state, { payload }) => {

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import imgs from '../../utils/imgs'
 import styles from './BaseWarn.scss'
 
-const BaseTip = function(props) {
+const BaseWarn = function(props) {
   const { warns } = props
   return (
     <div className={styles.warn}>
@@ -15,8 +15,8 @@ const BaseTip = function(props) {
   )
 }
 
-BaseTip.propTypes = {
+BaseWarn.propTypes = {
   warns: PropTypes.array.isRequired
 }
 
-export default BaseTip
+export default BaseWarn

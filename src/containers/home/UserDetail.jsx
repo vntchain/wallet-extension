@@ -5,7 +5,7 @@ import { Modal, Button } from 'antd-mobile'
 import Copier from '../../component/Copier'
 import styles from './UserDetail.scss'
 import genQRCode from '../../utils/genQRCode'
-import paths from '../../utils/paths'
+import { netUrlList } from '../../constants/net'
 
 const UserDetail = function(props) {
   const copyRef = React.createRef()
@@ -14,15 +14,17 @@ const UserDetail = function(props) {
     visible,
     onClose,
     openKeystone,
-    user: { addr },
-    push
+    user: {
+      addr,
+      envObj: { chainId }
+    }
   } = props
   const handleOpenKeystone = () => {
     onClose()
     openKeystone()
   }
   const linkToVnt = () => {
-    push(paths.vnt)
+    window.open(`${netUrlList[chainId]}/account/${addr}`)
   }
   useEffect(() => {
     async function fetchData() {

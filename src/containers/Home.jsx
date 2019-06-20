@@ -9,6 +9,7 @@ import ExportKeystone from './home/ExportKeystone'
 import { splitLongStr, calBigMulti } from '../utils/helper'
 import imgs from '../utils/imgs'
 import paths from '../utils/paths'
+import { netUrlList } from '../constants/net'
 
 const Home = function(props) {
   const {
@@ -34,7 +35,7 @@ const Home = function(props) {
     history.push(paths.send)
   }
   const handleLink = id => {
-    window.open(`${envObj.url}/transaction${id}`)
+    window.open(`${netUrlList[envObj.chainId]}/transaction/${id}`)
   }
   return (
     <Fragment>
@@ -101,7 +102,7 @@ const Home = function(props) {
                         {item.state}
                       </span>
                     </span>
-                    <span className={styles.vnt}>{`${item.value} VNT`}</span>
+                    <span className={styles.vnt}>{`-${item.value} VNT`}</span>
                   </li>
                   <li>
                     <Link to={`/detail/${item.id}`} className={styles.code}>

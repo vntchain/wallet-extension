@@ -7,6 +7,7 @@ import CommonPadding from '../component/layout/CommonPadding'
 import Header from '../component/layout/Header'
 import BaseLabel from '../component/layout/BaseLabel'
 import paths from '../utils/paths'
+import { netList } from '../constants/net'
 import { addrPatten, balancePatten } from '../constants/pattens'
 import { splitLongStr, calCommission, calBigMulti } from '../utils/helper'
 import styles from './Send.scss'
@@ -43,6 +44,8 @@ const SendForm = Form.create({ name: 'login' })(props => {
     setFieldsValue({
       value: accountBalance
     })
+    //设置vnt对应cny
+    setBalanceCNY(calBigMulti(accountBalance, vntToCny))
   }
   const validateToAddr = (rule, value, callback) => {
     if (!value) {
@@ -95,7 +98,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
         </span>
       </FormItem>
       <FormItem
-        label={<BaseLabel style={{ lineHeight: '.4rem' }} label={'发送至：'} />}
+        label={<BaseLabel style={{ lineHeight: '.4rem' }} label={'发送至:'} />}
       >
         {getFieldDecorator('to', {
           initialValue: to,
@@ -103,7 +106,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
         })(<Input placeholder="请输入接收地址" size="large" />)}
       </FormItem>
       <FormItem
-        label={<BaseLabel style={{ lineHeight: '.4rem' }} label={'数量：'} />}
+        label={<BaseLabel style={{ lineHeight: '.4rem' }} label={'数量:'} />}
       >
         {getFieldDecorator('value', {
           initialValue: value,
@@ -118,11 +121,12 @@ const SendForm = Form.create({ name: 'login' })(props => {
       </div>
       <FormItem
         label={
-          <BaseLabel style={{ lineHeight: '.4rem' }} label={'备注数据：'} />
+          <BaseLabel style={{ lineHeight: '.4rem' }} label={'备注数据:'} />
         }
       >
         {getFieldDecorator('data', {
-          initialValue: data
+          initialValue: data,
+          rules: [{ max: 200, message: '备注数据要求200字符以内' }]
         })(
           <TexeArea
             placeholder="请填写交易备注数据，非必填。"
@@ -153,6 +157,9 @@ const SendForm = Form.create({ name: 'login' })(props => {
 
 const Send = function(props) {
   const { user, price, send, dispatch } = props
+  const {
+    envObj: { chainId }
+  } = user
   useEffect(() => {
     dispatch({
       type: 'send/getGasPrice'
@@ -184,7 +191,7 @@ const Send = function(props) {
   }
   return (
     <Fragment>
-      <Header title={'发送VNT'} hasBack={true} />
+      <Header title={`发送VNT(${netList[chainId]})`} hasBack={true} />
       <div className={styles.container}>
         <CommonPadding>
           <SendForm

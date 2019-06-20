@@ -68,10 +68,12 @@ const Login = function(props) {
         className={styles.select}
       >
         {netList.map((item, index) => {
-          return (
-            <Option value={index + 1} key={index}>
+          return item ? (
+            <Option value={index} key={index}>
               {item}
             </Option>
+          ) : (
+            ''
           )
         })}
       </Select>

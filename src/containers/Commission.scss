@@ -46,6 +46,9 @@
     color: $error-color;
   }
 }
+.tips {
+  margin-top: 0.2rem;
+}
 .total {
   & > div:not(:last-child) {
     margin-bottom: 0.1rem;

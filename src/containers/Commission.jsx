@@ -8,7 +8,7 @@ import BaseLabel from '../component/layout/BaseLabel'
 import BaseTip from '../component/layout/BaseTip'
 import { calCommission, calBigMulti } from '../utils/helper'
 import paths from '../utils/paths'
-import { balancePatten } from '../constants/pattens'
+import { gasPatten } from '../constants/pattens'
 import styles from './Commission.scss'
 
 const Send = function(props) {
@@ -87,7 +87,7 @@ const Send = function(props) {
     })
   }
   const handlePriceChange = val => {
-    if (val && !balancePatten.test(val)) {
+    if (val && !gasPatten.test(val)) {
       message.info('非法字符')
       return
     }
@@ -103,7 +103,7 @@ const Send = function(props) {
     setCommission(calCommission(val, gas))
   }
   const handleLimitChange = val => {
-    if (!balancePatten.test(val)) {
+    if (!gasPatten.test(val)) {
       message.info('非法字符')
       return
     }
@@ -172,6 +172,7 @@ const Send = function(props) {
               </div>
             </div>
             <BaseTip
+              className={styles.tips}
               tips={[
                 '温馨提示：',
                 '· 我们建议您使用系统推荐的参数设置。',
@@ -191,7 +192,9 @@ const Send = function(props) {
             </div>
             <div className={styles.outlineFlex}>
               <span className={styles.info}>总计</span>
-              <span className={styles.value}>{value + commission}</span>
+              <span className={styles.value}>
+                {Number(value) + Number(commission)}
+              </span>
             </div>
           </div>
           <Button

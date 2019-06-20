@@ -20,6 +20,7 @@ const Word = function(props) {
       <BaseLabel label={'确认您的助记词'} />
       <div className={styles.cont}>{word}</div>
       <BaseTip
+        className={styles.tip}
         tips={[
           '重要提示：',
           '助记词用于恢复您的钱包，按照顺序将它抄写下来，并存放在安全的地方！',

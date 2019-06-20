@@ -8,7 +8,7 @@ const createFuncPromise = function(funcName, payload) {
           resolve(res)
         })
         .catch(e => {
-          reject(`${funcName}: ${e}`)
+          reject(e)
         })
     })
   })
@@ -29,7 +29,7 @@ const createChangePromise = function(funcName, payload) {
     chrome.runtime.getBackgroundPage(function(bg) {
       try {
         bg[funcName](payload)
-        debugger //eslint-disable-line
+        // debugger //eslint-disable-line
         resolve('success')
       } catch (e) {
         reject(e)

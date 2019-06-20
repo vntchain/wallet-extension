@@ -16,6 +16,9 @@
         margin-left: 0.15rem;
       }
     }
+    .tips {
+      margin: 0.2rem 0;
+    }
     .addr {
       padding: 0.15rem;
       border: 1px solid $border-color;
@@ -37,6 +40,7 @@
       line-height: 0.2rem;
       max-height: 1rem;
       overflow-y: auto;
+      word-wrap: break-word;
     }
   }
 }

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import Header from '../component/layout/Header'
 import CommonPadding from '../component/layout/CommonPadding'
 import BaseModalFooter from '../component/layout/BaseModalFooter'
+import { netList } from '../constants/net'
 import {
   splitLongStr,
   calBigMulti,
@@ -16,7 +17,10 @@ import styles from './OuterSend.scss'
 const OuterSend = function(props) {
   const {
     dispatch,
-    user: { accountBalance },
+    user: {
+      accountBalance,
+      envObj: { chainId }
+    },
     price: { vntToCny = 1 },
     send: { tx },
     popup: {
@@ -75,7 +79,7 @@ const OuterSend = function(props) {
   }
   return (
     <Fragment>
-      <Header title={'发送VNT（VNT主网）'} />
+      <Header title={`发送VNT(${netList[chainId]})`} />
       <div className={styles.container}>
         {txObj ? (
           <CommonPadding>

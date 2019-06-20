@@ -32,7 +32,7 @@ export const calBigMulti = (num1, num2) => {
   return (
     (num1 * Math.pow(10, floatLen1) * (num2 * Math.pow(10, floatLen2))) /
     Math.pow(10, floatLen1 + floatLen2)
-  )
+  ).toFixed(2)
 }
 
 export const isEmptyObject = obj => {
