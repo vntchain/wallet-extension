@@ -24,8 +24,11 @@ const TxDetail = function(props) {
   } = props
   const id = props.match.params.id
   const renderTotal = (text, record) => {
-    const { value, gas, gasPrice } = record
-    const total = Number(value) + Number(calCommission(gas, gasPrice))
+    const { value, gas, gasPrice, gasUsed } = record
+    const commission = gasUsed
+      ? calCommission(gasUsed, gasPrice)
+      : calCommission(gas, gasPrice)
+    const total = Number(value) + Number(commission)
     return (
       <div className={styles.total}>
         <div className={styles.cont}>{total}</div>
