@@ -53,6 +53,10 @@ export default {
       }
     }),
     getPrivateJson: takeLatest(function*({ payload }) {
+      yield put({
+        type: 'keystone/setIsDownload',
+        payload: false
+      })
       try {
         const data = yield exportAccountKeystore(payload)
         yield put({

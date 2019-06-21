@@ -1,15 +1,21 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 const Downloader = props => {
   const { content, fileName, isDownload, handleFetch } = props
-  const blob = isDownload
-    ? new Blob([content], { type: 'text/plain;charset=utf-8' })
-    : null
+  const [blob, setBlob] = useState(null)
+  // const blob = isDownload
+  //   ? new Blob([content], { type: 'text/plain;charset=utf-8' })
+  //   : null
   const handleOnClick = () => {
     console.log('11111') //eslint-disable-line
   }
-  return isDownload ? (
+  useEffect(() => {
+    if (isDownload) {
+      setBlob(new Blob([content], { type: 'text/plain;charset=utf-8' }))
+    }
+  }, [isDownload])
+  return blob ? (
     <a
       href={URL.createObjectURL(blob)}
       download={fileName}

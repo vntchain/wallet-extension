@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Modal, Button } from 'antd-mobile'
 import PasswordForm from './PasswordForm'
@@ -24,15 +24,6 @@ const UserDetail = function(props) {
     },
     dispatch
   } = props
-  useEffect(() => {
-    //关闭窗口时重置状态，下次打开需重新输入密码获取
-    return () => {
-      dispatch({
-        type: 'keystone/setHasGetKey',
-        payload: false
-      })
-    }
-  }, [])
   const handleFetchKeystone = values => {
     const { password: passwd } = values
     dispatch({
@@ -43,6 +34,14 @@ const UserDetail = function(props) {
       }
     })
   }
+  const handleClose = () => {
+    //关闭窗口时重置状态，下次打开需重新输入密码获取
+    dispatch({
+      type: 'keystone/setHasGetKey',
+      payload: false
+    })
+    onClose()
+  }
   return (
     <Modal
       visible={visible}
@@ -50,7 +49,7 @@ const UserDetail = function(props) {
       title="导出私钥"
       closable={true}
       maskClosable={true}
-      onClose={onClose}
+      onClose={handleClose}
       className={styles.detail}
       wrapClassName={styles.wrap}
     >
@@ -87,7 +86,7 @@ const UserDetail = function(props) {
                 '永远不要公开这个私钥。任何拥有你的私钥的人都可以窃取你地址上的资产。'
               ]}
             />
-            <Button type="primary" onClick={onClose}>
+            <Button type="primary" onClick={handleClose}>
               完成
             </Button>
           </Fragment>
