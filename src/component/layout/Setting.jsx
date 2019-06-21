@@ -74,11 +74,13 @@ const Setting = function(props) {
     }
   }
   const handleChangeWallet = currAddr => {
-    dispatch({
-      type: 'user/setUserAddr',
-      payload: { addr: currAddr }
-    })
-    setIsSetShow(false)
+    if (addr !== currAddr) {
+      dispatch({
+        type: 'user/setUserAddr',
+        payload: { addr: currAddr }
+      })
+      setIsSetShow(false)
+    }
   }
   return (
     <div className={styles.setting}>

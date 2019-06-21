@@ -85,6 +85,13 @@ gulp.task('extension', function() {
     .pipe(gulpif(args.watch, livereload()))
 })
 
+gulp.task('images', function() {
+  return gulp
+    .src(['public/images/*'])
+    .pipe(gulp.dest('dev/images'))
+    .pipe(gulpif(args.watch, livereload()))
+})
+
 gulp.task('chromereload', cb => {
   // This task runs only if the
   // watch argument is present!
@@ -120,7 +127,8 @@ gulp.task(
   gulpSequence('clean', [
     'manifest',
     'scripts',
-    'extension'
+    'extension',
+    'images'
     // 'pages',
     // 'locales',
     // 'images',

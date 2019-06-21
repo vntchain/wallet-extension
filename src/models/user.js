@@ -32,14 +32,16 @@ export default {
   },
   reducers: {
     filterCurrentTrade: (state, { payload }) => {
-      const addr = payload || state.addr
-      const currTrade = state.trades[addr] || []
-      const filteredTrade = currTrade.filter(
-        item => item.chainId == state.envObj.chainId
-      )
+      const newState = Object.assign({}, state)
+      const addr = payload || newState.addr
+      const chainId = newState.envObj.chainId
+      const currTrade = newState.trades[addr] || []
+      const filteredTrade = currTrade
+        .reverse()
+        .filter(item => item.chainId == chainId)
       return {
-        ...state,
-        currTrade: filteredTrade.reverse()
+        ...newState,
+        currTrade: [...filteredTrade]
       }
     },
     filterTradeDetail: (state, { payload }) => {
@@ -182,8 +184,12 @@ export default {
     setProviderUrl: takeLatest(function*({ payload }) {
       try {
         yield changeProvider(payload)
+        // yield put({
+        //   type: 'user/getProviderUrl'
+        // })
         yield put({
-          type: 'user/getProviderUrl'
+          type: 'user/setEnvObj',
+          payload: { chainId: payload.newprovider }
         })
       } catch (e) {
         message.error(e.message || e)

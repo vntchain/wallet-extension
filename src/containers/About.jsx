@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import CommonPadding from '../component/layout/CommonPadding'
 import Header from '../component/layout/Header'
 import imgs from '../utils/imgs'
@@ -35,7 +34,7 @@ const About = function() {
             >
               VNT 区块链浏览器
             </a>
-            <Link
+            <a
               href="javascript:"
               onClick={() => {
                 window.open('http://vntchain.io/')
@@ -43,7 +42,7 @@ const About = function() {
               className={styles.link}
             >
               VNT 官方网站
-            </Link>
+            </a>
           </div>
           <div className={styles.block}>
             <h3>联系我们</h3>

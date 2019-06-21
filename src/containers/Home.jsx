@@ -13,7 +13,12 @@ import { netUrlList } from '../constants/net'
 
 const Home = function(props) {
   const {
-    user: { addr, currTrade, accountBalance, envObj },
+    user: {
+      addr,
+      currTrade,
+      accountBalance,
+      envObj: { chainId }
+    },
     price: { vntToCny },
     dispatch,
     history
@@ -34,6 +39,12 @@ const Home = function(props) {
       payload: { addr }
     })
   }, [addr])
+  useEffect(() => {
+    //根据环境变化重新获取交易列表
+    dispatch({
+      type: 'user/filterCurrentTrade'
+    })
+  }, [chainId])
   const handleOpenSend = () => {
     dispatch({
       type: 'send/clearTx'
@@ -41,8 +52,9 @@ const Home = function(props) {
     history.push(paths.send)
   }
   const handleLink = id => {
-    window.open(`${netUrlList[envObj.chainId]}/transaction/${id}`)
+    window.open(`${netUrlList[chainId]}/transaction/${id}`)
   }
+
   return (
     <Fragment>
       <Header title={'首页'} theme={'trans'} hasSetting={true} />
@@ -94,7 +106,6 @@ const Home = function(props) {
                 <ul className={styles['history-item']} key={index}>
                   <li>
                     <span className={styles.date}>{item.time}</span>
-                    {/*todo:打开对应web页面，location。href*/}
                     <a href="javascript:" onClick={() => handleLink(item.id)}>
                       去浏览器查看
                     </a>
