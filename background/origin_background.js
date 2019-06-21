@@ -681,6 +681,12 @@ function trxStateTimer() {
                     trxs[i].gasUsed = util.toDecimal(trxobj.result.gasUsed)
                     stateChanged = true
                     updateState()
+                    chrome.notifications.create({
+                        'type': 'basic',
+                        'title': 'VNT Wallet',
+                        'iconUrl': chrome.extension.getURL('./images/icon-64.png'),
+                        'message': "交易失败！",
+                        })
                     break
 
                 } else if (trxobj.result.status === "0x1"){
@@ -688,6 +694,12 @@ function trxStateTimer() {
                     trxs[i].gasUsed = util.toDecimal(trxobj.result.gasUsed)
                     stateChanged = true
                     updateState()
+                    chrome.notifications.create({
+                        'type': 'basic',
+                        'title': 'VNT Wallet',
+                        'iconUrl': chrome.extension.getURL('./images/icon-64.png'),
+                        'message': "交易成功！",
+                        })
                     break
                     
                 }
@@ -697,12 +709,6 @@ function trxStateTimer() {
 
         if (stateChanged) {
             chrome.runtime.sendMessage({type: "trx_state_changed"})
-            chrome.notifications.create({
-                'type': 'basic',
-                'title': 'VNT Wallet',
-                'iconUrl': chrome.extension.getURL('./images/icon-64.png'),
-                'message': "交易成功！",
-                })
         }
     }
 }
