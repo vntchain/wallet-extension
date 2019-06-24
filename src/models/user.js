@@ -46,7 +46,7 @@ export default {
     },
     filterTradeDetail: (state, { payload }) => {
       const id = payload
-      const txDetail = state.currTrade.find(item => item.id === id)
+      const txDetail = state.currTrade.find(item => item.id === id) || []
       return {
         ...state,
         txDetail
@@ -153,7 +153,11 @@ export default {
     }),
     getAccountBalance: takeLatest(function*({ payload }) {
       try {
-        const data = yield getAccountBalance(payload)
+        let { addr } = payload
+        if (!addr) {
+          addr = select(state => state.user.addr)
+        }
+        const data = yield getAccountBalance({ addr })
         yield put({
           type: 'user/setAccountBalance',
           payload: data

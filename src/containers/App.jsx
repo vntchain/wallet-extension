@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Route, withRouter, Switch, Redirect } from 'react-router-dom'
+import { Route, withRouter, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import requireAuth from '../component/requireAuth'
@@ -29,12 +29,14 @@ const App = function(props) {
     dispatch({
       type: 'user/getAddr'
     })
+    //交易状态变化更新账户列表->更新交易列表->更新账户余额
     global.chrome.runtime.onMessage.addListener(function(request) {
-      console.log('message connect') //eslint-disable-line
       if (request.type === 'trx_state_changed') {
-        console.log('changed') //eslint-disable-line
         dispatch({
           type: 'user/getAccounts'
+        })
+        dispatch({
+          type: 'user/getAccountBalance'
         })
       }
     })
@@ -65,7 +67,7 @@ const App = function(props) {
       <Route exact path={paths.outerAuth} component={requireAuth(OuterAuth)} />
       <Route exact path={paths.outerSend} component={requireAuth(OuterSend)} />
       <Route path={paths.wallet} component={Wallet} />
-      <Redirect to="/" />
+      {/* <Redirect to="/" /> */}
     </Switch>
   )
 }

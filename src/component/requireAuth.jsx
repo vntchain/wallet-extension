@@ -1,32 +1,31 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 
 import paths from '../utils/paths'
 
 function requireAuth(WrappedComponent) {
-  const mapStateToProps = ({ user: { isAuth, isWalletUnlock } }) => {
+  const mapStateToProps = ({ user: { isAuth } }) => {
     return {
-      isAuth,
-      isWalletUnlock
+      isAuth
     }
   }
+  console.log('init') //eslint-disable-line
   return connect(mapStateToProps)(function(props) {
     const { isAuth, dispatch } = props
-    const [isWalletUnlock, setIsWalletUnlock] = useState(false)
-    useEffect(() => {
-      if (!isAuth) {
-        global.chrome.storage.sync.get('isWalletUnlock', function(obj) {
-          if (obj['isWalletUnlock']) {
-            setIsWalletUnlock(true)
-          } else {
-            dispatch(push(paths['login']))
-            setIsWalletUnlock(false)
-          }
-        })
-      }
-    }, [])
-    return isAuth || isWalletUnlock ? <WrappedComponent /> : null
+    if (!isAuth) {
+      global.chrome.storage.sync.get('isWalletUnlock', function(obj) {
+        if (obj['isWalletUnlock']) {
+          dispatch({
+            type: 'user/setIsAuth',
+            payload: true
+          })
+        } else {
+          dispatch(push(paths['login']))
+        }
+      })
+    }
+    return isAuth ? <WrappedComponent /> : null
   })
 }
 

@@ -29,3 +29,7 @@ yarn build
 ##发布
 
 打包为 .crx 文件，便于发布
+
+##主网测试网路由配置路径
+
+/src/constants/net.js

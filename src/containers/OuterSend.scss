@@ -22,15 +22,19 @@
       font-weight: 600;
     }
     .cont {
+      flex: 1;
       max-width: 2.2rem;
       color: $font-color;
     }
     .info {
+      flex: 1;
       color: $font-color-light;
     }
     .remarks {
+      flex: 1;
       font-size: 0.14rem;
       color: $font-color-light;
+      word-wrap: break-all;
     }
     .commission {
       font-size: 0.14rem;
