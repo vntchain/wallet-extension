@@ -5,7 +5,7 @@ import Header from '../component/layout/Header'
 import CommonPadding from '../component/layout/CommonPadding'
 import Copier from '../component/Copier'
 import paths from '../utils/paths'
-import { calBigMulti, calCommission, isEmptyObject } from '../utils/helper'
+import { calBigMulti, calCommission } from '../utils/helper'
 import styles from './TxDetail.scss'
 
 const TxDetail = function(props) {
@@ -92,7 +92,7 @@ const TxDetail = function(props) {
       <Header title={'交易详情'} hasBack={true} backUrl={paths.home} />
       <div className={styles.container}>
         <CommonPadding>
-          {!isEmptyObject(txDetail)
+          {txDetail.time
             ? DetailList.map((blocks, index) => (
                 <div className={styles.block} key={index}>
                   {Object.keys(blocks).map(item => {

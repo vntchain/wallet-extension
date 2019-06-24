@@ -52,7 +52,7 @@ export default {
         yield put(push(`${paths.txDetail}/${id}`))
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('sendTx:' + e) //eslint-disable-line
       } finally {
         yield put({
           type: 'send/setIsSendLoading',
@@ -69,7 +69,7 @@ export default {
         })
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('getGasPrice:' + e) //eslint-disable-line
       }
     }),
     getGasLimit: takeLatest(function*({ payload }) {
@@ -86,7 +86,7 @@ export default {
         })
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('getGasLimit:' + e) //eslint-disable-line
       }
     })
   })

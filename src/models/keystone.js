@@ -44,7 +44,7 @@ export default {
         })
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('getPrivateKey: '+e) //eslint-disable-line
       } finally {
         yield put({
           type: 'keystone/setIsExportLoading',
@@ -73,7 +73,7 @@ export default {
           payload: false
         })
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('getPrivateJson: ' + e) //eslint-disable-line
       }
     }),
     importByPrivateKey: takeLatest(function*({ payload }) {
@@ -89,7 +89,7 @@ export default {
         yield put(push(paths.home))
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('importByPrivateKey: ' + e) //eslint-disable-line
       } finally {
         yield put({
           type: 'keystone/setIsImportLoading',
@@ -111,7 +111,7 @@ export default {
         yield put(push(paths.home))
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('importByKeystone: ' + e) //eslint-disable-line
       } finally {
         yield put({
           type: 'keystone/setIsImportLoading',

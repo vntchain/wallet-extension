@@ -18,7 +18,7 @@ export default {
         })
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('getVntToCny:' + e) //eslint-disable-line
       }
     })
   })
