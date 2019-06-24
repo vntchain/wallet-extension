@@ -51706,7 +51706,7 @@ window.signThenSendTransaction = async function signThenSendTransaction(obj) {
 function getNonce(addr) {
     var payload = {jsonrpc: "2.0", id: 1, method: "core_getTransactionCount", params:[]}
     payload.params[0] = addr
-    payload.params[1] = "latest"
+    payload.params[1] = "pending"
             
     var nonce = provider.send(payload)
     return nonce.result
@@ -51962,6 +51962,12 @@ function trxStateTimer() {
                     trxs[i].gasUsed = util.toDecimal(trxobj.result.gasUsed)
                     stateChanged = true
                     updateState()
+                    chrome.notifications.create({
+                        'type': 'basic',
+                        'title': 'VNT Wallet',
+                        'iconUrl': chrome.extension.getURL('./images/icon-64.png'),
+                        'message': "交易失败！",
+                        })
                     break
 
                 } else if (trxobj.result.status === "0x1"){
@@ -51969,6 +51975,12 @@ function trxStateTimer() {
                     trxs[i].gasUsed = util.toDecimal(trxobj.result.gasUsed)
                     stateChanged = true
                     updateState()
+                    chrome.notifications.create({
+                        'type': 'basic',
+                        'title': 'VNT Wallet',
+                        'iconUrl': chrome.extension.getURL('./images/icon-64.png'),
+                        'message': "交易成功！",
+                        })
                     break
                     
                 }
@@ -51978,12 +51990,6 @@ function trxStateTimer() {
 
         if (stateChanged) {
             chrome.runtime.sendMessage({type: "trx_state_changed"})
-            chrome.notifications.create({
-                'type': 'basic',
-                'title': 'VNT Wallet',
-                'iconUrl': chrome.extension.getURL('./images/icon-64.png'),
-                'message': "交易成功！",
-                })
         }
     }
 }

@@ -425,7 +425,7 @@ window.signThenSendTransaction = async function signThenSendTransaction(obj) {
 function getNonce(addr) {
     var payload = {jsonrpc: "2.0", id: 1, method: "core_getTransactionCount", params:[]}
     payload.params[0] = addr
-    payload.params[1] = "latest"
+    payload.params[1] = "pending"
             
     var nonce = provider.send(payload)
     return nonce.result
