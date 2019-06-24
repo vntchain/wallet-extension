@@ -483,7 +483,7 @@ window.checkTransaction = function checkTransaction(obj) {
         if (!trxobj) {
             return Promise.resolve("pending")
         } else if (trxobj.result.status === "0x0"){
-            return Promise.resolve("error")
+            return Promise.resolve("failed")
         } else if (trxobj.result.status === "0x1"){
             return Promise.resolve("success")
         }
@@ -677,16 +677,16 @@ function trxStateTimer() {
                 if (!trxobj.result) {
                     continue
                 } else if (trxobj.result.status === "0x0"){
-                    trxs[i].state = 'error'
+                    trxs[i].state = 'failed'
                     trxs[i].gasUsed = util.toDecimal(trxobj.result.gasUsed)
                     stateChanged = true
                     updateState()
-                    chrome.notifications.create({
-                        'type': 'basic',
-                        'title': 'VNT Wallet',
-                        'iconUrl': chrome.extension.getURL('./images/icon-64.png'),
-                        'message': "交易失败！",
-                        })
+                    // chrome.notifications.create({
+                    //     'type': 'basic',
+                    //     'title': 'VNT Wallet',
+                    //     'iconUrl': chrome.extension.getURL('./images/icon-64.png'),
+                    //     'message': "交易失败！",
+                    //     })
                     break
 
                 } else if (trxobj.result.status === "0x1"){
@@ -1078,4 +1078,3 @@ chrome.runtime.onConnect.addListener(function(port) {
         } // end src from popup
     })
 })
-
