@@ -27,15 +27,9 @@ const UserDetail = function(props) {
     window.open(`${netUrlList[chainId]}/account/${addr}`)
   }
   useEffect(() => {
-    // async function fetchData() {
-    //   if (addr) {
-    //     const qr = await genQRCode(addr)
-    //     setQrCode(qr)
-    //   }
-    // }
-    function fetchData() {
+    async function fetchData() {
       if (addr) {
-        const qr = genQRCode(addr)
+        const qr = await genQRCode(addr)
         setQrCode(qr)
       }
     }

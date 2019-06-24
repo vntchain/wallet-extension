@@ -56,7 +56,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
       callback('请输入正确的地址')
       return
     }
-    handleGetGasLimit()
+    // handleGetGasLimit()
     callback()
   }
   const validateBalance = (rule, value, callback) => {
@@ -74,11 +74,11 @@ const SendForm = Form.create({ name: 'login' })(props => {
     }
     //设置vnt对应cny
     setBalanceCNY(calBigMulti(value, vntToCny))
-    handleGetGasLimit()
+    // handleGetGasLimit()
     callback()
   }
   const validateRemarks = (rule, value, callback) => {
-    handleGetGasLimit()
+    // handleGetGasLimit()
     callback()
   }
   const handleGetGasLimit = () => {
@@ -107,7 +107,13 @@ const SendForm = Form.create({ name: 'login' })(props => {
         {getFieldDecorator('to', {
           initialValue: to,
           rules: [{ validator: validateToAddr }]
-        })(<Input placeholder="请输入接收地址" size="large" />)}
+        })(
+          <Input
+            placeholder="请输入接收地址"
+            size="large"
+            onBlur={handleGetGasLimit}
+          />
+        )}
       </FormItem>
       <FormItem
         label={<BaseLabel style={{ lineHeight: '.4rem' }} label={'数量:'} />}
@@ -115,7 +121,14 @@ const SendForm = Form.create({ name: 'login' })(props => {
         {getFieldDecorator('value', {
           initialValue: value,
           rules: [{ validator: validateBalance }]
-        })(<Input placeholder="请输入发送数量" size="large" suffix={'VNT'} />)}
+        })(
+          <Input
+            placeholder="请输入发送数量"
+            size="large"
+            suffix={'VNT'}
+            onBlur={handleGetGasLimit}
+          />
+        )}
       </FormItem>
       <div className={`${styles.between} ${styles.all}`}>
         <a href="javascript:void(0)" onClick={handleSendAll}>
@@ -135,7 +148,11 @@ const SendForm = Form.create({ name: 'login' })(props => {
             { validator: validateRemarks }
           ]
         })(
-          <TexeArea placeholder="请填写交易备注数据，非必填。" size="large" />
+          <TexeArea
+            placeholder="请填写交易备注数据，非必填。"
+            size="large"
+            onBlur={handleGetGasLimit}
+          />
         )}
       </FormItem>
       <FormItem label={<BaseLabel label={'手续费:'} />}>
