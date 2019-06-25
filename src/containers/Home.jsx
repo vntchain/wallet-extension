@@ -44,6 +44,11 @@ const Home = function(props) {
     dispatch({
       type: 'user/filterCurrentTrade'
     })
+    //根据环境变化重新获取余额
+    dispatch({
+      type: 'user/getAccountBalance',
+      payload: { addr }
+    })
   }, [chainId])
   const handleOpenSend = () => {
     dispatch({
@@ -120,7 +125,7 @@ const Home = function(props) {
                       </span>
                     </span>
                     <span className={styles.vnt}>{`${
-                      item.value ? '-' + item.value : item.value
+                      item.value == 0 ? item.value : '-' + item.value
                     } VNT`}</span>
                   </li>
                   <li>
