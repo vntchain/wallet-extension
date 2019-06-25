@@ -119,7 +119,9 @@ const Home = function(props) {
                         {item.state}
                       </span>
                     </span>
-                    <span className={styles.vnt}>{`-${item.value} VNT`}</span>
+                    <span className={styles.vnt}>{`${
+                      item.value ? '-' + item.value : item.value
+                    } VNT`}</span>
                   </li>
                   <li>
                     <Link to={`/detail/${item.id}`} className={styles.code}>

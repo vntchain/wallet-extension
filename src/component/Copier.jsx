@@ -21,6 +21,7 @@ const Copier = React.forwardRef((props, ref) => {
         value={text}
         readOnly
         ref={ref}
+        onChange={() => {}}
       />
       <span onClick={handleCopy}>{props.children}</span>
     </Fragment>

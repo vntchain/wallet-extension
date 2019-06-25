@@ -90,6 +90,7 @@ const Send = function(props) {
         gas: gasLimitDefault
       }
     })
+    setCommission(calCommission(gasPriceDefault, gasLimitDefault))
   }
   const setError = (name, message) => {
     innerDispatch({

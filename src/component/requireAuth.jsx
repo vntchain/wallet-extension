@@ -10,7 +10,6 @@ function requireAuth(WrappedComponent) {
       isAuth
     }
   }
-  console.log('init') //eslint-disable-line
   return connect(mapStateToProps)(function(props) {
     const { isAuth, dispatch } = props
     if (!isAuth) {

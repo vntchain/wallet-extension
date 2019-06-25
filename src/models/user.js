@@ -46,7 +46,7 @@ export default {
     },
     filterTradeDetail: (state, { payload }) => {
       const id = payload
-      const txDetail = state.currTrade.find(item => item.id === id) || []
+      const txDetail = state.currTrade.find(item => item.id === id) || { id }
       return {
         ...state,
         txDetail
@@ -72,7 +72,7 @@ export default {
         yield put(push(paths.home))
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('login:' + e) //eslint-disable-line
       } finally {
         yield put({
           type: 'user/setIsLoginDisable',
@@ -90,7 +90,7 @@ export default {
         yield put(push(paths.login))
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('logout:' + e) //eslint-disable-line
       }
     }),
     getAddr: takeLatest(function*() {
@@ -102,7 +102,7 @@ export default {
         })
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('getAddr:' + e) //eslint-disable-line
       }
     }),
     setUserAddr: takeLatest(function*({ payload }) {
@@ -119,7 +119,7 @@ export default {
         })
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('setUserAddr:' + e) //eslint-disable-line
       }
     }),
     getAccounts: takeLatest(function*() {
@@ -148,14 +148,16 @@ export default {
         }
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('getAccounts:' + e) //eslint-disable-line
       }
     }),
     getAccountBalance: takeLatest(function*({ payload }) {
       try {
-        let { addr } = payload
-        if (!addr) {
-          addr = select(state => state.user.addr)
+        let addr
+        if (payload) {
+          addr = payload.addr
+        } else {
+          addr = yield select(state => state.user.addr)
         }
         const data = yield getAccountBalance({ addr })
         yield put({
@@ -164,7 +166,7 @@ export default {
         })
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('getAccountBalance:' + e) //eslint-disable-line
       }
     }),
     getAccountBalanceAll: takeLatest(function*() {
@@ -182,22 +184,19 @@ export default {
         })
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('getAccountBalanceAll:' + e) //eslint-disable-line
       }
     }),
     setProviderUrl: takeLatest(function*({ payload }) {
       try {
         yield changeProvider(payload)
-        // yield put({
-        //   type: 'user/getProviderUrl'
-        // })
         yield put({
           type: 'user/setEnvObj',
           payload: { chainId: payload.newprovider }
         })
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('setProviderUrl:' + e) //eslint-disable-line
       }
     }),
     getProviderUrl: takeLatest(function*() {
@@ -209,7 +208,7 @@ export default {
         })
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('getProviderUrl:' + e) //eslint-disable-line
       }
     }),
     addNewAccount: takeLatest(function*() {
@@ -224,7 +223,7 @@ export default {
         })
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('addNewAccount:' + e) //eslint-disable-line
       }
     })
   })

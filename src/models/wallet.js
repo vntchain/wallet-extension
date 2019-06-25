@@ -37,7 +37,7 @@ export default {
         yield put(push(paths.word))
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('create:' + e) //eslint-disable-line
       } finally {
         yield put({
           type: 'wallet/setIsCreateDisable',
@@ -55,7 +55,7 @@ export default {
         yield put(push(paths.home))
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('confirmWord:' + e) //eslint-disable-line
       } finally {
         yield put({
           type: 'wallet/setIsConfirmDisable',
@@ -83,7 +83,7 @@ export default {
         yield put(push(paths.home))
       } catch (e) {
         message.error(e.message || e)
-        console.log(e) //eslint-disable-line
+        console.log('regainWord:' + e) //eslint-disable-line
       } finally {
         yield put({
           type: 'wallet/setIsConfirmDisable',
