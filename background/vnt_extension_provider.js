@@ -136,13 +136,25 @@ InpageHttpProvider.prototype.isConnected = function () {
 };
 
 
-InpageHttpProvider.prototype.httpGet = function(url) {
+InpageHttpProvider.prototype.httpGet = function(url, callback) {
   var request = new XMLHttpRequest();
-  request.open('get', url, false)
+  request.timeout = 2000
+  request.responseType = "json"
+
+  request.open('get', url, true)
+
+  request.onload = function() {
+
+    if (request.status === 200) {
+      callback(request.response)
+    }
+  }
+
+  request.timeout = function(e) {
+    callback("timeout")
+  }
+
   request.send(null)
-
-  return request.response
-
 }
 
 // InpageHttpProvider.prototype.signThenSendTransaction = function(tx, payload, callback) {

@@ -266,7 +266,7 @@ function getAllAccounts() {
 // extension_wallet.on('update', function(){
 //     console.log("catch update")
 //     console.log(extension_wallet.memStore.getState())
-//     // chrome.storage.sync.set({"curAddress": })
+//     // chrome.storage.local.set({"curAddress": })
 // })
 
 
@@ -503,9 +503,12 @@ window.getVntPrice = function getVntPrice() {
 
     try {
         var url = "http://dncapi.bqiapp.com/api/coin/coininfo?code=vntchain"
-        return Promise.resolve(JSON.parse(provider.httpGet(url)).data.price_cny)
+        provider.httpGet(url, function(result){
+            // console.log(result.data.price_cny)
+            return Promise.resolve(result.data.price_cny)
+        })
     } catch (error) {
-        return Promise.reject(error)
+       return Promise.reject(error)
     }
 }
 
@@ -604,7 +607,7 @@ window.changeProvider = function changeProvider(obj) {
         // });
 
         // provoidUrl
-        chrome.storage.sync.set({'providerNet': providerNet}, function(){
+        chrome.storage.local.set({'providerNet': providerNet}, function(){
             console.log('updateState: update providerNet')
         })
 
@@ -623,7 +626,7 @@ window.changeAddress = function changeAddress(obj) {
     selectedAddr = obj.addr
 
     // provoidUrl
-    chrome.storage.sync.set({'selectedAddr': selectedAddr}, function(){
+    chrome.storage.local.set({'selectedAddr': selectedAddr}, function(){
         console.log('updateState: update selectedAddr')
     })
 
@@ -743,7 +746,7 @@ function updateTrxs(addr, trx) {
  * reset extension state
  */
 function resetState() {
-    chrome.storage.sync.clear()
+    chrome.storage.local.clear()
 
     account_info = {accounts:[], trxs:{}}
     selectedAddr = ''
@@ -763,7 +766,7 @@ function resetState() {
  */
 function restoreState() {
 
-    chrome.storage.sync.get('extension_wallet', function(obj){
+    chrome.storage.local.get('extension_wallet', function(obj){
         var backup_extension_wallet = obj.extension_wallet
         if (backup_extension_wallet !== undefined) {
             console.log("restoreState: extension wallet exist")
@@ -772,7 +775,7 @@ function restoreState() {
         }
     })
 
-    chrome.storage.sync.get('account_info', function(obj){
+    chrome.storage.local.get('account_info', function(obj){
         var backup_account_info = obj.account_info
         if (backup_account_info !== undefined) {
             console.log("restoreState: account info")
@@ -780,7 +783,7 @@ function restoreState() {
         }
     })
 
-    chrome.storage.sync.get('selectedAddr', function(obj){
+    chrome.storage.local.get('selectedAddr', function(obj){
         var backup_selectedAddr = obj.selectedAddr
         if (backup_selectedAddr !== undefined) {
             console.log("restoreState: selected addr")
@@ -788,7 +791,7 @@ function restoreState() {
         }
     })
 
-    chrome.storage.sync.get('providerNet', function(obj){
+    chrome.storage.local.get('providerNet', function(obj){
         var backup_providerNet = obj.providerNet
         if (backup_providerNet !== undefined) {
             console.log("restoreState: provider url")
@@ -797,7 +800,7 @@ function restoreState() {
         }
     })
 
-    chrome.storage.sync.get('isWalletExist', function(obj){
+    chrome.storage.local.get('isWalletExist', function(obj){
         var backup_isWalletExist = obj.isWalletExist
         if (backup_isWalletExist !== undefined){
             console.log('restoreState: is wallet exist')
@@ -805,7 +808,7 @@ function restoreState() {
         }
     })
 
-    chrome.storage.sync.get('isWalletUnlock', function(obj){
+    chrome.storage.local.get('isWalletUnlock', function(obj){
         var backup_isWalletUnlock = obj.isWalletUnlock
         if (backup_isWalletUnlock !== undefined){
             console.log('restoreState: is wallet unlock')
@@ -813,7 +816,7 @@ function restoreState() {
         }
     })
 
-    chrome.storage.sync.get('authUrl', function(obj){
+    chrome.storage.local.get('authUrl', function(obj){
         var backup_authUrl = obj.authUrl
         if (backup_authUrl !== undefined){
             console.log('restoreState: auth url')
@@ -829,36 +832,36 @@ function restoreState() {
  */
 function updateState() {
     // extension_wallet
-    chrome.storage.sync.set({'extension_wallet': extension_wallet.store.getState()}, function(){
+    chrome.storage.local.set({'extension_wallet': extension_wallet.store.getState()}, function(){
         console.log('updateState: update extension wallet')
     })
 
     // account_info
-    chrome.storage.sync.set({'account_info': account_info}, function(){
+    chrome.storage.local.set({'account_info': account_info}, function(){
         console.log('updateState: update account info')
     })
 
     // selectedAddr
-    chrome.storage.sync.set({'selectedAddr': selectedAddr}, function(){
+    chrome.storage.local.set({'selectedAddr': selectedAddr}, function(){
         console.log('updateState: update selectedAddr')
     })
 
     // provoidUrl
-    chrome.storage.sync.set({'providerNet': providerNet}, function(){
+    chrome.storage.local.set({'providerNet': providerNet}, function(){
         console.log('updateState: update providerNet')
     })
 
     // wallet state
-    chrome.storage.sync.set({'isWalletExist': is_wallet_exist}, function(){
+    chrome.storage.local.set({'isWalletExist': is_wallet_exist}, function(){
         console.log('updateState: update wallet exist state')
     })
 
-    chrome.storage.sync.set({'isWalletUnlock': is_wallet_unlock}, function(){
+    chrome.storage.local.set({'isWalletUnlock': is_wallet_unlock}, function(){
         console.log('updateState: update wallet unlock state')
     })
 
     // authurl
-    chrome.storage.sync.set({'authUrl': authUrl}, function(){
+    chrome.storage.local.set({'authUrl': authUrl}, function(){
         console.log('updateState: update extension authUrl state')
     })
 
@@ -890,7 +893,7 @@ chrome.runtime.onInstalled.addListener(({reason}) => {
 
     setInterval(trxStateTimer, 3000)
      // provoidUrl
-     chrome.storage.sync.set({'providerNet': providerNet}, function(){
+     chrome.storage.local.set({'providerNet': providerNet}, function(){
         console.log('updateState: update providerNet')
     })
 })
@@ -919,7 +922,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                 if (popup.trx.gas != undefined) {
                     popup.trx.gas = util.toDecimal(popup.trx.gas)
                 }
-                chrome.storage.sync.set({'popup': popup}, function(){
+                chrome.storage.local.set({'popup': popup}, function(){
                     console.log('updateState: update popup info')
                 })
                
@@ -949,7 +952,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                 console.log(msg) 
 
                 popup.url = msg.data.data.url
-                chrome.storage.sync.set({'popup': popup}, function(){
+                chrome.storage.local.set({'popup': popup}, function(){
                     console.log('updateState: update popup info')
                 })
                
