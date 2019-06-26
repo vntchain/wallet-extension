@@ -16,7 +16,7 @@ const createFuncPromise = function(funcName, payload) {
 
 const createGetPromise = function(getName) {
   return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(getName, function(obj) {
+    chrome.storage.local.get(getName, function(obj) {
       const result = obj[getName]
       if (result !== 'undefined') resolve(result)
       else reject({ message: '网络错误' })

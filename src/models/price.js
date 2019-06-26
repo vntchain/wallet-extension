@@ -5,7 +5,7 @@ import { message } from 'antd'
 const { put } = effects
 export default {
   state: {
-    vntToCny: 1
+    vntToCny: null
   },
   reducers: {},
   effects: ({ takeLatest }) => ({
