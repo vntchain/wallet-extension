@@ -52563,7 +52563,7 @@ InpageHttpProvider.prototype.httpGet = function(url, callback) {
   }
 
   request.timeout = function(e) {
-    callback("timeout")
+    throw new Error("timeout")
   }
 
   request.send(null)
