@@ -13,7 +13,7 @@ function requireAuth(WrappedComponent) {
   return connect(mapStateToProps)(function(props) {
     const { isAuth, dispatch } = props
     if (!isAuth) {
-      global.chrome.storage.sync.get('isWalletUnlock', function(obj) {
+      global.chrome.storage.local.get('isWalletUnlock', function(obj) {
         if (obj['isWalletUnlock']) {
           dispatch({
             type: 'user/setIsAuth',
