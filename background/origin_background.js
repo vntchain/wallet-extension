@@ -499,14 +499,22 @@ window.checkTransaction = function checkTransaction(obj) {
  *  get the vnt price
  * 
  */
-window.getVntPrice = function getVntPrice() {
+window.getVntPrice = async function getVntPrice() {
 
     try {
         var url = "http://dncapi.bqiapp.com/api/coin/coininfo?code=vntchain"
-        provider.httpGet(url, function(result){
-            // console.log(result.data.price_cny)
-            return Promise.resolve(result.data.price_cny)
+
+        const res = await new Promise(resolve => {
+
+            provider.httpGet(url, function (result) {
+                // console.log(result.data.price_cny)
+                // return Promise.resolve(result.data.price_cny)
+                resolve(result)
+            })
         })
+
+        return Promise.resolve(res.data.price_cny)
+       
     } catch (error) {
        return Promise.reject(error)
     }
