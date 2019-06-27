@@ -1,5 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 import { InputItem, TextareaItem } from 'antd-mobile'
 import { Form, Select, Row, Col, Upload, Button, message } from 'antd'
 import CommonPadding from '../component/layout/CommonPadding'
@@ -21,7 +22,8 @@ const ImportForm = Form.create({ name: 'login' })(props => {
     onSubmit,
     labelCol,
     contCol,
-    isImportLoading
+    isImportLoading,
+    history
   } = props
   const { getFieldDecorator } = form
   const uploadProps = {
@@ -44,7 +46,9 @@ const ImportForm = Form.create({ name: 'login' })(props => {
       }
     })
   }
-  const routeBack = () => {}
+  const routeBack = () => {
+    history.goBack()
+  }
   return (
     <Form hideRequiredMark={true} onSubmit={handleSubmit}>
       {importType === 0 ? (
@@ -88,7 +92,8 @@ const ImportForm = Form.create({ name: 'login' })(props => {
 const ImportKeystone = function(props) {
   const {
     dispatch,
-    keystone: { isImportLoading }
+    keystone: { isImportLoading },
+    history
   } = props
   const importTypeList = ['私钥', 'JSON文件']
   const [importType, setImportType] = useState(0)
@@ -157,6 +162,7 @@ const ImportKeystone = function(props) {
             labelCol={labelCol}
             contCol={contCol}
             isImportLoading={isImportLoading}
+            history={history}
           />
         </CommonPadding>
       </div>
@@ -164,6 +170,8 @@ const ImportKeystone = function(props) {
   )
 }
 
-export default connect(({ keystone }) => ({
-  keystone
-}))(ImportKeystone)
+export default withRouter(
+  connect(({ keystone }) => ({
+    keystone
+  }))(ImportKeystone)
+)
