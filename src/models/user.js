@@ -37,8 +37,12 @@ export default {
       const chainId = newState.envObj.chainId
       const currTrade = newState.trades[addr] || []
       const filteredTrade = currTrade
-        .reverse()
         .filter(item => item.chainId == chainId)
+        .sort((a, b) => {
+          const dateA = new Date(a.time)
+          const dateB = new Date(b.time)
+          return dateB.valueOf() - dateA.valueOf()
+        })
       return {
         ...newState,
         currTrade: [...filteredTrade]
