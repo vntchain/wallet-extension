@@ -31,21 +31,25 @@ const Home = function(props) {
     })
   }, [])
   useEffect(() => {
-    dispatch({
-      type: 'user/getAccountBalance',
-      payload: { addr }
-    })
+    if (addr) {
+      dispatch({
+        type: 'user/getAccountBalance',
+        payload: { addr }
+      })
+    }
   }, [addr])
   useEffect(() => {
     //根据环境变化重新获取交易列表
     dispatch({
       type: 'user/filterCurrentTrade'
     })
-    //根据环境变化重新获取余额
-    dispatch({
-      type: 'user/getAccountBalance',
-      payload: { addr }
-    })
+    if (addr) {
+      //根据环境变化重新获取余额
+      dispatch({
+        type: 'user/getAccountBalance',
+        payload: { addr }
+      })
+    }
   }, [chainId])
   const handleOpenSend = () => {
     dispatch({

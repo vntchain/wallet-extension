@@ -30,7 +30,7 @@ const ImportForm = Form.create({ name: 'login' })(props => {
   const uploadProps = {
     name: 'files',
     action: '',
-    accept: '.json',
+    // accept: '.json',
     beforeUpload: file => {
       console.log('Received values of form: ', file) //eslint-disable-line
       setFiles([file])
@@ -70,12 +70,9 @@ const ImportForm = Form.create({ name: 'login' })(props => {
             )}
           </FormItem>
           <FormItem label={<BaseLabel label={'请输入密码'} />}>
-            {getFieldDecorator('passwd', {
-              rules: [
-                { required: true, message: '请输入密码' },
-                { min: 8, message: '密码长度不足' }
-              ]
-            })(<InputItem type="password" placeholder="请输入" />)}
+            {getFieldDecorator('passwd')(
+              <InputItem type="password" placeholder="请输入" />
+            )}
           </FormItem>
         </Fragment>
       )}
@@ -96,7 +93,7 @@ const ImportKeystone = function(props) {
     keystone: { isImportLoading },
     history
   } = props
-  const importTypeList = ['私钥', 'JSON文件']
+  const importTypeList = ['私钥', 'Keystore文件']
   const [importType, setImportType] = useState(0)
   const labelCol = 6
   const contCol = 18
