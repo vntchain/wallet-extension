@@ -18,6 +18,9 @@
 .tip {
   font-size: 0.14rem;
   color: $font-color-light;
+  & p:last-child {
+    margin-bottom: 0;
+  }
 }
 .select {
   :global {

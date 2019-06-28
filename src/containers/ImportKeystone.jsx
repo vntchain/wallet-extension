@@ -112,7 +112,7 @@ const ImportKeystone = function(props) {
           dispatch({
             type: 'keystone/importByKeystone',
             payload: {
-              passwd,
+              passwd: passwd || '',
               input: keystone
             }
           })
