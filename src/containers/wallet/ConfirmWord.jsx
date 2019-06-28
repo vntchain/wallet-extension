@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import BaseLabel from '../../component/layout/BaseLabel'
 import { Form } from 'antd'
 import { Button, TextareaItem } from 'antd-mobile'
+import { commonFormSet } from '../../constants/set'
 const FormItem = Form.Item
 
 const WordForm = Form.create({ name: 'word' })(props => {
@@ -28,7 +29,7 @@ const WordForm = Form.create({ name: 'word' })(props => {
     })
   }
   return (
-    <Form hideRequiredMark={true} onSubmit={handleSubmit}>
+    <Form {...commonFormSet} onSubmit={handleSubmit}>
       <FormItem label={<BaseLabel label={'确认您的助记词'} />}>
         {getFieldDecorator('word', {
           rules: [{ required: true, message: '请输入助记词' }]

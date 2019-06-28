@@ -6,6 +6,7 @@ import { Button, InputItem } from 'antd-mobile'
 import BaseLabel from '../../component/layout/BaseLabel'
 import paths from '../../utils/paths'
 import { passwordPatten } from '../../constants/pattens'
+import { commonFormSet } from '../../constants/set'
 import styles from './Create.scss'
 const FormItem = Form.Item
 
@@ -39,7 +40,7 @@ const CreateForm = function(props) {
     callback()
   }
   return (
-    <Form hideRequiredMark={true} onSubmit={handleSubmit}>
+    <Form {...commonFormSet} onSubmit={handleSubmit}>
       <FormItem
         label={
           <BaseLabel label={'新密码'} tip={'(8-16位字符，包含字母和数字)'} />

@@ -9,6 +9,7 @@ import BaseLabel from '../component/layout/BaseLabel'
 import paths from '../utils/paths'
 import { netList } from '../constants/net'
 import { addrPatten, balancePatten } from '../constants/pattens'
+import { commonFormSet } from '../constants/set'
 import { splitLongStr, calCommission, calBigMulti } from '../utils/helper'
 import styles from './Send.scss'
 
@@ -93,7 +94,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
     })
   }
   return (
-    <Form hideRequiredMark={true} {...formItemLayout} onSubmit={handleSubmit}>
+    <Form {...commonFormSet} {...formItemLayout} onSubmit={handleSubmit}>
       <FormItem label={<BaseLabel label={'来自:'} />}>
         <span className={styles.value}>{splitLongStr(addr)}</span>
         <span className={styles.info}>{`${accountBalance} VNT`}</span>

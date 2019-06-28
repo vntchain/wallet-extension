@@ -9,6 +9,7 @@ import BaseWarn from '../component/layout/BaseWarn'
 import BaseModalFooter from '../component/layout/BaseModalFooter'
 import BaseLabel from '../component/layout/BaseLabel'
 import { fileReaderAsText } from '../utils/helper'
+import { commonFormSet } from '../constants/set'
 import styles from './ImportKeystone.scss'
 
 const FormItem = Form.Item
@@ -50,7 +51,7 @@ const ImportForm = Form.create({ name: 'login' })(props => {
     history.goBack()
   }
   return (
-    <Form hideRequiredMark={true} onSubmit={handleSubmit}>
+    <Form {...commonFormSet} onSubmit={handleSubmit}>
       {importType === 0 ? (
         <FormItem label={<BaseLabel label={'请粘贴你的私钥:'} />}>
           {getFieldDecorator('privateKey', {

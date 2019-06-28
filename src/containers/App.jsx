@@ -29,6 +29,10 @@ const App = function(props) {
     dispatch({
       type: 'user/getAddr'
     })
+    //获取vnttocny
+    dispatch({
+      type: 'price/getVntToCny'
+    })
     //交易状态变化更新账户列表->更新交易列表->更新账户余额
     global.chrome.runtime.onMessage.addListener(function(request) {
       if (request.type === 'trx_state_changed') {
@@ -38,6 +42,14 @@ const App = function(props) {
         dispatch({
           type: 'user/getAccountBalance'
         })
+      }
+    })
+    //根据窗口打开类型修改宽度高度
+    global.chrome.windows.getCurrent(obj => {
+      if (obj.type === 'popup') {
+        window.document.body.style.width = '100%'
+        window.document.body.style.height = '100%'
+        window.document.body.parentElement.style.height = '100%'
       }
     })
   }, [])

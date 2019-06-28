@@ -10,6 +10,7 @@ import BaseLabel from '../component/layout/BaseLabel'
 import paths from '../utils/paths'
 import imgs from '../utils/imgs'
 import { netList } from '../constants/net'
+import { commonFormSet } from '../constants/set'
 const FormItem = Form.Item
 const Option = Select.Option
 
@@ -26,7 +27,7 @@ const LoginForm = Form.create({ name: 'login' })(props => {
     })
   }
   return (
-    <Form hideRequiredMark={true} onSubmit={handleSubmit}>
+    <Form {...commonFormSet} onSubmit={handleSubmit}>
       <FormItem label={<BaseLabel label={'密码'} icon={imgs.password} />}>
         {getFieldDecorator('password', {
           rules: [{ required: true, message: '请输入密码' }]

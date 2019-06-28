@@ -21,9 +21,11 @@ export const calCommission = (gasPrice, gasLimit) => {
   return (gasPrice * gasLimit) / Math.pow(10, 9)
 }
 
+const isEmpty = val => val === null || val === undefined || val === ''
+
 //大数相乘
 export const calBigMulti = (num1, num2) => {
-  if (num1 === null || num2 === null) {
+  if (isEmpty(num1) || isEmpty(num2)) {
     return '--'
   }
   const numStr1 = num1.toString()

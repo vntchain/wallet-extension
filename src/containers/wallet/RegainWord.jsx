@@ -4,6 +4,7 @@ import BaseLabel from '../../component/layout/BaseLabel'
 import { Form } from 'antd'
 import { Button, InputItem, TextareaItem } from 'antd-mobile'
 import { passwordPatten } from '../../constants/pattens'
+import { commonFormSet } from '../../constants/set'
 const FormItem = Form.Item
 // const { TextArea } = Input
 
@@ -33,7 +34,7 @@ const WordForm = Form.create({ name: 'word' })(props => {
     callback()
   }
   return (
-    <Form hideRequiredMark={true} onSubmit={handleSubmit}>
+    <Form {...commonFormSet} onSubmit={handleSubmit}>
       <FormItem label={<BaseLabel label={'确认您的助记词'} />}>
         {getFieldDecorator('seed', {
           rules: [{ required: true, message: '请输入助记词' }]

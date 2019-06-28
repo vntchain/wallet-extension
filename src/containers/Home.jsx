@@ -29,9 +29,6 @@ const Home = function(props) {
     dispatch({
       type: 'user/getAccounts'
     })
-    dispatch({
-      type: 'price/getVntToCny'
-    })
   }, [])
   useEffect(() => {
     dispatch({

@@ -3,6 +3,7 @@ import { InputItem } from 'antd-mobile'
 import BaseModalFooter from '../../component/layout/BaseModalFooter'
 import { Form } from 'antd'
 import BaseLabel from '../../component/layout/BaseLabel'
+import { commonFormSet } from '../../constants/set'
 
 const FormItem = Form.Item
 
@@ -19,7 +20,7 @@ const PasswordForm = Form.create({ name: 'word' })(props => {
     })
   }
   return (
-    <Form hideRequiredMark={true} onSubmit={handleSubmit}>
+    <Form {...commonFormSet} onSubmit={handleSubmit}>
       <FormItem label={<BaseLabel label={'请输入密码'} />}>
         {getFieldDecorator('password', {
           rules: [{ required: true, message: '请输入密码' }]
