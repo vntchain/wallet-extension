@@ -43,3 +43,18 @@ export const calBigMulti = (num1, num2) => {
 export const isEmptyObject = obj => {
   return obj && Object.keys(obj).length === 0 && obj.constructor === Object
 }
+
+//保留小数，但不四舍五入
+export const formatDecimal = (num, decimal) => {
+  if (isEmpty(num)) {
+    return 0
+  }
+  num = num.toString()
+  let index = num.indexOf('.')
+  if (index !== -1) {
+    num = num.substring(0, index + decimal + 1)
+  } else {
+    num = num.substring(0)
+  }
+  return parseFloat(num)
+}

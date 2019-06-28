@@ -13,6 +13,7 @@ import {
   changeProvider
 } from '../utils/chrome'
 import { message } from 'antd'
+import { formatDecimal } from '../utils/helper'
 
 const { put, all, select } = effects
 export default {
@@ -166,7 +167,7 @@ export default {
         const data = yield getAccountBalance({ addr })
         yield put({
           type: 'user/setAccountBalance',
-          payload: data
+          payload: formatDecimal(data, 8)
         })
       } catch (e) {
         message.error(e.message || e)
