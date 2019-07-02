@@ -7,20 +7,13 @@ const Downloader = props => {
   // const blob = isDownload
   //   ? new Blob([content], { type: 'text/plain;charset=utf-8' })
   //   : null
-  const handleOnClick = () => {
-    console.log('11111') //eslint-disable-line
-  }
   useEffect(() => {
     if (isDownload) {
       setBlob(new Blob([content], { type: 'text/plain;charset=utf-8' }))
     }
   }, [isDownload])
   return blob ? (
-    <a
-      href={URL.createObjectURL(blob)}
-      download={fileName}
-      onClick={handleOnClick}
-    >
+    <a href={URL.createObjectURL(blob)} download={fileName}>
       {props.children}
     </a>
   ) : (
