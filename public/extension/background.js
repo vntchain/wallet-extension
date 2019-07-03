@@ -51377,20 +51377,28 @@ window.createWallet = async function createWallet(obj) {
 
     var passwd = obj.passwd
 
-    resetState()
+    try {
 
-    await extension_wallet.createNewVaultAndKeychain(passwd)
-    wallet_passwd = passwd
-    is_wallet_exist = true
-    is_wallet_unlock = true
-   
-    var addrs = await extension_wallet.getAccounts()
-    selectedAddr = addrs[addrs.length - 1]
-    updateAccounts(false, addrs[addrs.length - 1])
-    updateState()
+        await extension_wallet.createNewVaultAndKeychain(passwd)
 
-    var keyring = await getWalletKeyring('HD Key Tree')
-    return Promise.resolve(keyring[0].mnemonic)
+        resetState()
+        wallet_passwd = passwd
+        is_wallet_exist = true
+        is_wallet_unlock = true
+
+        var addrs = await extension_wallet.getAccounts()
+        selectedAddr = addrs[addrs.length - 1]
+        updateAccounts(false, addrs[addrs.length - 1])
+        updateState()
+
+        var keyring = await getWalletKeyring('HD Key Tree')
+        return Promise.resolve(keyring[0].mnemonic)
+
+    } catch (error) {
+
+        return Promise.reject(error)
+    }
+
 }
 
 /**
@@ -51417,18 +51425,25 @@ window.restoreFromSeed = async function restoreFromSeed(obj) {
     var passwd = obj.passwd
     var seed = obj.seed
 
-    resetState()
+    try {
+        await extension_wallet.createNewVaultAndRestore(passwd, seed)
 
-    await extension_wallet.createNewVaultAndRestore(passwd, seed)
-    wallet_passwd = passwd
-    is_wallet_exist = true
-    is_wallet_unlock = true
-    var addrs = await extension_wallet.getAccounts()
-    selectedAddr = addrs[addrs.length - 1]
-    updateAccounts(false, addrs[addrs.length - 1])
-    updateState()
+        resetState()
 
-    return extension_wallet.fullUpdate()
+        wallet_passwd = passwd
+        is_wallet_exist = true
+        is_wallet_unlock = true
+        var addrs = await extension_wallet.getAccounts()
+        selectedAddr = addrs[addrs.length - 1]
+        updateAccounts(false, addrs[addrs.length - 1])
+        updateState()
+
+        return extension_wallet.fullUpdate()
+
+    } catch (error) {
+        return Promise.reject(error)
+    }
+   
 }
 
 /**
@@ -51698,6 +51713,45 @@ window.signThenSendTransaction = async function signThenSendTransaction(obj) {
    
 }
 
+// /**
+//  *  cancel a pending transaction
+//  *  @param {string} txid  the trx hash id
+//  */
+// window.cancelTransaction = function cancelTransaction(obj) {
+
+//     var trxs = account_info.trxs[selectedAddr]
+//     var cancelTrx = {}
+
+//     for (var i = 0; i < trxs.length; i++) {
+//         if (trxs[i].id === obj.txid) {
+//             trxs[i].state = "cancelled"
+
+//             // construct cancel trx
+//             cancelTrx.from = trxs[i].from
+//             cancelTrx.to = trxs[i].to
+//             cancelTrx.nonce = trxs[i].nonce
+//             cancelTrx.chainId = trxs[i].chainId
+//             cancelTrx.gas = trxs[i].gas
+//             break
+//         }
+//     }
+
+//     cancelTrx.gasPrice = getEstimateGas()
+
+//     signThenSendTransaction()
+// }
+
+
+// /**
+//  * resend a pending transaction
+//  * 
+//  * @param {string} txid the trx hash id
+//  */
+// window.resendTransaction = function resendTransaction(obj) {
+
+//     var trxs = account_info.trxs[selectedAddr]
+// }
+
 
 /**
  * get the Nonce
@@ -51733,14 +51787,18 @@ window.getAccountBalance = function getAccountBalance(obj) {
     var payload = {jsonrpc: "2.0", id: 1, method: "core_getBalance", params:[]}
     payload.params[0] = addr
     payload.params[1] = "latest"
-    try {
-        var balanceobj = provider.send(payload)
+    
+    return  new Promise((resolve, reject) => {
+     
+        provider.sendAsync(payload, function (err, balanceobj) {
+            if (err) {
+                reject(err)
+            } else {
+                resolve(util.fromWei(balanceobj.result, 'vnt'))
+            }
+        })
 
-        return Promise.resolve(util.fromWei(balanceobj.result, 'vnt'))
-    } catch (error) {
-        return Promise.reject(error)
-    }
-
+    })
 }
 
 
@@ -51963,38 +52021,45 @@ function trxStateTimer() {
                 var payload = {jsonrpc: "2.0", id: 1, method: "core_getTransactionReceipt", params:[]}
                 payload.params[0] = trxs[i].id
                 
-                var trxobj = provider.send(payload)
-            
-                // trxobj is null, means in pending
-                if (!trxobj.result) {
-                    continue
-                } else if (trxobj.result.status === "0x0"){
-                    trxs[i].state = 'failed'
-                    trxs[i].gasUsed = util.toDecimal(trxobj.result.gasUsed)
-                    stateChanged = true
-                    updateState()
-                    // chrome.notifications.create({
-                    //     'type': 'basic',
-                    //     'title': 'VNT Wallet',
-                    //     'iconUrl': chrome.extension.getURL('./images/icon-64.png'),
-                    //     'message': "交易失败！",
-                    //     })
-                    break
+                try {
+                    var trxobj = provider.send(payload)
 
-                } else if (trxobj.result.status === "0x1"){
-                    trxs[i].state = 'success'
-                    trxs[i].gasUsed = util.toDecimal(trxobj.result.gasUsed)
-                    stateChanged = true
-                    updateState()
-                    chrome.notifications.create({
-                        'type': 'basic',
-                        'title': 'VNT Wallet',
-                        'iconUrl': chrome.extension.getURL('./images/icon-64.png'),
-                        'message': "交易成功！",
+                    // trxobj is null, means in pending
+                    if (!trxobj.result) {
+                        continue
+                    } else if (trxobj.result.status === "0x0") {
+                        trxs[i].state = 'failed'
+                        trxs[i].gasUsed = util.toDecimal(trxobj.result.gasUsed)
+                        stateChanged = true
+                        updateState()
+                        // chrome.notifications.create({
+                        //     'type': 'basic',
+                        //     'title': 'VNT Wallet',
+                        //     'iconUrl': chrome.extension.getURL('./images/icon-64.png'),
+                        //     'message': "交易失败！",
+                        //     })
+                        break
+
+                    } else if (trxobj.result.status === "0x1") {
+                        trxs[i].state = 'success'
+                        trxs[i].gasUsed = util.toDecimal(trxobj.result.gasUsed)
+                        stateChanged = true
+                        updateState()
+                        chrome.notifications.create({
+                            'type': 'basic',
+                            'title': 'VNT Wallet',
+                            'iconUrl': chrome.extension.getURL('./images/icon-64.png'),
+                            'message': "交易成功！",
                         })
-                    break
-                    
+                        break
+
+                    }
+                } catch (error) {
+                    continue
                 }
+               
+            
+               
             }
     
         }
