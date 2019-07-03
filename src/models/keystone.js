@@ -8,16 +8,16 @@ import {
   importByKeystore
 } from '../utils/chrome'
 import { message } from 'antd'
+import downloader from '../utils/downloader'
 
 const { put } = effects
 export default {
   state: {
     hasGetKey: false,
     privateKey: '',
-    privateJson: '',
     isExportLoading: false,
-    isDownload: false,
-    isImportLoading: false
+    isImportLoading: false,
+    isDownloadLoading: false
   },
   reducers: {},
   effects: ({ takeLatest }) => ({
@@ -35,13 +35,6 @@ export default {
             privateKey: data
           }
         })
-        yield put({
-          type: 'keystone/getPrivateJson',
-          payload: {
-            passwd: payload.passwd,
-            privatekey: data
-          }
-        })
       } catch (e) {
         message.error(e.message || e)
         console.log('getPrivateKey: '+e) //eslint-disable-line
@@ -54,26 +47,20 @@ export default {
     }),
     getPrivateJson: takeLatest(function*({ payload }) {
       yield put({
-        type: 'keystone/setIsDownload',
-        payload: false
+        type: 'keystone/setIsDownloadLoading',
+        payload: true
       })
       try {
         const data = yield exportAccountKeystore(payload)
-        yield put({
-          type: 'keystone/setPrivateJson',
-          payload: data
-        })
-        yield put({
-          type: 'keystone/setIsDownload',
-          payload: true
-        })
+        yield downloader(data, 'keystore', 'json')
       } catch (e) {
-        yield put({
-          type: 'keystone/setIsDownload',
-          payload: false
-        })
         message.error(e.message || e)
         console.log('getPrivateJson: ' + e) //eslint-disable-line
+      } finally {
+        yield put({
+          type: 'keystone/setIsDownloadLoading',
+          payload: false
+        })
       }
     }),
     importByPrivateKey: takeLatest(function*({ payload }) {

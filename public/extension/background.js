@@ -51471,20 +51471,20 @@ window.exportAccountPrivatekey = async function exportAccountPrivatekey(obj) {
  * @param {*} passwd  the wallet passwd
  */
 window.exportAccountKeystore = function exportAccountKeystore(obj) {
+    return new Promise((resolve, reject) =>{
+        var privatekey = obj.privatekey
+        var passwd = obj.passwd
 
-    var privatekey = obj.privatekey
-    var passwd = obj.passwd
+        if (wallet_passwd !== passwd) {
+            return reject(new Error("password not correct!"))
+        }
 
-    if (wallet_passwd !== passwd) {
-        return Promise.reject(new Error("password not correct!"))
-    }
+        privatekey = ethUtil.addHexPrefix(privatekey)
+        const buffer = ethUtil.toBuffer(privatekey)
+        const wallet = Wallet.fromPrivateKey(buffer)
 
-    privatekey = ethUtil.addHexPrefix(privatekey)
-    const buffer = ethUtil.toBuffer(privatekey)
-    const wallet = Wallet.fromPrivateKey(buffer)
-
-    return Promise.resolve(wallet.toV3String(passwd))
-
+        resolve(wallet.toV3String(passwd))
+    })
 }
 
 
