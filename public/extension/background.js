@@ -51487,18 +51487,20 @@ window.exportAccountPrivatekey = async function exportAccountPrivatekey(obj) {
  */
 window.exportAccountKeystore = function exportAccountKeystore(obj) {
 
-    var privatekey = obj.privatekey
-    var passwd = obj.passwd
+    return new Promise ( (resolve, reject) => {
+        var privatekey = obj.privatekey
+        var passwd = obj.passwd
 
-    if (wallet_passwd !== passwd) {
-        return Promise.reject(new Error("password not correct!"))
-    }
+        if (wallet_passwd !== passwd) {
+            return reject(new Error("password not correct!"))
+        }
 
-    privatekey = ethUtil.addHexPrefix(privatekey)
-    const buffer = ethUtil.toBuffer(privatekey)
-    const wallet = Wallet.fromPrivateKey(buffer)
+        privatekey = ethUtil.addHexPrefix(privatekey)
+        const buffer = ethUtil.toBuffer(privatekey)
+        const wallet = Wallet.fromPrivateKey(buffer)
 
-    return Promise.resolve(wallet.toV3String(passwd))
+        resolve(wallet.toV3String(passwd))
+    })
 
 }
 
@@ -51713,44 +51715,87 @@ window.signThenSendTransaction = async function signThenSendTransaction(obj) {
    
 }
 
-// /**
-//  *  cancel a pending transaction
-//  *  @param {string} txid  the trx hash id
-//  */
-// window.cancelTransaction = function cancelTransaction(obj) {
+/**
+ *  cancel a pending transaction
+ *  @param {string} txid  the trx hash id
+ */
+window.cancelTransaction = async function cancelTransaction(obj) {
 
-//     var trxs = account_info.trxs[selectedAddr]
-//     var cancelTrx = {}
+    var trxs = account_info.trxs[selectedAddr]
+    var cancelTrx = {}
 
-//     for (var i = 0; i < trxs.length; i++) {
-//         if (trxs[i].id === obj.txid) {
-//             trxs[i].state = "cancelled"
+    for (var i = 0; i < trxs.length; i++) {
+        if (trxs[i].id === obj.txid) {
+            trxs[i].state = "cancelled"
 
-//             // construct cancel trx
-//             cancelTrx.from = trxs[i].from
-//             cancelTrx.to = trxs[i].to
-//             cancelTrx.nonce = trxs[i].nonce
-//             cancelTrx.chainId = trxs[i].chainId
-//             cancelTrx.gas = trxs[i].gas
-//             break
-//         }
-//     }
+            // construct cancel trx
+            cancelTrx.nonce = trxs[i].nonce
+            cancelTrx.from = trxs[i].from
+            cancelTrx.to = trxs[i].to
 
-//     cancelTrx.gasPrice = getEstimateGas()
+            cancelTrx.value = trxs[i].value
+            cancelTrx.chainId = trxs[i].chainId
+            cancelTrx.gas = trxs[i].gas
+            cancelTrx.data = trxs[i].data
 
-//     signThenSendTransaction()
-// }
+            break
+        }
+    }
+
+    try {
 
 
-// /**
-//  * resend a pending transaction
-//  * 
-//  * @param {string} txid the trx hash id
-//  */
-// window.resendTransaction = function resendTransaction(obj) {
+        if (cancelTrx.from !== selectedAddr) throw new Error("sign addr and selected addr not the same.")
+        if (cancelTrx.data === undefined) {
+            delete cancelTrx.data
+        }
 
-//     var trxs = account_info.trxs[selectedAddr]
-// }
+        var storetx = Object.assign({}, cancelTrx)
+
+        cancelTrx.value = util.fromDecimal(util.toWei(cancelTrx.value), 'vnt')
+        cancelTrx.gas = util.fromDecimal(cancelTrx.gas)
+        cancelTrx.chainId = getChainId()
+        var estimateGas = getEstimateGas({ tx: cancelTrx })
+        storetx.gasPrice = estimateGas
+        cancelTrx.gasPrice = util.fromDecimal(util.toWei(estimateGas, 'gwei'))
+        cancelTrx = new Tx(cancelTrx)
+        var privatekey = await extension_wallet.exportAccount(selectedAddr)
+        var privatebuffer = new Buffer(privatekey, 'hex')
+        cancelTrx.sign(privatebuffer)
+
+        var serializedTx = cancelTrx.serialize()
+        var rawTransactionParam = '0x' + serializedTx.toString('hex');
+        var trx_id = sendRawTransaction(rawTransactionParam)
+
+        if (!!trx_id.result) {
+            var date = new Date().Format("yyyy-MM-dd hh:mm:ss")
+            storetx.state = "pending"
+            storetx.time = date
+            storetx.gasUsed = 0
+            storetx.id = trx_id.result
+            storetx.chainId = providerNet.chainId
+            updateTrxs(selectedAddr, storetx)
+            updateState()
+            return Promise.resolve(trx_id.result)
+        } else {
+            return Promise.reject(trx_id.error)
+        }
+
+    } catch (error) {
+        return Promise.reject(error)
+    }
+}
+
+
+/**
+ * resend a pending transaction
+ * 
+ * @param {string} txid the trx hash id
+ */
+window.resendTransaction = function resendTransaction(obj) {
+
+    var trxs = account_info.trxs[selectedAddr]
+}
 
 
 /**
@@ -51787,7 +51832,7 @@ window.getAccountBalance = function getAccountBalance(obj) {
     var payload = {jsonrpc: "2.0", id: 1, method: "core_getBalance", params:[]}
     payload.params[0] = addr
     payload.params[1] = "latest"
-    
+
     return  new Promise((resolve, reject) => {
      
         provider.sendAsync(payload, function (err, balanceobj) {
@@ -51909,7 +51954,7 @@ window.getEstimateGas = function getEstimateGas(obj) {
 }
 
 /**
- * get trx  intf
+ * get trx  info
  * @param {string} txid the transaction id
  * 
  */
@@ -52108,6 +52153,10 @@ function resetState() {
     is_wallet_exist = false
     is_wallet_unlock = false
     authUrl = []
+
+    chrome.storage.local.set({ 'providerNet': providerNet }, function () {
+        console.log('updateState: update providerNet')
+    })
 }
 
 /**
