@@ -5,6 +5,7 @@ import styles from './Header.scss'
 import imgs from '../../utils/imgs'
 import Setting from './Setting'
 import CommonPadding from './CommonPadding'
+// import { requestAnimation } from '../../utils/requestAnimation'
 
 const Header = function(props) {
   const {
@@ -15,6 +16,7 @@ const Header = function(props) {
     backUrl,
     history
   } = props
+  // const [isScrollTop, setIsScrollTop] = useState(false)
   const handleBack = () => {
     if (backUrl) {
       history.push(backUrl)
@@ -22,6 +24,21 @@ const Header = function(props) {
       history.goBack()
     }
   }
+  // const onScroll = () => {
+  //   const scrollTop = window.document.body.scrollTop
+  //   if (scrollTop > 0) {
+  //     setIsScrollTop(true)
+  //   } else {
+  //     setIsScrollTop(false)
+  //   }
+  // }
+  // useEffect(() => {
+  //   window.document.body.addEventListener(
+  //     'scroll',
+  //     () => requestAnimation(onScroll),
+  //     false
+  //   )
+  // }, [])
   return (
     <CommonPadding className={`${styles.header} ${styles[theme]}`}>
       {hasBack ? (

@@ -10,6 +10,7 @@ import { splitLongStr, calBigMulti } from '../utils/helper'
 import imgs from '../utils/imgs'
 import paths from '../utils/paths'
 import { netUrlList } from '../constants/net'
+import { Empty } from 'antd'
 
 const Home = function(props) {
   const {
@@ -140,7 +141,7 @@ const Home = function(props) {
                 </ul>
               ))
             ) : (
-              <span>暂无交易</span>
+              <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
             )}
           </div>
         </CommonPadding>

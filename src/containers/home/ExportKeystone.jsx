@@ -1,16 +1,18 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import { connect } from 'react-redux'
 import { Modal, Button } from 'antd-mobile'
 import PasswordForm from './PasswordForm'
 import BaseTip from '../../component/layout/BaseTip'
 import BaseLabel from '../../component/layout/BaseLabel'
 import Copier from '../../component/Copier'
-import Downloader from '../../component/Downloader'
+import PageSpin from '../../component/layout/PageSpin'
+// import Downloader from '../../component/Downloader'
 import styles from './ExportKeystone.scss'
 
 const UserDetail = function(props) {
   const addrCopyRef = React.createRef()
   const privateCopyRef = React.createRef()
+  const [passwd, setPasswd] = useState('')
   const {
     visible,
     onClose,
@@ -18,19 +20,30 @@ const UserDetail = function(props) {
     keystone: {
       privateKey,
       hasGetKey,
-      privateJson,
-      isDownload,
+      // privateJson,
+      // isDownload,
+      isDownloadLoading,
       isExportLoading
     },
     dispatch
   } = props
   const handleFetchKeystone = values => {
     const { password: passwd } = values
+    setPasswd(passwd)
     dispatch({
       type: 'keystone/getPrivateKey',
       payload: {
         addr,
         passwd
+      }
+    })
+  }
+  const handleFetchKeystoneJson = () => {
+    dispatch({
+      type: 'keystone/getPrivateJson',
+      payload: {
+        passwd,
+        privatekey: privateKey
       }
     })
   }
@@ -53,6 +66,7 @@ const UserDetail = function(props) {
       className={styles.detail}
       wrapClassName={styles.wrap}
     >
+      <PageSpin spinning={isDownloadLoading} />
       <div className={styles.cont}>
         {hasGetKey ? (
           <Fragment>
@@ -66,13 +80,16 @@ const UserDetail = function(props) {
             <div className={styles.title}>
               <BaseLabel>私钥</BaseLabel>
               <span>
-                <Downloader
+                {/* <Downloader
                   content={privateJson}
                   fileName={'keystore.json'}
                   isDownload={isDownload}
                 >
                   下载JSON文件
-                </Downloader>
+                </Downloader> */}
+                <a href="javascript:" onClick={handleFetchKeystoneJson}>
+                  下载JSON文件
+                </a>
                 <Copier text={privateKey} ref={privateCopyRef}>
                   <a href="javascript:">复制私钥</a>
                 </Copier>
