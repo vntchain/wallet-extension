@@ -206,12 +206,12 @@ window.exportAccountPrivatekey = async function exportAccountPrivatekey(obj) {
  */
 window.exportAccountKeystore = function exportAccountKeystore(obj) {
 
-    return new Promise ( (resolve, reject) => {
+    return new Promise ((resolve, reject) => {
         var privatekey = obj.privatekey
         var passwd = obj.passwd
 
         if (wallet_passwd !== passwd) {
-            return reject(new Error("password not correct!"))
+            reject(new Error("password not correct!"))
         }
 
         privatekey = ethUtil.addHexPrefix(privatekey)
@@ -508,12 +508,24 @@ window.cancelTransaction = async function cancelTransaction(obj) {
 
 /**
  * resend a pending transaction
- * 
- * @param {string} txid the trx hash id
+ *
+ * @param {josn object} tx  the trx to sign
+ * @param {string} addr  the account to sign
  */
 window.resendTransaction = function resendTransaction(obj) {
 
     var trxs = account_info.trxs[selectedAddr]
+    var index 
+    for (var i = 0; i < trxs.length; i++) {
+        if (trxs[i].id === obj.tx.id) {
+            index = i
+            break
+        }
+    }
+
+    trxs.splice(index, 1)
+
+    return signThenSendTransaction(obj)
 }
 
 
