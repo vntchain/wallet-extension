@@ -58,3 +58,12 @@ export const formatDecimal = (num, decimal) => {
   }
   return parseFloat(num)
 }
+
+//delay
+export const delay = function(time) {
+  return new Promise(resolve =>
+    setTimeout(() => {
+      resolve('success')
+    }, time)
+  )
+}

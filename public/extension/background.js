@@ -51492,7 +51492,7 @@ window.exportAccountKeystore = function exportAccountKeystore(obj) {
         var passwd = obj.passwd
 
         if (wallet_passwd !== passwd) {
-            return reject(new Error("password not correct!"))
+          reject(new Error("password not correct!"))
         }
 
         privatekey = ethUtil.addHexPrefix(privatekey)
