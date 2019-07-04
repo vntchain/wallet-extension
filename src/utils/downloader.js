@@ -8,7 +8,7 @@ export default (content, fileName, suffix) => {
     link.setAttribute('download', `${fileName}.${suffix}`)
     document.body.appendChild(link)
     link.click()
-    // document.removeChild(link)
+    document.body.removeChild(link)
     resolve('success')
   })
 }
