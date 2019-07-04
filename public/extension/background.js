@@ -51733,7 +51733,7 @@ window.cancelTransaction = async function cancelTransaction(obj) {
             cancelTrx.from = trxs[i].from
             cancelTrx.to = trxs[i].to
 
-            cancelTrx.value = trxs[i].value
+            cancelTrx.value = 0
             cancelTrx.chainId = trxs[i].chainId
             cancelTrx.gas = trxs[i].gas
             cancelTrx.data = trxs[i].data
