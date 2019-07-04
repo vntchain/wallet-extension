@@ -43,9 +43,16 @@ export default {
         const tx = yield select(state => state.send.tx)
         const addr = yield select(state => state.user.addr)
         const id = yield signThenSendTransaction({ tx: { ...tx }, addr })
+        //清空发送表单
         yield put({
           type: 'send/clearTx'
         })
+        //给交易详情默认一个id，获取到交易信息后更新
+        yield put({
+          type: 'user/setTxDetail',
+          payload: { id }
+        })
+        //获取交易信息
         yield put({
           type: 'user/getAccounts'
         })
