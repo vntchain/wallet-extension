@@ -19,7 +19,7 @@ const UserDetail = function(props) {
     user: { addr },
     keystone: {
       privateKey,
-      hasGetKey,
+      // hasGetKey,
       // privateJson,
       // isDownload,
       isDownloadLoading,
@@ -48,12 +48,17 @@ const UserDetail = function(props) {
     })
   }
   const handleClose = () => {
+    onClose()
     //关闭窗口时重置状态，下次打开需重新输入密码获取
     dispatch({
-      type: 'keystone/setHasGetKey',
-      payload: false
+      type: 'keystone/setPrivateKey',
+      payload: null
     })
-    onClose()
+    //清空获取到的私钥json，下次打开需重新获取
+    dispatch({
+      type: 'keystone/setPrivateJson',
+      payload: null
+    })
   }
   return (
     <Modal
@@ -68,7 +73,7 @@ const UserDetail = function(props) {
     >
       <PageSpin spinning={isDownloadLoading} />
       <div className={styles.cont}>
-        {hasGetKey ? (
+        {privateKey ? (
           <Fragment>
             <div className={styles.title}>
               <BaseLabel>地址</BaseLabel>

@@ -9,12 +9,14 @@ import {
 } from '../utils/chrome'
 import { message } from 'antd'
 import downloader from '../utils/downloader'
+import { delay } from '../utils/helper'
 
-const { put } = effects
+const { put, select } = effects
 export default {
   state: {
     hasGetKey: false,
-    privateKey: '',
+    privateKey: null,
+    privateJson: null,
     isExportLoading: false,
     isImportLoading: false,
     isDownloadLoading: false
@@ -50,9 +52,19 @@ export default {
         type: 'keystone/setIsDownloadLoading',
         payload: true
       })
+      yield delay(100)
       try {
-        const data = yield exportAccountKeystore(payload)
-        yield downloader(data, 'keystore', 'json')
+        let privateJson = yield select(
+          ({ keystone: { privateJson } }) => privateJson
+        )
+        if (!privateJson) {
+          privateJson = yield exportAccountKeystore(payload)
+          yield put({
+            type: 'keystone/setPrivateJson',
+            payload: privateJson
+          })
+        }
+        yield downloader(privateJson, 'keystore', 'json')
       } catch (e) {
         message.error(e.message || e)
         console.log('getPrivateJson: ' + e) //eslint-disable-line
