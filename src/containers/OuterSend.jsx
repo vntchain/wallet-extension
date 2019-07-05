@@ -23,7 +23,7 @@ const OuterSend = function(props) {
       envObj: { chainId }
     },
     price: { vntToCny = 1 },
-    send: { gasPriceDefault, tx },
+    send: { tx },
     popup: {
       popup: { trx }
     }
@@ -35,7 +35,6 @@ const OuterSend = function(props) {
   port.onDisconnect.addListener(function(msg) {
     console.log('send Port disconnected: ' + JSON.stringify(msg)) //eslint-disable-line
   })
-  // const [txObj, setTxObj] = useState(tx)
   const handleSend = status => {
     port.postMessage({
       src: 'popup',
@@ -52,12 +51,6 @@ const OuterSend = function(props) {
     dispatch({
       type: 'popup/getPopup'
     })
-    //没有gasPrice的时候才去获取，防止自定义后数据改动
-    if (!gasPriceDefault) {
-      dispatch({
-        type: 'send/getGasPrice'
-      })
-    }
   }, [])
   useEffect(() => {
     dispatch({
@@ -65,16 +58,6 @@ const OuterSend = function(props) {
       payload: { addr }
     })
   }, [addr])
-  useEffect(() => {
-    dispatch({
-      type: 'send/merge',
-      payload: {
-        tx: {
-          gasPrice: gasPriceDefault //获取到gasPrice设置为默认值
-        }
-      }
-    })
-  }, [gasPriceDefault])
   useEffect(() => {
     if (trx && !isEmptyObject(trx)) {
       const trxTemp = Object.assign({}, tx, trx)
@@ -93,14 +76,14 @@ const OuterSend = function(props) {
         }
       }
     })
-    //获取gasLimit
-    if (!trx.gas) {
-      const { data, from, to, value } = trxTemp
-      dispatch({
-        type: 'send/getGasLimit',
-        payload: { tx: { data, from, to, value } }
-      })
-    }
+
+    //获取gasInfo
+    const { data, from, to, value } = trxTemp
+    dispatch({
+      type: 'send/getGasInfo',
+      payload: { tx: { data, from, to, value } },
+      hasOuterGas: trx.gas ? true : false
+    })
   }
   return (
     <Fragment>
