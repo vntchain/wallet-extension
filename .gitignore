@@ -6,6 +6,7 @@
 .vscode
 # dependencies
 /node_modules
+/background/node_modules
 
 # testing
 /coverage
