@@ -18,7 +18,8 @@ const Send = function(props) {
     send: {
       tx: { gasPrice, gas, value },
       gasPriceDefault,
-      gasLimitDefault
+      gasLimitDefault,
+      isResend
     },
     dispatch,
     history
@@ -26,7 +27,6 @@ const Send = function(props) {
   const [commission, setCommission] = useState(calCommission(gasPrice, gas))
   const [state, innerDispatch] = useReducer(
     (state, action) => {
-      console.log(action) //eslint-disable-line
       switch (action.type) {
         case 'setGasPrice':
           return {
@@ -80,6 +80,23 @@ const Send = function(props) {
         }
       })
       history.push(paths.send)
+    }
+  }
+  const handleSend = () => {
+    const { gasPrice, gas, priceError, limitError } = state
+    //todo： 验证后不能及时获取消息
+    validatePrice(gasPrice, gas)
+    validateLimit(gasPrice, gas)
+    if (!priceError && !limitError) {
+      dispatch({
+        type: 'send/resendTx',
+        payload: {
+          tx: {
+            gasPrice,
+            gas
+          }
+        }
+      })
     }
   }
   const handleDefault = () => {
@@ -214,14 +231,25 @@ const Send = function(props) {
               </span>
             </div>
           </div>
-          <Button
-            className={styles.button}
-            type="primary"
-            size="large"
-            onClick={handleSubmit}
-          >
-            确定
-          </Button>
+          {isResend ? (
+            <Button
+              className={styles.button}
+              type="primary"
+              size="large"
+              onClick={handleSend}
+            >
+              发送交易
+            </Button>
+          ) : (
+            <Button
+              className={styles.button}
+              type="primary"
+              size="large"
+              onClick={handleSubmit}
+            >
+              确定
+            </Button>
+          )}
         </CommonPadding>
       </div>
     </Fragment>

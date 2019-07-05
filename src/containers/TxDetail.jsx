@@ -6,6 +6,7 @@ import CommonPadding from '../component/layout/CommonPadding'
 import Copier from '../component/Copier'
 import paths from '../utils/paths'
 import { calBigMulti, calCommission } from '../utils/helper'
+import BaseModalFooter from '../component/layout/BaseModalFooter'
 import styles from './TxDetail.scss'
 
 const TxDetail = function(props) {
@@ -20,7 +21,8 @@ const TxDetail = function(props) {
   const {
     dispatch,
     user: { txDetail },
-    price: { vntToCny }
+    price: { vntToCny },
+    send: { isCancelLoading }
   } = props
   const id = props.match.params.id
   const renderTotal = (text, record) => {
@@ -87,44 +89,83 @@ const TxDetail = function(props) {
       }
     }
   ]
+  const handleCancel = () => {
+    dispatch({
+      type: 'send/cancelSendTx',
+      payload: txDetail.id
+    })
+  }
+  const handleOk = () => {
+    const { from, to, gasPrice, gas, value, data } = txDetail
+    dispatch({
+      type: 'send/merge',
+      payload: {
+        tx: {
+          from,
+          to,
+          gasPrice,
+          gas,
+          value,
+          data
+        },
+        isResend: true
+      }
+    })
+    history.push(paths.commission)
+  }
   return (
     <Fragment>
       <Header title={'交易详情'} hasBack={true} backUrl={paths.home} />
       <div className={styles.container}>
         <CommonPadding>
-          {txDetail.time
-            ? DetailList.map((blocks, index) => (
-                <div className={styles.block} key={index}>
-                  {Object.keys(blocks).map(item => {
-                    const val = blocks[item]
-                    return (
-                      <div className={styles['block-item']} key={item}>
-                        <label>
-                          {typeof val === 'string' ? val : val.label}
-                        </label>
-                        {val.render ? (
-                          val.render(txDetail[item], txDetail)
-                        ) : val.hasCopy ? (
-                          <div className={styles.inner}>
+          {txDetail.time ? (
+            <Fragment>
+              <div>
+                {DetailList.map((blocks, index) => (
+                  <div className={styles.block} key={index}>
+                    {Object.keys(blocks).map(item => {
+                      const val = blocks[item]
+                      return (
+                        <div className={styles['block-item']} key={item}>
+                          <label>
+                            {typeof val === 'string' ? val : val.label}
+                          </label>
+                          {val.render ? (
+                            val.render(txDetail[item], txDetail)
+                          ) : val.hasCopy ? (
+                            <div className={styles.inner}>
+                              <span className={styles.cont}>
+                                {txDetail[item]}
+                              </span>
+                              <Copier
+                                text={txDetail[item]}
+                                ref={refObj[`${item}CopyRef`]}
+                              >
+                                <span className={styles.copy}>复制</span>
+                              </Copier>
+                            </div>
+                          ) : (
                             <span className={styles.cont}>
                               {txDetail[item]}
                             </span>
-                            <Copier
-                              text={txDetail[item]}
-                              ref={refObj[`${item}CopyRef`]}
-                            >
-                              <span className={styles.copy}>复制</span>
-                            </Copier>
-                          </div>
-                        ) : (
-                          <span className={styles.cont}>{txDetail[item]}</span>
-                        )}
-                      </div>
-                    )
-                  })}
-                </div>
-              ))
-            : ''}
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                ))}
+              </div>
+              <BaseModalFooter
+                okText="加速交易"
+                cancelText="取消交易"
+                onCancel={handleCancel}
+                onOk={handleOk}
+                cancelLoading={isCancelLoading}
+              />
+            </Fragment>
+          ) : (
+            ''
+          )}
         </CommonPadding>
       </div>
     </Fragment>
@@ -132,5 +173,5 @@ const TxDetail = function(props) {
 }
 
 export default withRouter(
-  connect(({ user, price }) => ({ user, price }))(TxDetail)
+  connect(({ user, price, send }) => ({ user, price, send }))(TxDetail)
 )

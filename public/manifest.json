@@ -39,7 +39,7 @@
     "notifications"
 
   ],
-  "content_security_policy": "default-src 'self'; script-src 'self' http://localhost:3000 https://localhost:3000 'unsafe-eval'; connect-src http://localhost:3000 https://localhost:3000 http://dncapi.bqiapp.com http://47.104.173.117:8880/ http://39.104.62.26:8880; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;",
+  "content_security_policy": "default-src 'self'; script-src 'self' http://localhost:3000 https://localhost:3000 'unsafe-eval'; connect-src http://localhost:3000 https://localhost:3000 http://dncapi.bqiapp.com http://47.104.173.117:8880/ http://39.104.62.26:8880 http://192.168.9.5:8880/; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;",
   "content_scripts": [
     {
       "matches": ["<all_urls>"],

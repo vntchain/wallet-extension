@@ -10,7 +10,7 @@ const store = require("obs-store")
 
 
 var network = {
-    mainnet: {url: 'http://39.104.62.26:8880', chainId: 1},
+    mainnet: {url: 'http://192.168.9.5:8880', chainId: 1},
     testnet: {url: 'http://47.104.173.117:8880', chainId: 2}
 }
 // var provider = new vntProvider("http://localhost:8888")

@@ -107,10 +107,19 @@ export const getGasPrice = function(payload) {
 export const getEstimateGas = function(payload) {
   return createFuncPromise('getEstimateGas', payload)
 }
-//创建账户
+//取消交易
+export const cancelTransaction = function(payload) {
+  return createFuncPromise('cancelTransaction', payload)
+}
+//重发交易
 export const addNewAccount = function(payload) {
   return createFuncPromise('addNewAccount', payload)
 }
+//创建账户
+export const resendTransaction = function(payload) {
+  return createFuncPromise('resendTransaction', payload)
+}
+
 //网络选择
 export const changeProvider = function(payload) {
   return createChangePromise('changeProvider', payload)
