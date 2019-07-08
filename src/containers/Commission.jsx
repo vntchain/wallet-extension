@@ -26,7 +26,7 @@ const Send = function(props) {
   const [commission, setCommission] = useState(calCommission(gasPrice, gas))
   const [state, innerDispatch] = useReducer(
     (state, action) => {
-      console.log(action) //eslint-disable-line
+      // console.log(action) //eslint-disable-line
       switch (action.type) {
         case 'setGasPrice':
           return {
