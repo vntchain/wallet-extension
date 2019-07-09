@@ -149,6 +149,41 @@ export default {
         message.error(e.message || e)
         console.log('resendTx:' + e) //eslint-disable-line
       }
+    }),
+    getGasInfo: takeLatest(function*({ payload, hasOuterGas }) {
+      try {
+        const gasPriceDefault = yield select(
+          ({ send: { gasPriceDefault } }) => gasPriceDefault
+        )
+        let gasPrice
+        if (!gasPriceDefault) {
+          gasPrice = yield getGasPrice()
+          yield put({
+            type: 'send/setGasPriceDefault',
+            payload: gasPrice
+          })
+        }
+        const gasLimit = yield getEstimateGas(payload)
+        yield put({
+          type: 'send/setGasLimitDefault',
+          payload: gasLimit
+        })
+        //dapp页面传入gasPrice和gas时，设置获取到的默认值为交易值
+        if (!hasOuterGas) {
+          yield put({
+            type: 'send/merge',
+            payload: {
+              tx: {
+                gasPrice: gasPrice,
+                gas: gasLimit
+              }
+            }
+          })
+        }
+      } catch (e) {
+        message.error(e.message || e)
+        console.log('getGas:' + e) //eslint-disable-line
+      }
     })
   })
 }

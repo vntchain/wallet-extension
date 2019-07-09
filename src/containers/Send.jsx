@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { Fragment, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Button } from 'antd-mobile'
@@ -22,7 +22,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
     user: { addr, accountBalance },
     price: { vntToCny },
     send: { tx },
-    getGasLimit,
+    getGasInfo,
     onSubmit
   } = props
   const { to, value, data, gas: gasLimit, gasPrice } = tx
@@ -86,7 +86,8 @@ const SendForm = Form.create({ name: 'login' })(props => {
     const to = getFieldValue('to')
     const value = getFieldValue('value')
     const data = getFieldValue('data')
-    getGasLimit({
+    console.log('value:' + value) //eslint-disable-line
+    getGasInfo({
       from: addr,
       to: to,
       value: value,
@@ -181,25 +182,16 @@ const Send = function(props) {
   const {
     envObj: { chainId }
   } = user
-  useEffect(() => {
-    dispatch({
-      type: 'send/getGasPrice'
-    })
-  }, [])
-  const getGasLimit = txObj => {
+  const getGasInfo = txObj => {
     //同步数据
     dispatch({
       type: 'send/merge',
       payload: {
-        tx: {
-          ...txObj,
-          gasPrice: send.gasPriceDefault //修改时设置gasPrice为默认值
-        }
+        tx: txObj
       }
     })
-    //获取gasLimit
     dispatch({
-      type: 'send/getGasLimit',
+      type: 'send/getGasInfo',
       payload: {
         tx: txObj
       }
@@ -220,7 +212,7 @@ const Send = function(props) {
             price={price}
             send={send}
             onSubmit={handleSend}
-            getGasLimit={getGasLimit}
+            getGasInfo={getGasInfo}
           />
         </CommonPadding>
       </div>
