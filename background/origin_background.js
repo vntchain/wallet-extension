@@ -474,9 +474,10 @@ window.cancelTransaction = async function cancelTransaction(obj) {
         cancelTrx.value = util.fromDecimal(util.toWei(cancelTrx.value), 'vnt')
         cancelTrx.gas = util.fromDecimal(cancelTrx.gas)
         cancelTrx.chainId = getChainId()
-        var estimateGas = getEstimateGas({ tx: cancelTrx })
-        storetx.gasPrice = estimateGas
-        cancelTrx.gasPrice = util.fromDecimal(util.toWei(estimateGas, 'gwei'))
+        getGasPrice().then((result) => {
+            storetx.gasPrice = result
+            cancelTrx.gasPrice = util.fromDecimal(util.toWei(result, 'gwei'))
+        })
         cancelTrx = new Tx(cancelTrx)
         var privatekey = await extension_wallet.exportAccount(selectedAddr)
         var privatebuffer = new Buffer(privatekey, 'hex')
@@ -512,20 +513,66 @@ window.cancelTransaction = async function cancelTransaction(obj) {
  * @param {josn object} tx  the trx to sign
  * @param {string} addr  the account to sign
  */
-window.resendTransaction = function resendTransaction(obj) {
+window.resendTransaction = async function resendTransaction(obj) {
 
-    var trxs = account_info.trxs[selectedAddr]
-    var index 
-    for (var i = 0; i < trxs.length; i++) {
-        if (trxs[i].id === obj.tx.id) {
-            index = i
-            break
+    try {
+
+        var trxs = account_info.trxs[selectedAddr]
+        var index, nonce
+        for (var i = 0; i < trxs.length; i++) {
+            if (trxs[i].id === obj.tx.id) {
+                index = i
+                nonce = trxs[i].nonce
+                break
+            }
         }
+
+        if (index === undefined) {
+            throw new Error("no trx id in params")
+        }
+        
+        trxs.splice(index, 1)
+
+        var tx = obj.tx
+        var addr = obj.addr
+
+        if (addr !== selectedAddr) throw new Error("sign addr and selected addr not the same.")
+        if (tx.data === undefined) {
+            delete tx.data
+        }
+
+        var storetx = Object.assign({}, tx)
+
+        tx.nonce = nonce
+        tx.value = util.fromDecimal(util.toWei(tx.value), 'vnt')
+        tx.gas = util.fromDecimal(tx.gas)
+        tx.gasPrice = util.fromDecimal(util.toWei(tx.gasPrice, 'gwei'))
+        tx.chainId = getChainId()
+        tx = new Tx(tx)
+        var privatekey = await extension_wallet.exportAccount(addr)
+        var privatebuffer = new Buffer(privatekey, 'hex')
+        tx.sign(privatebuffer)
+
+        var serializedTx = tx.serialize()
+        var rawTransactionParam = '0x' + serializedTx.toString('hex');
+        var trx_id = sendRawTransaction(rawTransactionParam)
+
+        if (!!trx_id.result) {
+            var date = new Date().Format("yyyy-MM-dd hh:mm:ss")
+            storetx.state = "pending"
+            storetx.time = date
+            storetx.gasUsed = 0
+            storetx.id = trx_id.result
+            storetx.chainId = providerNet.chainId
+            updateTrxs(addr, storetx)
+            updateState()
+            return Promise.resolve(trx_id.result)
+        } else {
+            return Promise.reject(trx_id.error)
+        }
+    } catch (error) {
+        return Promise.reject(error)
     }
-
-    trxs.splice(index, 1)
-
-    return signThenSendTransaction(obj)
 }
 
 
