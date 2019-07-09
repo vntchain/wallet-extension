@@ -120,8 +120,8 @@ export default {
     }),
     resendTx: takeLatest(function*({ payload }) {
       try {
-        const tx = yield select(state => state.send.tx)
-        const addr = yield select(state => state.user.addr)
+        const tx = yield select(({ send: { tx } }) => tx)
+        const addr = yield select(({ user: { addr } }) => addr)
         const id = yield resendTransaction({
           tx: { ...tx, ...payload.tx },
           addr
@@ -129,11 +129,6 @@ export default {
         //清空发送表单
         yield put({
           type: 'send/clearTx'
-        })
-        //设置重发标志
-        yield put({
-          type: 'send/setIsResend',
-          payload: false
         })
         //给交易详情默认一个id，获取到交易信息后更新
         yield put({

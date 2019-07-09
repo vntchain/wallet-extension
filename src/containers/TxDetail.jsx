@@ -23,7 +23,7 @@ const TxDetail = function(props) {
     history,
     user: { txDetail },
     price: { vntToCny },
-    send: { isCancelLoading }
+    send: { isCancelLoading, gasPriceDefault, gasLimitDefault }
   } = props
   const id = props.match.params.id
   const renderTotal = (text, record) => {
@@ -54,6 +54,17 @@ const TxDetail = function(props) {
       })
     }
   }, [])
+  const { data, from, to, value } = txDetail
+  useEffect(() => {
+    if (from) {
+      //获取默认gas，hasOuterGas不更新tx里的gas
+      dispatch({
+        type: 'send/getGasInfo',
+        payload: { tx: { data, from, to, value } },
+        hasOuterGas: true
+      })
+    }
+  }, [from])
   const DetailList = [
     {
       state: {
@@ -90,27 +101,30 @@ const TxDetail = function(props) {
       }
     }
   ]
+  const hasResendFooter = () => {
+    const { state, gasPrice, gas } = txDetail
+    console.log(state, gasPrice, gas) //eslint-disable-line
+    return (
+      state === 'pending' &&
+      (gasPrice < gasPriceDefault || gas < gasLimitDefault)
+    )
+  }
   const handleCancel = () => {
     dispatch({
       type: 'send/cancelSendTx',
-      payload: txDetail.id
+      payload: { txid: txDetail.id }
     })
   }
   const handleOk = () => {
-    const { from, to, gasPrice, gas, value, data } = txDetail
-    const tx = { from, to, gasPrice, gas, value, data }
+    const { id, from, to, gasPrice, gas, value, data } = txDetail
+    const tx = { id, from, to, gasPrice, gas, value, data }
     dispatch({
-      type: 'send/merge',
-      payload: {
-        tx,
-        isResend: true
-      }
+      type: 'send/setTx',
+      payload: tx
     })
-    //获取默认gas，hasOuterGas不更新tx里的gas
     dispatch({
-      type: 'send/getGasInfo',
-      payload: { tx: { data, from, to, value } },
-      hasOuterGas: true
+      type: 'send/setIsResend',
+      payload: true
     })
     history.push(paths.commission)
   }
@@ -156,13 +170,17 @@ const TxDetail = function(props) {
                   </div>
                 ))}
               </div>
-              <BaseModalFooter
-                okText="加速交易"
-                cancelText="取消交易"
-                onCancel={handleCancel}
-                onOk={handleOk}
-                cancelLoading={isCancelLoading}
-              />
+              {hasResendFooter() ? (
+                <BaseModalFooter
+                  okText="加速交易"
+                  cancelText="取消交易"
+                  onCancel={handleCancel}
+                  onOk={handleOk}
+                  cancelLoading={isCancelLoading}
+                />
+              ) : (
+                ''
+              )}
             </Fragment>
           ) : (
             ''

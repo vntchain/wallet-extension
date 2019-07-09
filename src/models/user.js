@@ -131,12 +131,20 @@ export default {
       try {
         const data = yield getAccounts()
         const { accounts, trxs } = data
+        // yield put({
+        //   type: 'user/merge',
+        //   payload: {
+        //     accounts: accounts.reverse(),
+        //     trades: trxs
+        //   }
+        // })
         yield put({
-          type: 'user/merge',
-          payload: {
-            accounts: accounts.reverse(),
-            trades: trxs
-          }
+          type: 'user/setAccounts',
+          payload: accounts.reverse()
+        })
+        yield put({
+          type: 'user/setTrades',
+          payload: trxs
         })
         //get trade list
         yield put({

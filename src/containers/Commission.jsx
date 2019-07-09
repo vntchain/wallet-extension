@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useReducer } from 'react'
+import React, { Fragment, useEffect, useState, useReducer } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { Input, Button, message } from 'antd'
@@ -64,6 +64,15 @@ const Send = function(props) {
       limitError: ''
     }
   )
+  useEffect(() => {
+    return () => {
+      //去掉重发标志
+      dispatch({
+        type: 'send/setIsResend',
+        payload: false
+      })
+    }
+  }, [])
   const handleSubmit = () => {
     const { gasPrice, gas, priceError, limitError } = state
     //todo： 验证后不能及时获取消息
