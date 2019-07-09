@@ -20,6 +20,7 @@ const TxDetail = function(props) {
   }
   const {
     dispatch,
+    history,
     user: { txDetail },
     price: { vntToCny },
     send: { isCancelLoading }
@@ -97,19 +98,19 @@ const TxDetail = function(props) {
   }
   const handleOk = () => {
     const { from, to, gasPrice, gas, value, data } = txDetail
+    const tx = { from, to, gasPrice, gas, value, data }
     dispatch({
       type: 'send/merge',
       payload: {
-        tx: {
-          from,
-          to,
-          gasPrice,
-          gas,
-          value,
-          data
-        },
+        tx,
         isResend: true
       }
+    })
+    //获取默认gas，hasOuterGas不更新tx里的gas
+    dispatch({
+      type: 'send/getGasInfo',
+      payload: { tx: { data, from, to, value } },
+      hasOuterGas: true
     })
     history.push(paths.commission)
   }

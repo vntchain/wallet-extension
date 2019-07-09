@@ -155,7 +155,7 @@ export default {
         const gasPriceDefault = yield select(
           ({ send: { gasPriceDefault } }) => gasPriceDefault
         )
-        let gasPrice
+        let gasPrice = gasPriceDefault
         if (!gasPriceDefault) {
           gasPrice = yield getGasPrice()
           yield put({
