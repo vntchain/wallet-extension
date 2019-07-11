@@ -10,6 +10,7 @@ import {
 } from 'react-router-redux'
 import { createHashHistory } from 'history'
 
+import ScrollToTop from './component/layout/ScrollToTop'
 import App from './containers/App'
 import 'normalize.css'
 import './index.scss'
@@ -31,7 +32,9 @@ const store = new Sirius({
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>
-      <App />
+      <ScrollToTop>
+        <App />
+      </ScrollToTop>
     </ConnectedRouter>
   </Provider>,
   document.getElementById('root')
