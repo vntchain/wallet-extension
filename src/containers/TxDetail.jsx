@@ -103,7 +103,6 @@ const TxDetail = function(props) {
   ]
   const hasResendFooter = () => {
     const { state, gasPrice, gas } = txDetail
-    console.log(state, gasPrice, gas) //eslint-disable-line
     return (
       state === 'pending' &&
       (gasPrice < gasPriceDefault || gas < gasLimitDefault)

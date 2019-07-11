@@ -152,6 +152,7 @@ export default {
         )
         let gasPrice = gasPriceDefault
         if (!gasPriceDefault) {
+          //正常gasPrice是不根据参数变化的，所以打开时获取后就不再获取
           gasPrice = yield getGasPrice()
           yield put({
             type: 'send/setGasPriceDefault',
