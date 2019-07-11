@@ -51812,8 +51812,6 @@ window.resendTransaction = async function resendTransaction(obj) {
             throw new Error("no trx id in params")
         }
         
-        trxs.splice(index, 1)
-
         var tx = obj.tx
         var addr = obj.addr
 
@@ -51839,6 +51837,8 @@ window.resendTransaction = async function resendTransaction(obj) {
         var trx_id = sendRawTransaction(rawTransactionParam)
 
         if (!!trx_id.result) {
+            trxs.splice(index, 1)
+
             var date = new Date().Format("yyyy-MM-dd hh:mm:ss")
             storetx.state = "pending"
             storetx.time = date
