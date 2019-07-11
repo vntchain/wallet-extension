@@ -5,7 +5,9 @@ import paths from '../utils/paths'
 import {
   signThenSendTransaction,
   getGasPrice,
-  getEstimateGas
+  getEstimateGas,
+  cancelTransaction,
+  resendTransaction
 } from '../utils/chrome'
 const { put, select } = effects
 
@@ -23,7 +25,9 @@ export default {
     gasPriceDefault: 0,
     gasLimitDefault: 21000,
     tx: defaultTx,
-    isSendLoading: false
+    isSendLoading: false,
+    isCancelLoading: false,
+    isResend: false //是否重发交易标志
   },
   reducers: {
     clearTx: state => {
@@ -96,13 +100,59 @@ export default {
         console.log('getGasLimit:' + e) //eslint-disable-line
       }
     }),
+    cancelSendTx: takeLatest(function*({ payload }) {
+      try {
+        yield put({
+          type: 'send/setIsCancelLoading',
+          payload: true
+        })
+        yield cancelTransaction(payload)
+        yield put(push(`${paths.home}`))
+      } catch (e) {
+        message.error(e.message || e)
+        console.log('cancelTx:' + e) //eslint-disable-line
+      } finally {
+        yield put({
+          type: 'send/setIsCancelLoading',
+          payload: false
+        })
+      }
+    }),
+    resendTx: takeLatest(function*({ payload }) {
+      try {
+        const tx = yield select(({ send: { tx } }) => tx)
+        const addr = yield select(({ user: { addr } }) => addr)
+        const id = yield resendTransaction({
+          tx: { ...tx, ...payload.tx },
+          addr
+        })
+        //清空发送表单
+        yield put({
+          type: 'send/clearTx'
+        })
+        //给交易详情默认一个id，获取到交易信息后更新
+        yield put({
+          type: 'user/setTxDetail',
+          payload: { id }
+        })
+        //获取交易信息
+        yield put({
+          type: 'user/getAccounts'
+        })
+        yield put(push(`${paths.txDetail}/${id}`))
+      } catch (e) {
+        message.error(e.message || e)
+        console.log('resendTx:' + e) //eslint-disable-line
+      }
+    }),
     getGasInfo: takeLatest(function*({ payload, hasOuterGas }) {
       try {
         const gasPriceDefault = yield select(
           ({ send: { gasPriceDefault } }) => gasPriceDefault
         )
-        let gasPrice
+        let gasPrice = gasPriceDefault
         if (!gasPriceDefault) {
+          //正常gasPrice是不根据参数变化的，所以打开时获取后就不再获取
           gasPrice = yield getGasPrice()
           yield put({
             type: 'send/setGasPriceDefault',

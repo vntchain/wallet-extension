@@ -1,7 +1,7 @@
 {
   "name": "VNT Wallet",
   "description" : "vntchain wallet extension",
-  "version": "1.0",
+  "version": "1.0.6",
 
   "icons": {
     "19": "./images/icon-19.png",
@@ -39,10 +39,13 @@
     "notifications"
 
   ],
-  "content_security_policy": "default-src 'self'; script-src 'self' http://localhost:3000 https://localhost:3000 'unsafe-eval'; connect-src http://localhost:3000 https://localhost:3000 http://dncapi.bqiapp.com http://47.104.173.117:8880/ http://39.104.62.26:8880; style-src * 'unsafe-inline' 'self' blob:; img-src 'self' data:;",
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": [
+        "file://*/*",
+        "http://*/*",
+        "https://*/*"
+      ],
       "js": ["./extension/contentscript.js"],
       "run_at": "document_start",
       "all_frames": true

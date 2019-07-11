@@ -1,6 +1,7 @@
 @import "../component/base";
 .container {
   margin-top: $header-height;
+  padding-bottom: 0.2rem;
   overflow-y: auto;
 }
 .block {
