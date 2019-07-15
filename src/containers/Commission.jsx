@@ -7,7 +7,7 @@ import Header from '../component/layout/Header'
 import BaseLabel from '../component/layout/BaseLabel'
 import BaseTip from '../component/layout/BaseTip'
 import { calCommission, calBigMulti } from '../utils/helper'
-import paths from '../utils/paths'
+// import paths from '../utils/paths'
 import { gasPatten } from '../constants/pattens'
 import styles from './Commission.scss'
 
@@ -88,7 +88,8 @@ const Send = function(props) {
           }
         }
       })
-      history.push(paths.send)
+      // history.push(paths.send)
+      history.goBack()
     }
   }
   const handleSend = () => {
