@@ -10,8 +10,8 @@ const store = require("obs-store")
 
 
 var network = {
-    mainnet: { url: 'http://39.97.235.82:8880', chainId: 1},
-    testnet: { url: 'http://47.111.100.232:8880', chainId: 2}
+    mainnet: { url: 'https://scan.vntchian.io/rpc', chainId: 1},
+    testnet: { url: 'https://hubscan.vnt.link/rpc', chainId: 2}
 }
 // var provider = new vntProvider("http://localhost:8888")
 var providerNet = network.mainnet
@@ -538,10 +538,10 @@ window.resendTransaction = async function resendTransaction(obj) {
         if (tx.data === undefined) {
             delete tx.data
         }
-
+        tx.nonce = nonce
+        
         var storetx = Object.assign({}, tx)
 
-        tx.nonce = nonce
         tx.value = util.fromDecimal(util.toWei(tx.value), 'vnt')
         tx.gas = util.fromDecimal(tx.gas)
         tx.gasPrice = util.fromDecimal(util.toWei(tx.gasPrice, 'gwei'))
