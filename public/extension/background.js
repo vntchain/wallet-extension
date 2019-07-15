@@ -51819,10 +51819,10 @@ window.resendTransaction = async function resendTransaction(obj) {
         if (tx.data === undefined) {
             delete tx.data
         }
-
+        tx.nonce = nonce
+        
         var storetx = Object.assign({}, tx)
 
-        tx.nonce = nonce
         tx.value = util.fromDecimal(util.toWei(tx.value), 'vnt')
         tx.gas = util.fromDecimal(tx.gas)
         tx.gasPrice = util.fromDecimal(util.toWei(tx.gasPrice, 'gwei'))
