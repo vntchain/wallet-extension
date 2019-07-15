@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import paths from '../../utils/paths'
 import imgs from '../../utils/imgs'
-import { splitLongStr } from '../../utils/helper'
+import { splitLongStr, formatDecimal } from '../../utils/helper'
 import { netList } from '../../constants/net'
 import styles from './Setting.scss'
 import { message } from 'antd'
@@ -135,7 +135,7 @@ const Setting = function(props) {
                   )}
                 </p>
                 <p className={styles.vnt}>
-                  {item.vnt ? `${item.vnt} VNT` : '--'}
+                  {item.vnt ? `${formatDecimal(item.vnt, 8)} VNT` : '--'}
                 </p>
               </div>
             )
