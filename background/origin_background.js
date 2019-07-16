@@ -10,7 +10,7 @@ const store = require("obs-store")
 
 
 var network = {
-    mainnet: { url: 'https://scan.vntchian.io/rpc', chainId: 1},
+    mainnet: { url: 'https://scan.vntchain.io/rpc', chainId: 1},
     testnet: { url: 'https://hubscan.vnt.link/rpc', chainId: 2}
 }
 // var provider = new vntProvider("http://localhost:8888")
