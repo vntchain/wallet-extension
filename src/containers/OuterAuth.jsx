@@ -11,7 +11,7 @@ const OuterAuth = function(props) {
   const {
     dispatch,
     user: { addr },
-    popup: { popup }
+    popup: { url }
   } = props
   const port = global.chrome.runtime.connect({ name: 'popup' })
   port.onMessage.addListener(function(msg) {
@@ -21,12 +21,11 @@ const OuterAuth = function(props) {
     console.log('auth Port disconnected: ' + JSON.stringify(msg)) //eslint-disable-line
   })
   const handleAuth = status => {
-    console.log('popup', popup) //eslint-disable-line
     port.postMessage({
       src: 'popup',
       dst: 'background',
       type: 'confirm_request_authorization',
-      data: { url: popup.url, confirmAuthorization: status }
+      data: { url: url, confirmAuthorization: status }
     })
   }
   useEffect(() => {
@@ -43,7 +42,7 @@ const OuterAuth = function(props) {
           <div className={styles.info}>
             <div className={styles['info-item']}>
               <label>请求来源:</label>
-              <span>{popup.url}</span>
+              <span>{url}</span>
             </div>
             <div className={styles['info-item']}>
               <label>您的地址:</label>
@@ -53,7 +52,7 @@ const OuterAuth = function(props) {
           <BaseTip
             className={styles.tip}
             tips={[
-              `${popup.url}正在请求获得您的地址，以便它提供后续服务。
+              `${url}正在请求获得您的地址，以便它提供后续服务。
             这意味着它能够查询到您在该地址的资产数量及相关交易。
             如果它想从您的地址转移资产，那么每次转账都需要您重新批准。`
             ]}

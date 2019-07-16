@@ -24,9 +24,7 @@ const OuterSend = function(props) {
     },
     price: { vntToCny = 1 },
     send: { tx },
-    popup: {
-      popup: { trx }
-    }
+    popup: { trx }
   } = props
   const port = global.chrome.runtime.connect({ name: 'popup' })
   port.onMessage.addListener(function(msg) {
@@ -48,9 +46,17 @@ const OuterSend = function(props) {
     })
   }
   useEffect(() => {
-    dispatch({
-      type: 'popup/getPopup'
-    })
+    if (isEmptyObject(trx)) {
+      dispatch({
+        type: 'popup/getPopup'
+      })
+    }
+    return () => {
+      dispatch({
+        type: 'popup/setTrx',
+        payload: {}
+      })
+    }
   }, [])
   useEffect(() => {
     dispatch({
@@ -69,12 +75,8 @@ const OuterSend = function(props) {
   const getGasLimit = trxTemp => {
     //同步数据
     dispatch({
-      type: 'send/merge',
-      payload: {
-        tx: {
-          ...trxTemp
-        }
-      }
+      type: 'send/setTx',
+      payload: trxTemp
     })
 
     //获取gasInfo
@@ -82,7 +84,7 @@ const OuterSend = function(props) {
     dispatch({
       type: 'send/getGasInfo',
       payload: { tx: { data, from, to, value } },
-      hasOuterGas: trx.gas ? true : false
+      hasOuterGas: trxTemp.gas ? true : false
     })
   }
   return (

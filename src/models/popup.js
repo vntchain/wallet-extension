@@ -5,16 +5,20 @@ import { message } from 'antd'
 const { put } = effects
 export default {
   state: {
-    popup: {}
+    trx: {},
+    url: ''
   },
   reducers: {},
   effects: ({ takeLatest }) => ({
     getPopup: takeLatest(function*() {
       try {
-        const data = yield popup()
+        const { trx, url } = yield popup()
         yield put({
-          type: 'popup/setPopup',
-          payload: data
+          type: 'popup/merge',
+          payload: {
+            trx,
+            url
+          }
         })
       } catch (e) {
         message.error(e.message || e)

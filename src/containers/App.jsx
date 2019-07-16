@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import { Route, withRouter, Switch } from 'react-router-dom'
+import React, { useEffect, Fragment } from 'react'
+import { Route, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import requireAuth from '../component/requireAuth'
@@ -54,7 +54,7 @@ const App = function(props) {
     })
   }, [])
   return (
-    <Switch>
+    <Fragment>
       <Route exact path={paths.login} component={Login} />
       <Route exact path={paths.home} component={requireAuth(Home)} />
       <Route exact path={paths.scanWord} component={requireAuth(ScanWord)} />
@@ -80,7 +80,7 @@ const App = function(props) {
       <Route exact path={paths.outerSend} component={requireAuth(OuterSend)} />
       <Route path={paths.wallet} component={Wallet} />
       {/* <Redirect to="/" /> */}
-    </Switch>
+    </Fragment>
   )
 }
 

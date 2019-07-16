@@ -79,6 +79,7 @@ const Send = function(props) {
     validatePrice(gasPrice, gas)
     validateLimit(gasPrice, gas)
     if (!priceError && !limitError) {
+      //发送交易tx信息修改
       dispatch({
         type: 'send/merge',
         payload: {
@@ -86,6 +87,14 @@ const Send = function(props) {
             gasPrice,
             gas
           }
+        }
+      })
+      //dapp调用popup信息修改
+      dispatch({
+        type: 'popup/setTrx',
+        payload: {
+          gasPrice,
+          gas
         }
       })
       // history.push(paths.send)
