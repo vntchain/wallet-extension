@@ -86,7 +86,6 @@ const SendForm = Form.create({ name: 'login' })(props => {
     const to = getFieldValue('to')
     const value = getFieldValue('value')
     const data = getFieldValue('data')
-    console.log('value:' + value) //eslint-disable-line
     getGasInfo({
       from: addr,
       to: to,

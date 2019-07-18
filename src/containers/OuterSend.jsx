@@ -81,9 +81,10 @@ const OuterSend = function(props) {
 
     //获取gasInfo
     const { data, from, to, value } = trxTemp
+    const newTx = { from, to, value, data }
     dispatch({
       type: 'send/getGasInfo',
-      payload: { tx: { data, from, to, value } },
+      payload: { tx: newTx },
       hasOuterGas: trxTemp.gas ? true : false
     })
   }

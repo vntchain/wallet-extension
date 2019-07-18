@@ -9,11 +9,12 @@ import {
   cancelTransaction,
   resendTransaction
 } from '../utils/chrome'
+import { fromAscii } from '../utils/helper'
 const { put, select } = effects
 
 const defaultTx = {
   gasPrice: 0,
-  gas: 21000, //gasLimit
+  gas: 0, //gasLimit
   from: '',
   to: '',
   value: 0,
@@ -159,12 +160,18 @@ export default {
             payload: gasPrice
           })
         }
-        const gasLimit = yield getEstimateGas(payload)
+        const {
+          tx: { from, to, value, data }
+        } = payload
+        const gasLimit = yield getEstimateGas({
+          tx: { from, to, value, data: fromAscii(data) }
+        })
         yield put({
           type: 'send/setGasLimitDefault',
           payload: gasLimit
         })
         //dapp页面传入gasPrice和gas时，设置获取到的默认值为交易值
+          console.log(hasOuterGas) //eslint-disable-line
         if (!hasOuterGas) {
           yield put({
             type: 'send/merge',

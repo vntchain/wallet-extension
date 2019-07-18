@@ -67,3 +67,18 @@ export const delay = function(time) {
     }, time)
   )
 }
+
+//转字符串为16进制
+export const fromAscii = function(str) {
+  if (isEmpty(str)) return str
+  str = str.toString()
+  if (str.indexOf('0x') === 0) return str
+  var hex = ''
+  for (var i = 0; i < str.length; i++) {
+    var code = str.charCodeAt(i)
+    var n = code.toString(16)
+    hex += n.length < 2 ? '0' + n : n
+  }
+
+  return '0x' + hex
+}
