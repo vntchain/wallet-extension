@@ -124,6 +124,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
           rules: [{ validator: validateBalance }]
         })(
           <Input
+            className={styles['suffix-input']}
             placeholder="请输入发送数量"
             size="large"
             suffix={'VNT'}

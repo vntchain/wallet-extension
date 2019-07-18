@@ -27,4 +27,11 @@
   .commission {
     text-align: right;
   }
+  .suffix-input {
+    :global {
+      .ant-input-suffix {
+        height: 0;
+      }
+    }
+  }
 }
