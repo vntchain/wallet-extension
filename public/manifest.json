@@ -1,7 +1,7 @@
 {
   "name": "VNT Wallet",
   "description" : "vntchain wallet extension",
-  "version": "1.0.8",
+  "version": "v1.0.9",
 
   "icons": {
     "19": "./images/icon-19.png",
