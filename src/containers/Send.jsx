@@ -14,7 +14,7 @@ import { splitLongStr, calCommission, calBigMulti } from '../utils/helper'
 import styles from './Send.scss'
 
 const FormItem = Form.Item
-const TexeArea = Input.TextArea
+const TextArea = Input.TextArea
 
 const SendForm = Form.create({ name: 'login' })(props => {
   const {
@@ -47,6 +47,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
     })
     //设置vnt对应cny
     setBalanceCNY(calBigMulti(accountBalance, vntToCny))
+    handleGetGasLimit()
   }
   const validateToAddr = (rule, value, callback) => {
     if (!value) {
@@ -57,7 +58,6 @@ const SendForm = Form.create({ name: 'login' })(props => {
       callback('请输入正确的地址')
       return
     }
-    // handleGetGasLimit()
     callback()
   }
   const validateBalance = (rule, value, callback) => {
@@ -75,11 +75,9 @@ const SendForm = Form.create({ name: 'login' })(props => {
     }
     //设置vnt对应cny
     setBalanceCNY(calBigMulti(value, vntToCny))
-    // handleGetGasLimit()
     callback()
   }
   const validateRemarks = (rule, value, callback) => {
-    // handleGetGasLimit()
     callback()
   }
   const handleGetGasLimit = () => {
@@ -150,7 +148,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
             { validator: validateRemarks }
           ]
         })(
-          <TexeArea
+          <TextArea
             placeholder="请填写交易备注数据，非必填。"
             size="large"
             onBlur={handleGetGasLimit}
