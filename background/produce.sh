@@ -8,4 +8,4 @@ browserify -t brfs origin_contentscript.js >  extension/contentscript.js
 # browserify origin_ui.js > extension/ui.js
 browserify origin_background.js > extension/background.js
 
-cp -rf extension/*  ../public/extension/
+mv extension  ../public

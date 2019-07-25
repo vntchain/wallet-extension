@@ -16,6 +16,8 @@
 
 # production
 /build
+/public/extension
+/background/extension
 
 # misc
 .DS_Store
