@@ -1107,7 +1107,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                     console.log('updateState: update popup info')
                 })
                
-                var url = chrome.extension.getURL('index.html/#/outer-send')
+                var url = chrome.extension.getURL('index.html#/outer-send')
                 createPopup(url, function(window){
                 })
                 // create confirm_send_trx popup window
@@ -1137,7 +1137,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                     console.log('updateState: update popup info')
                 })
                
-                var url = chrome.extension.getURL('index.html/#/auth')
+                var url = chrome.extension.getURL('index.html#/auth')
                 createPopup(url, function(window){
                 })
                 // create confirm_get_accounts popup window
