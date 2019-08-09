@@ -475,6 +475,15 @@ window.addEventListener('message', function(e) {
     console.log('inpage: message inpage_get_curProviderNet_response')
     curProviderNet = e.data.data.curProviderNet
     window.vnt.setProvider(new InpageHttpProvider(curProviderNet.url))
+
+    window.postMessage(
+      {
+        src: 'inpage',
+        type: 'web_network_change',
+        data: { networkChange: curProviderNet }
+      },
+      '*'
+    )
   } else if (
     e.data.src === 'background' &&
     e.data.data.type === 'inpage_get_authUrl_response'
