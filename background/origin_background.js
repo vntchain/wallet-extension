@@ -28,7 +28,7 @@ var authUrl = []
  *      addr: "the account addr",
  *      type: 0|1  // 0 means not import account
  * }]
- * 
+ *
  * trxs: {
  *      "the account addr": [
  *      {
@@ -39,7 +39,7 @@ var authUrl = []
  *      },
  *      ......
  *      ],
- *     
+ *
  *      ......
  * }
  */
@@ -54,9 +54,9 @@ var popup = {url: "", trx: {}}
 
 /**
  * wallet login
- * 
+ *
  * @param {string} passwd  the wallet passwd
- * 
+ *
  */
 window.login = async function login(obj) {
 
@@ -76,7 +76,7 @@ window.login = async function login(obj) {
 
 /**
  * wallet logout
- * 
+ *
  */
 window.logout = async function logout() {
     is_wallet_unlock = false
@@ -121,7 +121,7 @@ window.createWallet = async function createWallet(obj) {
 }
 
 /**
- *  
+ *
  */
 
 /**
@@ -134,10 +134,10 @@ function clearKeyrings() {
 
 /**
  *  recover a wallet according  the password and seed
- * 
+ *
  * @param {string} passwd - the wallet password
  * @param {string} seed   - the seed to recover
- * 
+ *
  */
 window.restoreFromSeed = async function restoreFromSeed(obj) {
 
@@ -162,12 +162,12 @@ window.restoreFromSeed = async function restoreFromSeed(obj) {
     } catch (error) {
         return Promise.reject(error)
     }
-   
+
 }
 
 /**
  *  verify the passwd after login in
- * 
+ *
  * @param {string} passwd - the wallet password
  */
 window.verifyPasswd = function verifyPasswd(obj) {
@@ -182,7 +182,7 @@ window.verifyPasswd = function verifyPasswd(obj) {
 
 /**
  *  export the account privateKey
- * 
+ *
  * @param {string} addr the addr of the account
  * @param {string} passwd the wallet passwd
  */
@@ -200,7 +200,7 @@ window.exportAccountPrivatekey = async function exportAccountPrivatekey(obj) {
 
 /**
  * export the account keystore
- * 
+ *
  * @param {*} privatekey the privatekey
  * @param {*} passwd  the wallet passwd
  */
@@ -226,8 +226,8 @@ window.exportAccountKeystore = function exportAccountKeystore(obj) {
 
 /**
  *  get the account keyring
- * 
- * @param {string} addr 
+ *
+ * @param {string} addr
  * @param {string} passwd
  */
 window.getKeyringOfAccount = async function getKeyringOfAccount(obj) {
@@ -237,14 +237,14 @@ window.getKeyringOfAccount = async function getKeyringOfAccount(obj) {
     if (wallet_passwd !== passwd) {
         return Promise.reject(new Error("password not correct!"))
     }
-    
+
     var keyring = await extension_wallet.getKeyringForAccount(addr)
     return Promise.resolve(keyring.mnemonic)
 }
 
 /**
  * get the wallet keyring
- * 
+ *
  * @param {string} type  the kering type
  */
 function getWalletKeyring(type) {
@@ -253,10 +253,10 @@ function getWalletKeyring(type) {
 
 /**
  * add a new account of certain keyring
- * 
+ *
  */
 window.addNewAccount = async function addNewAccount() {
-    
+
     var account_keyring = await getWalletKeyring('HD Key Tree')
     await extension_wallet.addNewAccount(account_keyring[0])
 
@@ -288,9 +288,9 @@ function getAllAccounts() {
 
 
 /**
- * 
+ *
  * import account by privatekey
- * 
+ *
  * @param {string} privateKey  the hex private key
  */
 window.importByPrivatekey = async function importByPrivatekey(obj) {
@@ -304,7 +304,7 @@ window.importByPrivatekey = async function importByPrivatekey(obj) {
         }
         const prefixed = ethUtil.addHexPrefix(privateKey)
         const buffer = ethUtil.toBuffer(prefixed)
-    
+
         if(!ethUtil.isValidPrivate(buffer)) {
             throw new  Error('Cannot import invalid private key. ')
         }
@@ -319,13 +319,13 @@ window.importByPrivatekey = async function importByPrivatekey(obj) {
     } catch (e) {
         return Promise.reject(e)
     }
-    
+
 }
 
 /**
- * 
+ *
  * import account by keyStore
- * 
+ *
  * @param {string} input  the keyStore content
  * @param {string} passwd the keyStore password
  */
@@ -359,7 +359,7 @@ window.importByKeystore = async function importByKeystore(obj) {
 
 /**
  * sign and send the transaction
- * 
+ *
  * @param {josn object} tx  the trx to sign
  * @param {string} addr  the account to sign
  */
@@ -369,15 +369,15 @@ function sendRawTransaction(rawTransactionParam) {
     return provider.send(payload)
 }
 
-Date.prototype.Format = function (fmt) { 
+Date.prototype.Format = function (fmt) {
     var o = {
-        "M+": this.getMonth() + 1, 
-        "d+": this.getDate(), 
-        "h+": this.getHours(), 
-        "m+": this.getMinutes(),  
-        "s+": this.getSeconds(), 
-        "q+": Math.floor((this.getMonth() + 3) / 3), 
-        "S": this.getMilliseconds() 
+        "M+": this.getMonth() + 1,
+        "d+": this.getDate(),
+        "h+": this.getHours(),
+        "m+": this.getMinutes(),
+        "s+": this.getSeconds(),
+        "q+": Math.floor((this.getMonth() + 3) / 3),
+        "S": this.getMilliseconds()
     };
     if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
     for (var k in o)
@@ -388,9 +388,9 @@ Date.prototype.Format = function (fmt) {
 window.signThenSendTransaction = async function signThenSendTransaction(obj) {
     var tx = obj.tx
     var addr = obj.addr
-    
+
     try {
-        
+
         if (addr !== selectedAddr) throw new Error("sign addr and selected addr not the same.")
         if (tx.data === undefined) {
             delete tx.data
@@ -425,13 +425,13 @@ window.signThenSendTransaction = async function signThenSendTransaction(obj) {
         } else {
             return Promise.reject(trx_id.error)
         }
-        
-    
+
+
 
     } catch (error) {
         return Promise.reject(error)
     }
-   
+
 }
 
 /**
@@ -530,7 +530,7 @@ window.resendTransaction = async function resendTransaction(obj) {
         if (index === undefined) {
             throw new Error("no trx id in params")
         }
-        
+
         var tx = obj.tx
         var addr = obj.addr
 
@@ -539,7 +539,7 @@ window.resendTransaction = async function resendTransaction(obj) {
             delete tx.data
         }
         tx.nonce = nonce
-        
+
         var storetx = Object.assign({}, tx)
 
         tx.value = util.fromDecimal(util.toWei(tx.value), 'vnt')
@@ -584,7 +584,7 @@ function getNonce(addr) {
     var payload = {jsonrpc: "2.0", id: 1, method: "core_getTransactionCount", params:[]}
     payload.params[0] = addr
     payload.params[1] = "pending"
-            
+
     var nonce = provider.send(payload)
     return nonce.result
 }
@@ -601,7 +601,7 @@ function getChainId() {
 
 /**
  * get the account balance
- * 
+ *
  * @param {string} addr  the addr of account
  */
 window.getAccountBalance = function getAccountBalance(obj) {
@@ -610,9 +610,9 @@ window.getAccountBalance = function getAccountBalance(obj) {
     var payload = {jsonrpc: "2.0", id: 1, method: "core_getBalance", params:[]}
     payload.params[0] = addr
     payload.params[1] = "latest"
-    
+
     return  new Promise((resolve, reject) => {
-     
+
         provider.sendAsync(payload, function (err, balanceobj) {
             if (err) {
                 reject(err)
@@ -627,9 +627,9 @@ window.getAccountBalance = function getAccountBalance(obj) {
 
 /**
  *  check Transaction status
- * 
+ *
  * @param {string} id  the transaction id
- * 
+ *
  */
 window.checkTransaction = function checkTransaction(obj) {
     var id = obj.id
@@ -652,14 +652,14 @@ window.checkTransaction = function checkTransaction(obj) {
     } catch (error) {
         return Promise.reject(error)
     }
-    
+
 
 }
 
 
 /**
  *  get the vnt price
- * 
+ *
  */
 window.getVntPrice = async function getVntPrice() {
 
@@ -676,7 +676,7 @@ window.getVntPrice = async function getVntPrice() {
         })
 
         return Promise.resolve(res.data.price_cny)
-       
+
     } catch (error) {
        return Promise.reject(error)
     }
@@ -703,12 +703,12 @@ window.getGasPrice = function getGasPrice() {
 
 /**
  * get estimate gas limit
- * 
+ *
  * @param {json object} tx  the transaction obj
- * 
+ *
  */
 window.getEstimateGas = function getEstimateGas(obj) {
-    
+
     try {
 
         obj.tx.value = util.fromDecimal(util.toWei(obj.tx.value, 'vnt'))
@@ -734,12 +734,12 @@ window.getEstimateGas = function getEstimateGas(obj) {
 /**
  * get trx  info
  * @param {string} txid the transaction id
- * 
+ *
  */
 window.getTrxInfo = function getTrxInfo(obj) {
 
     var trxs = account_info.trxs[selectedAddr]
-    
+
     for (var i = 0; i < trxs.length; i++) {
         if (trxs[i].id === obj.txid) return Promise.resolve(trxs[i])
     }
@@ -753,7 +753,7 @@ window.getTrxInfo = function getTrxInfo(obj) {
 
 /**
  * change the provider
- * 
+ *
  * @param {string} newprovider the new provider chainId
  */
 window.changeProvider = function changeProvider(obj) {
@@ -766,10 +766,10 @@ window.changeProvider = function changeProvider(obj) {
         } else {
             providerNet = network.mainnet
         }
-        
+
         provider = new vntProvider(providerNet.url)
         console.log("function: changeProvider")
-            
+
         // chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         //     chrome.tabs.sendMessage(tabs[0].id, {type: "changeProvider", provider: newprovider}, function(response) {
         //         console.log(response);
@@ -783,12 +783,12 @@ window.changeProvider = function changeProvider(obj) {
 
 
     }
-   
+
 }
 
 /**
  *  change the addr
- * 
+ *
  * @param {string} addr  the account addr
  */
 window.changeAddress = function changeAddress(obj) {
@@ -828,14 +828,14 @@ window.createPopup = function createPopup(url, cb) {
 
 /**
  * timer function to update trx state
- * 
+ *
  */
 function trxStateTimer() {
 
     var trxs = account_info.trxs[selectedAddr]
     var stateChanged = false
     if (trxs === undefined) {
-        return 
+        return
     } else {
         for (var i = 0; i < trxs.length; i++) {
 
@@ -843,7 +843,7 @@ function trxStateTimer() {
 
                 var payload = {jsonrpc: "2.0", id: 1, method: "core_getTransactionReceipt", params:[]}
                 payload.params[0] = trxs[i].id
-                
+
                 try {
                     var trxobj = provider.send(payload)
 
@@ -880,11 +880,11 @@ function trxStateTimer() {
                 } catch (error) {
                     continue
                 }
-               
-            
-               
+
+
+
             }
-    
+
         }
 
         if (stateChanged) {
@@ -939,9 +939,9 @@ function resetState() {
 
 /**
  * restore extension state
- * 
+ *
  * the state:
- * 
+ *
  *    extension_wallet:  the vault value({vault: "{the encrypted keyring info}"})
  *    account_info: the account info(see account info above)
  */
@@ -1004,7 +1004,7 @@ function restoreState() {
             authUrl = backup_authUrl
         }
     })
-    
+
 
 }
 
@@ -1058,7 +1058,7 @@ function updateState() {
 /*********************************************/
 window.addEventListener("load", function() {
     console.log("background page loaded... " + Date())
-    restoreState() 
+    restoreState()
 });
 
 // chrome.alarms.create('updatState', {delayInMinutes: 1.5})
@@ -1093,7 +1093,7 @@ chrome.runtime.onConnect.addListener(function(port) {
         if (msg.src === 'contentScript') {
             if (msg.data.method === "inpage_sendTransaction"){
                 console.log("background: receive inpage sendTransaction")
-                console.log(msg) 
+                console.log(msg)
 
                 popup.trx = msg.data.data.payload.params[0]
                 popup.trx.value = util.fromWei(popup.trx.value, 'vnt')
@@ -1106,37 +1106,37 @@ chrome.runtime.onConnect.addListener(function(port) {
                 chrome.storage.local.set({'popup': popup}, function(){
                     console.log('updateState: update popup info')
                 })
-               
+
                 var url = chrome.extension.getURL('index.html#/outer-send')
                 createPopup(url, function(window){
                 })
                 // create confirm_send_trx popup window
                 // chrome.rutime.sendMessage({type: "sendTransaction", trx: msg.data.data})
                 // createPopup("notification.html", function(window){
-                   
+
                 // })
-            } 
+            }
             // else if (msg.data.method === "inpage_accounts") {
-                
+
             //     console.log("background: receive inpage get accounts")
-            //     console.log(msg) 
+            //     console.log(msg)
 
             //     // create confirm_get_accounts popup window
             //     // chrome.rutime.sendMessage({type: "getAccounts"})
             //     // createPopup("notification.html", function(window){
             //     // })
 
-            // } 
+            // }
             else if (msg.data.method === "inpage_requestAuthorization") {
-                
+
                 console.log("background: receive inpage request authorization")
-                console.log(msg) 
+                console.log(msg)
 
                 popup.url = msg.data.data.url
                 chrome.storage.local.set({'popup': popup}, function(){
                     console.log('updateState: update popup info')
                 })
-               
+
                 var url = chrome.extension.getURL('index.html#/auth')
                 createPopup(url, function(window){
                 })
@@ -1144,7 +1144,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                 // chrome.rutime.sendMessage({type: "requestAuthorization", url: msg.data.data.url, addr: selectedAddr})
                 // createPopup("notification.html", function(window){
                 // })
-            } 
+            }
             else if (msg.data.method === "inpage_login") {
 
 
@@ -1154,7 +1154,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 
                 // window.postMessage({target: "popup_inpage"})
                 // chrome.runtime.sendMessage({type:"inpage_requestAuthorization", route: "/auth", url: "test"})
-            }  
+            }
             else if (msg.data.method === "inpage_get_walletUnlock") {
                 port.postMessage({
                     type: "inpage_get_walletUnlock_response",
@@ -1165,6 +1165,12 @@ chrome.runtime.onConnect.addListener(function(port) {
                 port.postMessage({
                     type: "inpage_get_selectedAddr_response",
                     selectedAddr: selectedAddr
+                })
+            }
+            else if (msg.data.method === "inpage_get_curProviderNet") {
+                port.postMessage({
+                    type: "inpage_get_curProviderNet_response",
+                    curProviderNet: providerNet
                 })
             }
             else if (msg.data.method === "inpage_get_authUrl") {
@@ -1185,7 +1191,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 
                     var tx = msg.data.trx
                     var addr = selectedAddr
-                    
+
                     signThenSendTransaction({addr: addr, tx: tx}).then((trx_id) => {
                         chrome.tabs.query({active: true},function(tabArray) {
                             for (var i = 0; i < tabArray.length; i++) {
@@ -1199,34 +1205,34 @@ chrome.runtime.onConnect.addListener(function(port) {
                             }
                         });
                     })
-        
+
 
                 } else {
                     chrome.tabs.query({active: true},function(tabArray) {
                         for (var i = 0; i < tabArray.length; i++) {
                             chrome.tabs.sendMessage(tabArray[i].id, {confirmSendTrx: false, trxid: ""});
                         }
-                
+
                         });
                 }
-                
-    
-            } 
+
+
+            }
             // else if (msg.data.type === "confirm_get_accounts") {
 
             //     if (!!msg.data.data.confirmedGetAccounts) {
             //         chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
             //             chrome.tabs.sendMessage(tabArray[0].id, {confirmedGetAccounts: true});
             //         });
-    
+
             //     } else {
             //         chrome.tabs.query({currentWindow: true, active: true},function(tabArray) {
             //             chrome.tabs.sendMessage(tabArray[0].id, {confirmedGetAccounts: false});
             //         });
             //     }
 
-               
-            // } 
+
+            // }
             else if (msg.type === "confirm_request_authorization") {
 
                 chrome.windows.getLastFocused({windowTypes: ['popup']}, function(window){
@@ -1244,11 +1250,11 @@ chrome.runtime.onConnect.addListener(function(port) {
                         for (var i = 0; i < tabArray.length; i++) {
                             chrome.tabs.sendMessage(tabArray[i].id, {url: msg.data.url, confirmAuthorization: true});
                         }
-                        
+
                     });
-    
+
                 } else {
-    
+
                     chrome.tabs.query({active: true},function(tabArray) {
                         for (var i = 0; i < tabArray.length; i++) {
                             chrome.tabs.sendMessage(tabArray[i].id, {url: msg.data.url, confirmAuthorization: false});
@@ -1258,7 +1264,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 
 
             }
-        
+
         } // end src from popup
     })
 })

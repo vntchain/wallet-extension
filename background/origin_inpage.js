@@ -304,12 +304,12 @@ InpageHttpProvider.prototype.isConnected = function() {
 
 // };
 
-var network = {
-  mainnet: { url: 'https://scan.vntchain.io/rpc', chainId: 1 },
-  testnet: { url: 'https://hubscan.vnt.link/rpc', chainId: 2 }
-}
+// var network = {
+//   mainnet: { url: 'https://scan.vntchain.io/rpc', chainId: 1 },
+//   testnet: { url: 'https://hubscan.vnt.link/rpc', chainId: 2 }
+// }
 var selectedAccount = ''
-var curProviderNet = network.mainnet
+var curProviderNet = {}
 var walletUnlock = false
 window.vnt = new Vnt(new InpageHttpProvider(curProviderNet.url))
 var authUrl = []
@@ -400,7 +400,7 @@ window.addEventListener('message', function(e) {
     !!e.data.data
   ) {
     console.log('inpage: message change_providerNet')
-    curProviderNet = e.data.data.providerNet || network.mainnet
+    curProviderNet = e.data.data.providerNet
     window.vnt.setProvider(new InpageHttpProvider(curProviderNet.url))
 
     window.postMessage(
@@ -470,6 +470,13 @@ window.addEventListener('message', function(e) {
     selectedAccount = e.data.data.selectedAddr
   } else if (
     e.data.src === 'background' &&
+    e.data.data.type === 'inpage_get_curProviderNet_response'
+  ) {
+    console.log('inpage: message inpage_get_curProviderNet_response')
+    curProviderNet = e.data.data.curProviderNet
+    window.vnt.setProvider(new InpageHttpProvider(curProviderNet.url))
+  } else if (
+    e.data.src === 'background' &&
     e.data.data.type === 'inpage_get_authUrl_response'
   ) {
     console.log('inpage: message inpage_get_authUrl_response')
@@ -498,6 +505,14 @@ window.onload = function() {
     {
       target: 'contentscript',
       method: 'inpage_get_selectedAddr'
+    },
+    '*'
+  )
+
+  window.postMessage(
+    {
+      target: 'contentscript',
+      method: 'inpage_get_curProviderNet'
     },
     '*'
   )
