@@ -947,6 +947,12 @@ function resetState() {
  */
 function restoreState() {
 
+    // reset the isWalletUnlock to false so that frontend will
+    // always asks login when restart the chrome browser
+    chrome.storage.local.set({'isWalletUnlock': false}, function(){
+        console.log('updateState: update wallet unlock state')
+    })
+
     chrome.storage.local.get('extension_wallet', function(obj){
         var backup_extension_wallet = obj.extension_wallet
         if (backup_extension_wallet !== undefined) {
@@ -989,13 +995,13 @@ function restoreState() {
         }
     })
 
-    chrome.storage.local.get('isWalletUnlock', function(obj){
-        var backup_isWalletUnlock = obj.isWalletUnlock
-        if (backup_isWalletUnlock !== undefined){
-            console.log('restoreState: is wallet unlock')
-            is_wallet_unlock = backup_isWalletUnlock
-        }
-    })
+    // chrome.storage.local.get('isWalletUnlock', function(obj){
+    //     var backup_isWalletUnlock = obj.isWalletUnlock
+    //     if (backup_isWalletUnlock !== undefined){
+    //         console.log('restoreState: is wallet unlock')
+    //         is_wallet_unlock = backup_isWalletUnlock
+    //     }
+    // })
 
     chrome.storage.local.get('authUrl', function(obj){
         var backup_authUrl = obj.authUrl
