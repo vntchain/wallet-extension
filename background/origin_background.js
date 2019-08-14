@@ -831,7 +831,7 @@ window.createPopup = function createPopup(url, cb) {
  *
  */
 function trxStateTimer() {
-
+    console.log("trx State Timer executed!")
     var trxs = account_info.trxs[selectedAddr]
     var stateChanged = false
     if (trxs === undefined) {
@@ -1065,6 +1065,7 @@ function updateState() {
 window.addEventListener("load", function() {
     console.log("background page loaded... " + Date())
     restoreState()
+    setInterval(trxStateTimer, 3000)
 });
 
 // chrome.alarms.create('updatState', {delayInMinutes: 1.5})
@@ -1078,7 +1079,6 @@ window.addEventListener("load", function() {
 chrome.runtime.onInstalled.addListener(({reason}) => {
     console.log("background: in onInstalled")
 
-    setInterval(trxStateTimer, 3000)
      // provoidUrl
      chrome.storage.local.set({'providerNet': providerNet}, function(){
         console.log('updateState: update providerNet')
