@@ -1148,7 +1148,7 @@ chrome.runtime.onConnect.addListener(function(port) {
             else if (msg.data.method === "inpage_login") {
 
 
-                var url = chrome.extension.getURL('index.html')
+                var url = chrome.extension.getURL('index.html#/login?redirect=outerAuth')
                 createPopup(url, function(window){
                 })
 
