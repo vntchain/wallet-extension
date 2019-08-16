@@ -831,7 +831,7 @@ window.createPopup = function createPopup(url, cb) {
  *
  */
 function trxStateTimer() {
-
+    console.log("trx State Timer executed!")
     var trxs = account_info.trxs[selectedAddr]
     var stateChanged = false
     if (trxs === undefined) {
@@ -947,6 +947,12 @@ function resetState() {
  */
 function restoreState() {
 
+    // reset the isWalletUnlock to false so that frontend will
+    // always asks login when restart the chrome browser
+    chrome.storage.local.set({'isWalletUnlock': false}, function(){
+        console.log('updateState: update wallet unlock state')
+    })
+
     chrome.storage.local.get('extension_wallet', function(obj){
         var backup_extension_wallet = obj.extension_wallet
         if (backup_extension_wallet !== undefined) {
@@ -989,13 +995,13 @@ function restoreState() {
         }
     })
 
-    chrome.storage.local.get('isWalletUnlock', function(obj){
-        var backup_isWalletUnlock = obj.isWalletUnlock
-        if (backup_isWalletUnlock !== undefined){
-            console.log('restoreState: is wallet unlock')
-            is_wallet_unlock = backup_isWalletUnlock
-        }
-    })
+    // chrome.storage.local.get('isWalletUnlock', function(obj){
+    //     var backup_isWalletUnlock = obj.isWalletUnlock
+    //     if (backup_isWalletUnlock !== undefined){
+    //         console.log('restoreState: is wallet unlock')
+    //         is_wallet_unlock = backup_isWalletUnlock
+    //     }
+    // })
 
     chrome.storage.local.get('authUrl', function(obj){
         var backup_authUrl = obj.authUrl
@@ -1059,6 +1065,7 @@ function updateState() {
 window.addEventListener("load", function() {
     console.log("background page loaded... " + Date())
     restoreState()
+    setInterval(trxStateTimer, 3000)
 });
 
 // chrome.alarms.create('updatState', {delayInMinutes: 1.5})
@@ -1072,7 +1079,6 @@ window.addEventListener("load", function() {
 chrome.runtime.onInstalled.addListener(({reason}) => {
     console.log("background: in onInstalled")
 
-    setInterval(trxStateTimer, 3000)
      // provoidUrl
      chrome.storage.local.set({'providerNet': providerNet}, function(){
         console.log('updateState: update providerNet')
