@@ -1046,6 +1046,11 @@ function updateState() {
         console.log('updateState: update extension authUrl state')
     })
 
+    //popup
+    chrome.storage.local.set({'popup': popup}, function(){
+        console.log('updateState: update popup info')
+    })
+
 
 }
 
@@ -1134,7 +1139,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 
                 popup.url = msg.data.data.url
                 chrome.storage.local.set({'popup': popup}, function(){
-                    console.log('updateState: update popup info')
+                    console.log('updateState: update popup info at auth')
                 })
 
                 var url = chrome.extension.getURL('index.html#/auth')
@@ -1148,6 +1153,10 @@ chrome.runtime.onConnect.addListener(function(port) {
             else if (msg.data.method === "inpage_login") {
 
 
+                popup.url = msg.data.data.url
+                chrome.storage.local.set({'popup': popup}, function(){
+                    console.log('updateState: update popup info at login')
+                })
                 var url = chrome.extension.getURL('index.html#/login?redirect=outerAuth')
                 createPopup(url, function(window){
                 })

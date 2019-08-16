@@ -335,31 +335,31 @@ window.vnt.requestAuthorization = function(callback) {
       },
       '*'
     )
-
-    window.addEventListener('message', function(e) {
-      //  e.data.data contain the passed data
-      if (
-        e.data.src === 'content' &&
-        e.data.type === 'requestAuthorization_response' &&
-        !!e.data.data
-      ) {
-        console.log('inpage: message requestAuthorization_response')
-        if (e.data.data.confirmAuthorization) {
-          if (
-            e.data.data.url == window.location.host &&
-            authUrl.indexOf(e.data.data.url) == -1
-          ) {
-            authUrl.push(e.data.data.url)
-            // localStorage.setItem('authUrl', authUrl.join(','))
-          }
-          // var result = {id: id, jsonrpc: jsonrpc, result: e.data.data.confirmAuthorization}
-          callback(null, e.data.data.confirmAuthorization)
-        } else {
-          callback(errors.authorizationError('user denied.'))
-        }
-      }
-    })
   }
+
+  window.addEventListener('message', function(e) {
+    //  e.data.data contain the passed data
+    if (
+      e.data.src === 'content' &&
+      e.data.type === 'requestAuthorization_response' &&
+      !!e.data.data
+    ) {
+      console.log('inpage: message requestAuthorization_response')
+      if (e.data.data.confirmAuthorization) {
+        if (
+          e.data.data.url == window.location.host &&
+          authUrl.indexOf(e.data.data.url) == -1
+        ) {
+          authUrl.push(e.data.data.url)
+          // localStorage.setItem('authUrl', authUrl.join(','))
+        }
+        // var result = {id: id, jsonrpc: jsonrpc, result: e.data.data.confirmAuthorization}
+        callback(null, e.data.data.confirmAuthorization)
+      } else {
+        callback(errors.authorizationError('user denied.'))
+      }
+    }
+  })
 }
 
 window.vnt.getNetworkUrl = function(callback) {
