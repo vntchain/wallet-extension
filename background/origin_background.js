@@ -216,10 +216,15 @@ window.exportAccountKeystore = function exportAccountKeystore(obj) {
 
         var worker = new Worker('/extension/workerExport.js')
         worker.postMessage({ privatekey, passwd })
-        worker.addEventListener('message', function(e){
-            console.log('Message from export Work')
+        worker.onmessage = function(e){
+            console.log('exportAccountKeystore: Success from export Work')
             resolve(e.data)
-        })
+            worker.terminate() //stop web worker
+        }
+        worker.onerror = function(e){
+            console.log('exportAccountKeystore: Error from export Work' + e.data)
+            reject(e.data)
+        }
     })
 
 }
