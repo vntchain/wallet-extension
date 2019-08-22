@@ -214,11 +214,16 @@ window.exportAccountKeystore = function exportAccountKeystore(obj) {
             reject(new Error("password not correct!"))
         }
 
-        privatekey = ethUtil.addHexPrefix(privatekey)
-        const buffer = ethUtil.toBuffer(privatekey)
-        const wallet = Wallet.fromPrivateKey(buffer)
-
-        resolve(wallet.toV3String(passwd))
+        // privatekey = ethUtil.addHexPrefix(privatekey)
+        // const buffer = ethUtil.toBuffer(privatekey)
+        // const wallet = Wallet.fromPrivateKey(buffer)
+        // resolve(wallet.toV3String(passwd))
+        var worker = new Worker('/extension/workerExport.js')
+        worker.postMessage({ privatekey, passwd })
+        worker.addEventListener('message', function(e){
+            console.log('Message from Work', e.data)
+            resolve(e.data)
+        })
     })
 
 }

@@ -7,6 +7,7 @@ browserify -t brfs origin_contentscript.js >  extension/contentscript.js
 # browserify origin_lib.js > extension/lib.js
 # browserify origin_ui.js > extension/ui.js
 browserify origin_background.js > extension/background.js
+browserify workerExport.js > extension/workerExport.js
 
 rm -rf ../public/extension
 mv extension  ../public

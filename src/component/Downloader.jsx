@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 const Downloader = props => {
-  const { content, fileName, isDownload, handleFetch } = props
+  const { content, fileName, isDownload } = props
   const [blob, setBlob] = useState(null)
   // const blob = isDownload
   //   ? new Blob([content], { type: 'text/plain;charset=utf-8' })
@@ -17,7 +17,7 @@ const Downloader = props => {
       {props.children}
     </a>
   ) : (
-    <span onClick={handleFetch}>{props.children}</span>
+    <span>{props.children}</span>
   )
 }
 
