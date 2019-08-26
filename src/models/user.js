@@ -29,7 +29,8 @@ export default {
     trades: [],
     currTrade: [],
     txDetail: {},
-    isLoginDisable: false
+    isLoginDisable: false,
+    redirect: null
   },
   reducers: {
     filterCurrentTrade: (state, { payload }) => {
@@ -74,7 +75,8 @@ export default {
         yield put({
           type: 'user/getAddr'
         })
-        yield put(push(paths.home))
+        const redirect = yield select(({ user: { redirect } }) => redirect)
+        yield put(push(paths[redirect] || paths.home))
       } catch (e) {
         message.error(e.message || e)
         console.log('login:' + e) //eslint-disable-line
