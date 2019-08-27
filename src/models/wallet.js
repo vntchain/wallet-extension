@@ -4,7 +4,7 @@ import paths from '../utils/paths'
 import { createWallet, restoreFromSeed } from '../utils/chrome'
 import { message } from 'antd'
 
-const { put } = effects
+const { put, select } = effects
 export default {
   state: {
     isCreateDisable: false,
@@ -52,7 +52,9 @@ export default {
           type: 'wallet/setIsConfirmDisable',
           payload: true
         })
-        yield put(push(paths.home))
+        //跳转页面
+        const redirect = yield select(({ user: { redirect } }) => redirect)
+        yield put(push(paths[redirect] || paths.home))
       } catch (e) {
         message.error(e.message || e)
         console.log('confirmWord:' + e) //eslint-disable-line
@@ -80,7 +82,8 @@ export default {
           type: 'user/getAddr'
         })
         //跳转页面
-        yield put(push(paths.home))
+        const redirect = yield select(({ user: { redirect } }) => redirect)
+        yield put(push(paths[redirect] || paths.home))
       } catch (e) {
         message.error(e.message || e)
         console.log('regainWord:' + e) //eslint-disable-line

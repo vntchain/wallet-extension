@@ -82,3 +82,16 @@ export const fromAscii = function(str) {
 
   return '0x' + hex
 }
+
+export const genSearchObj = str => {
+  const res = str.split('?')[1]
+  const obj = {}
+  if (res) {
+    const resArr = res.split('&')
+    resArr.map(item => {
+      const itemArr = item.split('=')
+      obj[itemArr[0]] = itemArr[1]
+    })
+  }
+  return obj
+}

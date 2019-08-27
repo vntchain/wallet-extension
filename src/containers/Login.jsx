@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { Button, InputItem } from 'antd-mobile'
@@ -11,6 +11,7 @@ import paths from '../utils/paths'
 import imgs from '../utils/imgs'
 import { netList } from '../constants/net'
 import { commonFormSet } from '../constants/set'
+import { genSearchObj } from '../utils/helper'
 const FormItem = Form.Item
 const Option = Select.Option
 
@@ -46,6 +47,14 @@ const Login = function(props) {
     dispatch,
     user: { isLoginDisable, envObj }
   } = props
+  useEffect(() => {
+    const redirect = genSearchObj(props.location.search)['redirect']
+    console.log(redirect) //eslint-disable-line
+    dispatch({
+      type: 'user/setRedirect',
+      payload: redirect
+    })
+  }, [])
   const handleLogin = data => {
     dispatch({
       type: 'user/login',

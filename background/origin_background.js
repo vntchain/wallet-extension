@@ -214,11 +214,17 @@ window.exportAccountKeystore = function exportAccountKeystore(obj) {
             reject(new Error("password not correct!"))
         }
 
-        privatekey = ethUtil.addHexPrefix(privatekey)
-        const buffer = ethUtil.toBuffer(privatekey)
-        const wallet = Wallet.fromPrivateKey(buffer)
-
-        resolve(wallet.toV3String(passwd))
+        var worker = new Worker('/extension/workerExport.js')
+        worker.postMessage({ privatekey, passwd })
+        worker.onmessage = function(e){
+            console.log('exportAccountKeystore: Success from export Work')
+            resolve(e.data)
+            worker.terminate() //stop web worker
+        }
+        worker.onerror = function(e){
+            console.log('exportAccountKeystore: Error from export Work' + e.data)
+            reject(e.data)
+        }
     })
 
 }
@@ -1052,6 +1058,11 @@ function updateState() {
         console.log('updateState: update extension authUrl state')
     })
 
+    //popup
+    chrome.storage.local.set({'popup': popup}, function(){
+        console.log('updateState: update popup info')
+    })
+
 
 }
 
@@ -1140,7 +1151,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 
                 popup.url = msg.data.data.url
                 chrome.storage.local.set({'popup': popup}, function(){
-                    console.log('updateState: update popup info')
+                    console.log('updateState: update popup info at auth')
                 })
 
                 var url = chrome.extension.getURL('index.html#/auth')
@@ -1154,7 +1165,11 @@ chrome.runtime.onConnect.addListener(function(port) {
             else if (msg.data.method === "inpage_login") {
 
 
-                var url = chrome.extension.getURL('index.html')
+                popup.url = msg.data.data.url
+                chrome.storage.local.set({'popup': popup}, function(){
+                    console.log('updateState: update popup info at login')
+                })
+                var url = chrome.extension.getURL('index.html#/login?redirect=outerAuth')
                 createPopup(url, function(window){
                 })
 
