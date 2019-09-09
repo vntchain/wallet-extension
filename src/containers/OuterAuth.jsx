@@ -5,12 +5,16 @@ import CommonPadding from '../component/layout/CommonPadding'
 import BaseTip from '../component/layout/BaseTip'
 import BaseModalFooter from '../component/layout/BaseModalFooter'
 import { splitLongStr } from '../utils/helper'
+import { netList } from '../constants/net'
 import styles from './OuterAuth.scss'
 
 const OuterAuth = function(props) {
   const {
     dispatch,
-    user: { addr },
+    user: {
+      addr,
+      envObj: { chainId }
+    },
     popup: { url }
   } = props
   const port = global.chrome.runtime.connect({ name: 'popup' })
@@ -35,7 +39,7 @@ const OuterAuth = function(props) {
   }, [])
   return (
     <Fragment>
-      <Header title={'VNT主网'} />
+      <Header title={`VNT${netList[chainId]}`} />
       <div className={styles.container}>
         <CommonPadding>
           <h3>请求获得您的VNT地址</h3>
