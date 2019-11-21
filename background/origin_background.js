@@ -10,8 +10,8 @@ const store = require("obs-store")
 
 
 var network = {
-    mainnet: { url: 'https://scan.vntchain.io/rpc', chainId: 1},
-    testnet: { url: 'https://hubscan.vnt.link/rpc', chainId: 2}
+    mainnet: { url: 'https://scan.vntchain.io/rpc', chainId: 1, domain: 'https://scan.vntchain.io'},
+    testnet: { url: 'https://hubscan.vnt.link/rpc', chainId: 2, domain: 'https://hubscan.vnt.link'}
 }
 // var provider = new vntProvider("http://localhost:8888")
 var providerNet = network.mainnet
@@ -670,7 +670,7 @@ window.checkTransaction = function checkTransaction(obj) {
 window.getVntPrice = async function getVntPrice() {
 
     try {
-        var url = "http://dncapi.bqiapp.com/api/coin/coininfo?code=vntchain"
+        var url = providerNet.domain + "/v1/market"
 
         const res = await new Promise(resolve => {
 
@@ -681,7 +681,7 @@ window.getVntPrice = async function getVntPrice() {
             })
         })
 
-        return Promise.resolve(res.data.price_cny)
+        return Promise.resolve(res.data.PriceCny)
 
     } catch (error) {
        return Promise.reject(error)

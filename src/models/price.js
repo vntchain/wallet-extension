@@ -12,6 +12,7 @@ export default {
     getVntToCny: takeLatest(function*() {
       try {
         const data = yield getVntPrice()
+        console.warn(data) //eslint-disable-line
         yield put({
           type: 'price/setVntToCny',
           payload: data
