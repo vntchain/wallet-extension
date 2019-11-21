@@ -44,6 +44,10 @@ const Home = function(props) {
     dispatch({
       type: 'user/filterCurrentTrade'
     })
+    //根据环境变化重新获取vnt价格
+    dispatch({
+      type: 'price/getVntToCny'
+    })
     if (addr) {
       //根据环境变化重新获取余额
       dispatch({
