@@ -14,7 +14,7 @@ import {
 } from '../utils/chrome'
 import { message } from 'antd'
 import { formatDecimal } from '../utils/helper'
-
+// import { FormattedMessage } from '../i18n'
 const { put, all, select } = effects
 export default {
   state: {

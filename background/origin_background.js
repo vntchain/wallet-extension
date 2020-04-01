@@ -1108,6 +1108,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 	port.onMessage.addListener(function(msg) {
         // from webpage (through contentScript)
         if (msg.src === 'contentScript') {
+            chrome.windows.getCurrent(CurrentWindows => {
             if (msg.data.method === "inpage_sendTransaction"){
                 console.log("background: receive inpage sendTransaction")
                 console.log(msg)
@@ -1124,7 +1125,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                     console.log('updateState: update popup info')
                 })
 
-                var url = chrome.extension.getURL('index.html#/outer-send')
+                var url = chrome.extension.getURL(`index.html#/outer-send/?windowId=${CurrentWindows.id}`)
                 createPopup(url, function(window){
                 })
                 // create confirm_send_trx popup window
@@ -1154,7 +1155,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                     console.log('updateState: update popup info at auth')
                 })
 
-                var url = chrome.extension.getURL('index.html#/auth')
+                var url = chrome.extension.getURL(`index.html#/auth/?windowId=${CurrentWindows.id}`)
                 createPopup(url, function(window){
                 })
                 // create confirm_get_accounts popup window
@@ -1169,7 +1170,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                 chrome.storage.local.set({'popup': popup}, function(){
                     console.log('updateState: update popup info at login')
                 })
-                var url = chrome.extension.getURL('index.html#/login?redirect=outerAuth')
+                var url = chrome.extension.getURL(`index.html#/login?redirect=outerAuth/?windowId=${CurrentWindows.id}`)
                 createPopup(url, function(window){
                 })
 
@@ -1200,7 +1201,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                     authUrl: authUrl
                 })
             }
-
+        })
         } else if (msg.src === 'popup') { // from popup
             if (msg.type === "confirm_send_trx") {
 

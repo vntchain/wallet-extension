@@ -1,4 +1,7 @@
-export const netList = ['', '主网', '测试网']
+export const netList = {
+  zh: ['', '主网', '测试网'],
+  en: ['', 'Mainnet', 'Testnet']
+}
 
 export const netUrlList = [
   '',

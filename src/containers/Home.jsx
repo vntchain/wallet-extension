@@ -11,6 +11,7 @@ import imgs from '../utils/imgs'
 import paths from '../utils/paths'
 import { netUrlList } from '../constants/net'
 import { Empty } from 'antd'
+import { FormattedMessage } from '../i18n'
 
 const Home = function(props) {
   const {
@@ -68,7 +69,11 @@ const Home = function(props) {
 
   return (
     <Fragment>
-      <Header title={'首页'} theme={'trans'} hasSetting={true} />
+      <Header
+        title={<FormattedMessage id="home_title" />}
+        theme={'trans'}
+        hasSetting={true}
+      />
       <div className={styles.banner}>
         <CommonPadding>
           <div className={styles.user}>
@@ -81,7 +86,7 @@ const Home = function(props) {
               className={styles.btn}
               onClick={() => setUserVisible(true)}
             >
-              详情
+              <FormattedMessage id="home_detail" />
             </a>
           </div>
           <div className={styles.vnt}>{`${accountBalance} VNT`}</div>
@@ -95,22 +100,27 @@ const Home = function(props) {
               onClick={() => setUserVisible(true)}
             >
               <img src={imgs.rollIn} alt="转入" />
-              转入
+              <FormattedMessage id="home_rollIn" />
             </a>
             <a
               href="javascript:"
               className={styles['tx-btn']}
               onClick={() => handleOpenSend()}
             >
-              <img src={imgs.rollOut} alt="转出" />
-              转出
+              <img
+                src={imgs.rollOut}
+                alt={<FormattedMessage id="home_title" />}
+              />
+              <FormattedMessage id="home_rollOut" />
             </a>
           </div>
         </CommonPadding>
       </div>
       <div className={styles.container}>
         <CommonPadding>
-          <h2 className={styles.title}>交易历史</h2>
+          <h2 className={styles.title}>
+            <FormattedMessage id="home_history" />
+          </h2>
           <div className={styles.history}>
             {currTrade.length ? (
               currTrade.map((item, index) => (
@@ -118,12 +128,12 @@ const Home = function(props) {
                   <li>
                     <span className={styles.date}>{item.time}</span>
                     <a href="javascript:" onClick={() => handleLink(item.id)}>
-                      去浏览器查看
+                      <FormattedMessage id="home_history_toBrowser" />
                     </a>
                   </li>
                   <li>
                     <span className={styles.txid}>
-                      交易id
+                      <FormattedMessage id="home_history_orderID" />
                       <span
                         className={`${styles.status} ${styles[item.state]}`}
                       >

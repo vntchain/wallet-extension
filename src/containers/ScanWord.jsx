@@ -9,12 +9,14 @@ import Copier from '../component/Copier'
 import PasswordForm from './home/PasswordForm'
 import BaseTip from '../component/layout/BaseTip'
 import { Button } from 'antd-mobile'
+import { FormattedMessage, localText } from '../i18n'
 
 const ScanWord = function(props) {
   const copyRef = React.createRef()
   const {
     user: { addr },
     word: { word, hasGetWord },
+    international: { language },
     history,
     dispatch
   } = props
@@ -39,28 +41,24 @@ const ScanWord = function(props) {
   }
   return (
     <Fragment>
-      <Header title={'查看助记词'} hasBack={true} />
+      <Header title={<FormattedMessage id="scanWord_title" />} hasBack={true} />
       <div className={styles.container}>
         <CommonPadding>
-          <BaseWarn warns={['不要对任何人展示助记词！']} />
+          <BaseWarn warns={[localText[language]['scanWord_warn']]} />
           {hasGetWord ? (
             <Fragment>
               <div className={styles.cont}>{word}</div>
-              <Copier text={word} ref={copyRef}>
+              <Copier text={word} language={language} ref={copyRef}>
                 <a className={styles.copy} href="javascript:">
-                  复制到剪贴板
+                  <FormattedMessage id="scanWord_copy" />
                 </a>
               </Copier>
               <BaseTip
                 className={styles.tip}
-                tips={[
-                  '重要提示：',
-                  '助记词用于恢复您的钱包，按照顺序将它抄写下来，并存放在安全的地方！',
-                  '如果您不慎将助记词遗忘，那么钱包中的资产将无法挽回。'
-                ]}
+                tips={localText[language]['scanWord_tips']}
               />
               <Button type="primary" onClick={handleBack}>
-                关闭
+                <FormattedMessage id="scanWord_close" />
               </Button>
             </Fragment>
           ) : (
@@ -73,8 +71,9 @@ const ScanWord = function(props) {
 }
 
 export default withRouter(
-  connect(({ user, word }) => ({
+  connect(({ user, word, international }) => ({
     user,
-    word
+    word,
+    international
   }))(ScanWord)
 )

@@ -11,6 +11,7 @@ import BaseLabel from '../component/layout/BaseLabel'
 import { fileReaderAsText } from '../utils/helper'
 import { commonFormSet } from '../constants/set'
 import styles from './ImportKeystone.scss'
+import { FormattedMessage, localText } from '../i18n'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -24,7 +25,8 @@ const ImportForm = Form.create({ name: 'login' })(props => {
     labelCol,
     contCol,
     isImportLoading,
-    history
+    history,
+    language
   } = props
   const { getFieldDecorator } = form
   const uploadProps = {
@@ -53,25 +55,46 @@ const ImportForm = Form.create({ name: 'login' })(props => {
   return (
     <Form {...commonFormSet} onSubmit={handleSubmit}>
       {importType === 0 ? (
-        <FormItem label={<BaseLabel label={'请粘贴你的私钥:'} />}>
+        <FormItem
+          label={
+            <BaseLabel label={localText[language]['ImportKeystone_private']} />
+          }
+        >
           {getFieldDecorator('privateKey', {
-            rules: [{ required: true, message: '请粘贴你的私钥' }]
+            rules: [
+              {
+                required: true,
+                message: <FormattedMessage id="ImportKeystone_privateTip" />
+              }
+            ]
           })(<TextareaItem />)}
         </FormItem>
       ) : (
         <Fragment>
           <FormItem wrapperCol={{ offset: labelCol, xs: contCol }}>
             {getFieldDecorator('file', {
-              rules: [{ required: true, message: '请上传keystore' }]
+              rules: [
+                {
+                  required: true,
+                  message: <FormattedMessage id="ImportKeystone_fileTip" />
+                }
+              ]
             })(
               <Upload {...uploadProps}>
-                <Button size="large">选择文件</Button>
+                <Button size="large">
+                  <FormattedMessage id="ImportKeystone_file" />
+                </Button>
               </Upload>
             )}
           </FormItem>
-          <FormItem label={<BaseLabel label={'请输入密码'} />}>
+          <FormItem
+            label={<BaseLabel label={localText[language]['password_tip']} />}
+          >
             {getFieldDecorator('passwd')(
-              <InputItem type="password" placeholder="请输入" />
+              <InputItem
+                type="password"
+                placeholder={localText[language]['password_placeholder']}
+              />
             )}
           </FormItem>
         </Fragment>
@@ -91,9 +114,13 @@ const ImportKeystone = function(props) {
   const {
     dispatch,
     keystone: { isImportLoading },
-    history
+    history,
+    international: { language }
   } = props
-  const importTypeList = ['私钥', 'Keystore文件']
+  const importTypeList = {
+    zh: ['私钥', 'Keystore文件'],
+    en: ['Private Key', 'Keystore File']
+  }
   const [importType, setImportType] = useState(0)
   const labelCol = 6
   const contCol = 18
@@ -124,20 +151,16 @@ const ImportKeystone = function(props) {
   }
   return (
     <Fragment>
-      <Header title={'导入地址'} hasBack={true} />
+      <Header
+        title={<FormattedMessage id="ImportKeystone_title" />}
+        hasBack={true}
+      />
       <div className={styles.container}>
         <CommonPadding>
-          <BaseWarn
-            warns={[
-              '导入的地址不能从当前钱包的助记词恢复。',
-              '如果你切换了钱包，该地址将从钱包中消失，',
-              '需要重新导入。',
-              '请另行保管该地址的私钥！'
-            ]}
-          />
+          <BaseWarn warns={[localText[language]['ImportKeystone_warns']]} />
           <Row className={styles.types}>
             <Col span={labelCol}>
-              <BaseLabel label={'选择类型:'} />
+              <BaseLabel label={localText[language]['ImportKeystone_type']} />
             </Col>
             <Col span={contCol}>
               <Select
@@ -146,7 +169,7 @@ const ImportKeystone = function(props) {
                 className={styles.select}
                 size="large"
               >
-                {importTypeList.map((item, index) => (
+                {importTypeList[language].map((item, index) => (
                   <Option value={index} key={index}>
                     {item}
                   </Option>
@@ -161,6 +184,7 @@ const ImportKeystone = function(props) {
             contCol={contCol}
             isImportLoading={isImportLoading}
             history={history}
+            language={language}
           />
         </CommonPadding>
       </div>
@@ -169,7 +193,8 @@ const ImportKeystone = function(props) {
 }
 
 export default withRouter(
-  connect(({ keystone }) => ({
-    keystone
+  connect(({ keystone, international }) => ({
+    keystone,
+    international
   }))(ImportKeystone)
 )

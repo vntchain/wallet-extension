@@ -10,6 +10,7 @@ import { calCommission, calBigMulti } from '../utils/helper'
 // import paths from '../utils/paths'
 import { gasPatten } from '../constants/pattens'
 import styles from './Commission.scss'
+import { FormattedMessage, localText } from '../i18n'
 
 const Send = function(props) {
   const {
@@ -22,7 +23,8 @@ const Send = function(props) {
       isResend
     },
     dispatch,
-    history
+    history,
+    international: { language }
   } = props
   const [commission, setCommission] = useState(calCommission(gasPrice, gas))
   const [state, innerDispatch] = useReducer(
@@ -137,20 +139,29 @@ const Send = function(props) {
   const validatePrice = (gasPrice, gas) => {
     //转账费+手续费不能高于余额
     if (calCommission(gasPrice, gas) > accountBalance) {
-      setError('setPriceError', '余额不足')
+      setError(
+        'setPriceError',
+        localText[language]['commission_ErrorMessage_validateLimit2']
+      )
     } else {
       setError('setPriceError', '')
     }
   }
   const validateLimit = (gasPrice, gas) => {
     if (gas < 21000) {
-      setError('setLimitError', 'Gas Limit 过低')
+      setError(
+        'setLimitError',
+        localText[language]['commission_ErrorMessage_validateLimit1']
+      )
     } else {
       setError('setLimitError', '')
 
       //转账费+手续费不能高于余额
       if (calCommission(gasPrice, gas) > accountBalance) {
-        setError('setLimitError', '余额不足')
+        setError(
+          'setLimitError',
+          localText[language]['commission_ErrorMessage_validateLimit2']
+        )
       } else {
         setError('setLimitError', '')
       }
@@ -158,7 +169,7 @@ const Send = function(props) {
   }
   const handlePriceChange = val => {
     if (val && !gasPatten.test(val)) {
-      message.info('非法字符')
+      message.info(localText[language]['commission_ErrorMessage_info'])
       return
     }
     innerDispatch({
@@ -170,7 +181,7 @@ const Send = function(props) {
   }
   const handleLimitChange = val => {
     if (val && !gasPatten.test(val)) {
-      message.info('非法字符')
+      message.info(localText[language]['commission_ErrorMessage_info'])
       return
     }
     innerDispatch({
@@ -182,12 +193,17 @@ const Send = function(props) {
   }
   return (
     <Fragment>
-      <Header title={'自定义手续费'} hasBack={true} />
+      <Header
+        title={<FormattedMessage id="commission_title" />}
+        hasBack={true}
+      />
       <div className={styles.container}>
         <CommonPadding>
           <div className={`${styles.outlineFlex} ${styles.blocks}`}>
             <div className={styles.innerFlex}>
-              <BaseLabel label={'手续费：'} />
+              <BaseLabel
+                label={localText[language]['commission_serviceCharge']}
+              />
               <span>
                 <div className={styles.value}>{`${commission} VNT`}</div>
                 <div className={styles.info}>
@@ -196,17 +212,17 @@ const Send = function(props) {
               </span>
             </div>
             <a
-              className={styles.btn}
+              className={language === 'zh' ? styles.btn : styles.btn_en}
               href="javascript:"
               onClick={handleDefault}
             >
-              推荐设置
+              <FormattedMessage id="commission_setting" />
             </a>
           </div>
           <div className={styles.blocks}>
             <div className={styles.price}>
               <div>
-                <label>Gas Price（GWEI)</label>
+                <label>Gas Price (GWEI)</label>
                 <Input
                   size="large"
                   value={state.gasPrice}
@@ -226,25 +242,26 @@ const Send = function(props) {
             </div>
             <BaseTip
               className={styles.tips}
-              tips={[
-                '温馨提示：',
-                '· 我们建议您使用系统推荐的参数设置。',
-                '· Gas Price高，交易确认的速度快；Gas Price低，交易速度慢。',
-                '· Gas Limit过低，会导致交易执行失败。'
-              ]}
+              tips={[localText[language]['commission_baseTip']]}
             />
           </div>
           <div className={`${styles.blocks} ${styles.total}`}>
             <div className={styles.outlineFlex}>
-              <span className={styles.info}>转账数量</span>
+              <span className={styles.info}>
+                <FormattedMessage id="commission_TransferNum" />
+              </span>
               <span className={styles.value}>{value}</span>
             </div>
             <div className={styles.outlineFlex}>
-              <span className={styles.info}>手续费</span>
+              <span className={styles.info}>
+                <FormattedMessage id="commission_serviceCharge" />
+              </span>
               <span className={styles.value}>{commission}</span>
             </div>
             <div className={styles.outlineFlex}>
-              <span className={styles.info}>总计</span>
+              <span className={styles.info}>
+                <FormattedMessage id="commission_total" />
+              </span>
               <span className={styles.value}>
                 {Number(value) + Number(commission)}
               </span>
@@ -257,7 +274,7 @@ const Send = function(props) {
               size="large"
               onClick={handleSend}
             >
-              发送交易
+              <FormattedMessage id="commission_trading" />
             </Button>
           ) : (
             <Button
@@ -266,7 +283,7 @@ const Send = function(props) {
               size="large"
               onClick={handleSubmit}
             >
-              确定
+              <FormattedMessage id="commission_confirm" />
             </Button>
           )}
         </CommonPadding>
@@ -276,9 +293,10 @@ const Send = function(props) {
 }
 
 export default withRouter(
-  connect(({ user, price, send }) => ({
+  connect(({ user, price, send, international }) => ({
     user,
     price,
-    send
+    send,
+    international
   }))(Send)
 )

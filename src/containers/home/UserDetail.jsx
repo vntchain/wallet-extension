@@ -6,6 +6,7 @@ import Copier from '../../component/Copier'
 import styles from './UserDetail.scss'
 import genQRCode from '../../utils/genQRCode'
 import { netUrlList } from '../../constants/net'
+import { FormattedMessage } from '../../i18n'
 
 const UserDetail = function(props) {
   const copyRef = React.createRef()
@@ -17,7 +18,8 @@ const UserDetail = function(props) {
     user: {
       addr,
       envObj: { chainId }
-    }
+    },
+    international: { language }
   } = props
   const handleOpenKeystone = () => {
     onClose()
@@ -47,26 +49,27 @@ const UserDetail = function(props) {
       <img className={styles.qrcode} src={QRCode} alt="qrcode" />
       <div className={styles.code}>
         <span className={styles.str}>{addr}</span>
-        <Copier text={addr} ref={copyRef}>
+        <Copier language={language} text={addr} ref={copyRef}>
           <span className={styles.copy} />
         </Copier>
       </div>
       <Button type="primary" className={styles.btn} onClick={linkToVnt}>
-        去VNT浏览器上查看
+        <FormattedMessage id="UserDetail_toVnt" />
       </Button>
       <Button
         type="primary"
         className={styles.btn}
         onClick={handleOpenKeystone}
       >
-        导出私钥
+        <FormattedMessage id="UserDetail_expPrivate" />
       </Button>
     </Modal>
   )
 }
 
 export default withRouter(
-  connect(({ user }) => ({
-    user
+  connect(({ user, international }) => ({
+    user,
+    international
   }))(UserDetail)
 )
