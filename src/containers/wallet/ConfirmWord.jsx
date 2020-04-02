@@ -5,9 +5,11 @@ import { Form } from 'antd'
 import { Button, TextareaItem } from 'antd-mobile'
 import { commonFormSet } from '../../constants/set'
 const FormItem = Form.Item
+import { FormattedMessage, localText } from '../../i18n'
+// import FormattedText from '../../i18n/lib/FormattedTest'
 
 const WordForm = Form.create({ name: 'word' })(props => {
-  const { form, onSubmit, word } = props
+  const { form, onSubmit, word, language } = props
   const { getFieldDecorator, setFields } = form
   const handleSubmit = e => {
     e.preventDefault()
@@ -21,7 +23,7 @@ const WordForm = Form.create({ name: 'word' })(props => {
           setFields({
             word: {
               value: values.word,
-              errors: [new Error('抱歉！助记词错误！')]
+              errors: [new Error(localText[language]['WordForm_error'])]
             }
           })
         }
@@ -30,18 +32,25 @@ const WordForm = Form.create({ name: 'word' })(props => {
   }
   return (
     <Form {...commonFormSet} onSubmit={handleSubmit}>
-      <FormItem label={<BaseLabel label={'确认您的助记词'} />}>
+      <FormItem
+        label={<BaseLabel label={localText[language]['WordForm_label']} />}
+      >
         {getFieldDecorator('word', {
-          rules: [{ required: true, message: '请输入助记词' }]
+          rules: [
+            {
+              required: true,
+              message: <FormattedMessage id="WordForm_message" />
+            }
+          ]
         })(
           <TextareaItem
-            placeholder={`请使用空格分隔助记词，按照顺序依次输入。`}
+            placeholder={localText[language]['WordForm_placeholder']}
           />
         )}
       </FormItem>
       <FormItem>
         <Button type="primary" onClick={handleSubmit}>
-          确认
+          <FormattedMessage id="WordForm_ok" />
         </Button>
       </FormItem>
     </Form>
@@ -51,6 +60,7 @@ const WordForm = Form.create({ name: 'word' })(props => {
 const ConfirmWord = function(props) {
   const {
     wallet: { word },
+    international: { language },
     dispatch
   } = props
   const handleConfirmWord = () => {
@@ -60,11 +70,12 @@ const ConfirmWord = function(props) {
   }
   return (
     <Fragment>
-      <WordForm onSubmit={handleConfirmWord} word={word} />
+      <WordForm onSubmit={handleConfirmWord} word={word} language={language} />
     </Fragment>
   )
 }
 
-export default connect(({ wallet }) => ({
-  wallet
+export default connect(({ wallet, international }) => ({
+  wallet,
+  international
 }))(ConfirmWord)

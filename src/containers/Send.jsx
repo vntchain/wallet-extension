@@ -12,6 +12,7 @@ import { addrPatten, balancePatten } from '../constants/pattens'
 import { commonFormSet } from '../constants/set'
 import { splitLongStr, calCommission, calBigMulti } from '../utils/helper'
 import styles from './Send.scss'
+import { FormattedMessage, localText } from '../i18n'
 
 const FormItem = Form.Item
 const TextArea = Input.TextArea
@@ -23,7 +24,8 @@ const SendForm = Form.create({ name: 'login' })(props => {
     price: { vntToCny },
     send: { tx },
     getGasInfo,
-    onSubmit
+    onSubmit,
+    language
   } = props
   const { to, value, data, gas: gasLimit, gasPrice } = tx
   const [balanceCNY, setBalanceCNY] = useState(0)
@@ -51,26 +53,26 @@ const SendForm = Form.create({ name: 'login' })(props => {
   }
   const validateToAddr = (rule, value, callback) => {
     if (!value) {
-      callback('请输入地址')
+      callback(localText[language]['send_validateToAddr_callback'])
       return
     }
     if (!addrPatten.test(value)) {
-      callback('请输入正确的地址')
+      callback(localText[language]['send_validateToAddr_callback2'])
       return
     }
     callback()
   }
   const validateBalance = (rule, value, callback) => {
     if (!value) {
-      callback('请输入数量')
+      callback(localText[language]['send_validateBalance_callback'])
       return
     }
     if (!balancePatten.test(value)) {
-      callback('请输入正确的数量')
+      callback(localText[language]['send_validateBalance_callback2'])
       return
     }
     if (value > Number(accountBalance)) {
-      callback('发送数量大于持有余额')
+      callback(localText[language]['send_validateBalance_callback3'])
       return
     }
     //设置vnt对应cny
@@ -93,7 +95,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
   }
   return (
     <Form {...commonFormSet} {...formItemLayout} onSubmit={handleSubmit}>
-      <FormItem label={<BaseLabel label={'来自:'} />}>
+      <FormItem label={<BaseLabel label={localText[language]['send_from']} />}>
         <span className={styles.value}>{splitLongStr(addr)}</span>
         <span className={styles.info}>{`${accountBalance} VNT`}</span>
         <span className={styles.info}>
@@ -101,21 +103,31 @@ const SendForm = Form.create({ name: 'login' })(props => {
         </span>
       </FormItem>
       <FormItem
-        label={<BaseLabel style={{ lineHeight: '.4rem' }} label={'发送至:'} />}
+        label={
+          <BaseLabel
+            style={{ lineHeight: '.4rem' }}
+            label={localText[language]['send_to']}
+          />
+        }
       >
         {getFieldDecorator('to', {
           initialValue: to,
           rules: [{ validator: validateToAddr }]
         })(
           <Input
-            placeholder="请输入接收地址"
+            placeholder={localText[language]['send_addressTip']}
             size="large"
             onBlur={handleGetGasLimit}
           />
         )}
       </FormItem>
       <FormItem
-        label={<BaseLabel style={{ lineHeight: '.4rem' }} label={'数量:'} />}
+        label={
+          <BaseLabel
+            style={{ lineHeight: '.4rem' }}
+            label={localText[language]['send_num']}
+          />
+        }
       >
         {getFieldDecorator('value', {
           initialValue: value,
@@ -123,7 +135,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
         })(
           <Input
             className={styles['suffix-input']}
-            placeholder="请输入发送数量"
+            placeholder={localText[language]['send_numTip']}
             size="large"
             suffix={'VNT'}
             onBlur={handleGetGasLimit}
@@ -132,30 +144,43 @@ const SendForm = Form.create({ name: 'login' })(props => {
       </FormItem>
       <div className={`${styles.between} ${styles.all}`}>
         <a href="javascript:void(0)" onClick={handleSendAll}>
-          全部
+          <FormattedMessage id="send_all" />
         </a>
         <span className={styles.info}>{`￥ ${balanceCNY}`}</span>
       </div>
       <FormItem
         label={
-          <BaseLabel style={{ lineHeight: '.4rem' }} label={'备注数据:'} />
+          <BaseLabel
+            style={{ lineHeight: '.4rem' }}
+            label={localText[language]['send_postscript']}
+          />
         }
       >
         {getFieldDecorator('data', {
           initialValue: data,
           rules: [
-            { max: 200, message: '备注数据要求200字符以内' },
+            {
+              max: 200,
+              message: <FormattedMessage id="send_postscriptTip" />
+            },
             { validator: validateRemarks }
           ]
         })(
           <TextArea
-            placeholder="请填写交易备注数据，非必填。"
+            placeholder={localText[language]['send_postscript_placeholder']}
             size="large"
             onBlur={handleGetGasLimit}
           />
         )}
       </FormItem>
-      <FormItem label={<BaseLabel label={'手续费:'} />}>
+      <FormItem
+        label={
+          <BaseLabel
+            labelStyle={language === 'en' ? { fontSize: '.12rem' } : {}}
+            label={localText[language]['send_serviceCharge']}
+          />
+        }
+      >
         <div className={styles.between}>
           <span className={styles.commission}>
             <span className={styles.value}>
@@ -165,18 +190,26 @@ const SendForm = Form.create({ name: 'login' })(props => {
               {`￥ ${calBigMulti(calCommission(gasPrice, gasLimit), vntToCny)}`}
             </span>
           </span>
-          <Link to={paths.commission}>自定义</Link>
+          <Link to={paths.commission}>
+            <FormattedMessage id="send_custom" />
+          </Link>
         </div>
       </FormItem>
       <Button type="primary" onClick={handleSubmit}>
-        发送
+        <FormattedMessage id="send_send" />
       </Button>
     </Form>
   )
 })
 
 const Send = function(props) {
-  const { user, price, send, dispatch } = props
+  const {
+    user,
+    price,
+    send,
+    dispatch,
+    international: { language }
+  } = props
   const {
     envObj: { chainId }
   } = user
@@ -202,7 +235,10 @@ const Send = function(props) {
   }
   return (
     <Fragment>
-      <Header title={`发送VNT(${netList[chainId]})`} hasBack={true} />
+      <Header
+        title={`${localText[language]['send_title']}(${netList[language][chainId]})`}
+        hasBack={true}
+      />
       <div className={styles.container}>
         <CommonPadding>
           <SendForm
@@ -211,6 +247,7 @@ const Send = function(props) {
             send={send}
             onSubmit={handleSend}
             getGasInfo={getGasInfo}
+            language={language}
           />
         </CommonPadding>
       </div>
@@ -218,8 +255,9 @@ const Send = function(props) {
   )
 }
 
-export default connect(({ user, price, send }) => ({
+export default connect(({ user, price, send, international }) => ({
   user,
   price,
-  send
+  send,
+  international
 }))(Send)

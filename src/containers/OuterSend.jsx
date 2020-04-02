@@ -13,6 +13,7 @@ import {
 } from '../utils/helper'
 import paths from '../utils/paths'
 import styles from './OuterSend.scss'
+import { FormattedMessage, localText } from '../i18n'
 
 const OuterSend = function(props) {
   const {
@@ -24,7 +25,8 @@ const OuterSend = function(props) {
     },
     price: { vntToCny = 1 },
     send: { tx },
-    popup: { trx }
+    popup: { trx },
+    international: { language }
   } = props
   const port = global.chrome.runtime.connect({ name: 'popup' })
   port.onMessage.addListener(function(msg) {
@@ -90,12 +92,16 @@ const OuterSend = function(props) {
   }
   return (
     <Fragment>
-      <Header title={`发送VNT(${netList[chainId]})`} />
+      <Header
+        title={`${localText[language]['OuterSend_title']}${netList[language][chainId]})`}
+      />
       <div className={styles.container}>
         {tx ? (
           <CommonPadding>
             <div className={styles['send-item']}>
-              <label>来自：</label>
+              <label>
+                <FormattedMessage id="OuterSend_from" />
+              </label>
               <div>
                 <div className={styles.cont}>{splitLongStr(tx.from)}</div>
                 <div className={styles.info}>{`${accountBalance} VNT`}</div>
@@ -105,11 +111,15 @@ const OuterSend = function(props) {
               </div>
             </div>
             <div className={styles['send-item']}>
-              <label>发送至：</label>
+              <label>
+                <FormattedMessage id="OuterSend_to" />
+              </label>
               <div className={styles.cont}>{splitLongStr(tx.to)}</div>
             </div>
             <div className={styles['send-item']}>
-              <label>数量：</label>
+              <label>
+                <FormattedMessage id="OuterSend_num" />
+              </label>
               <div>
                 <div className={styles.info}>{`${tx.value} VNT`}</div>
                 <div className={styles.remarks}>
@@ -118,7 +128,9 @@ const OuterSend = function(props) {
               </div>
             </div>
             <div className={styles['send-item']}>
-              <label>手续费：</label>
+              <label>
+                <FormattedMessage id="OuterSend_serviceCharge" />
+              </label>
               <div className={styles.inner}>
                 <div>
                   <div className={styles.cont}>
@@ -132,19 +144,21 @@ const OuterSend = function(props) {
                   </div>
                 </div>
                 <Link className={styles.commission} to={paths.commission}>
-                  自定义
+                  <FormattedMessage id="OuterSend_commission" />
                 </Link>
               </div>
             </div>
             <div className={styles['send-item']}>
-              <label>备注：</label>
+              <label>
+                <FormattedMessage id="OuterSend_mark" />
+              </label>
               <div className={styles.remarks}>{tx.data}</div>
             </div>
             <BaseModalFooter
               onCancel={() => handleSend(false)}
               onOk={() => handleSend(true)}
-              cancelText="拒绝"
-              okText="同意"
+              cancelText={localText[language]['OuterAuth_cancelText']}
+              okText={localText[language]['OuterAuth_okText']}
             />
           </CommonPadding>
         ) : (
@@ -155,9 +169,10 @@ const OuterSend = function(props) {
   )
 }
 
-export default connect(({ user, price, send, popup }) => ({
+export default connect(({ user, price, send, popup, international }) => ({
   user,
   price,
   send,
-  popup
+  popup,
+  international
 }))(OuterSend)

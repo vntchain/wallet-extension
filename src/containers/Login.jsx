@@ -12,12 +12,15 @@ import imgs from '../utils/imgs'
 import { netList } from '../constants/net'
 import { commonFormSet } from '../constants/set'
 import { genSearchObj } from '../utils/helper'
+import { FormattedMessage, localText } from '../i18n'
+
 const FormItem = Form.Item
 const Option = Select.Option
 
 const LoginForm = Form.create({ name: 'login' })(props => {
-  const { form, onSubmit, isLoginDisable } = props
+  const { form, onSubmit, isLoginDisable, language } = props
   const { getFieldDecorator } = form
+
   const handleSubmit = e => {
     e.preventDefault()
     form.validateFields((err, values) => {
@@ -27,16 +30,32 @@ const LoginForm = Form.create({ name: 'login' })(props => {
       }
     })
   }
+
   return (
     <Form {...commonFormSet} onSubmit={handleSubmit}>
-      <FormItem label={<BaseLabel label={'密码'} icon={imgs.password} />}>
+      <FormItem
+        label={
+          <BaseLabel
+            label={localText[language]['password']}
+            icon={imgs.password}
+          />
+        }
+      >
         {getFieldDecorator('password', {
-          rules: [{ required: true, message: '请输入密码' }]
-        })(<InputItem type="password" maxLength={16} placeholder="请输入" />)}
+          rules: [
+            { required: true, message: <FormattedMessage id="password_tip" /> }
+          ]
+        })(
+          <InputItem
+            type="password"
+            maxLength={16}
+            placeholder={localText[language]['password_placeholder']}
+          />
+        )}
       </FormItem>
       <FormItem>
         <Button type="primary" onClick={handleSubmit} disabled={isLoginDisable}>
-          登录
+          <FormattedMessage id="login_btn" />
         </Button>
       </FormItem>
     </Form>
@@ -45,11 +64,12 @@ const LoginForm = Form.create({ name: 'login' })(props => {
 const Login = function(props) {
   const {
     dispatch,
-    user: { isLoginDisable, envObj }
+    user: { isLoginDisable, envObj },
+    international: { language }
   } = props
   useEffect(() => {
     const redirect = genSearchObj(props.location.search)['redirect']
-    console.log(redirect) //eslint-disable-line
+    // console.log(redirect) //eslint-disable-line
     dispatch({
       type: 'user/setRedirect',
       payload: redirect
@@ -77,7 +97,7 @@ const Login = function(props) {
         value={envObj.chainId}
         className={styles.select}
       >
-        {netList.map((item, index) => {
+        {netList[language].map((item, index) => {
           return item ? (
             <Option value={index} key={index}>
               {item}
@@ -95,16 +115,26 @@ const Login = function(props) {
       <div className={styles.banner} />
       <div className={styles.container}>
         <CommonPadding>
-          <h2 className={styles.title}>登录VNT钱包</h2>
-          <LoginForm onSubmit={handleLogin} isLoginDisable={isLoginDisable} />
+          <h2 className={styles.title}>
+            <FormattedMessage id="login_title" />
+          </h2>
+          <LoginForm
+            onSubmit={handleLogin}
+            isLoginDisable={isLoginDisable}
+            language={language}
+          />
           <div className={styles.tip}>
             <p>
-              登录另一个钱包？
-              <Link to={paths.regainWord}>从助记词恢复钱包</Link>
+              <FormattedMessage id="login_tip1" />
+              <Link to={paths.regainWord}>
+                <FormattedMessage id="login_link1" />
+              </Link>
             </p>
             <p>
-              没有钱包？
-              <Link to={paths.create}>创建钱包</Link>
+              <FormattedMessage id="login_tip2" />
+              <Link to={paths.create}>
+                <FormattedMessage id="login_link2" />
+              </Link>
             </p>
           </div>
         </CommonPadding>
@@ -113,4 +143,6 @@ const Login = function(props) {
   )
 }
 
-export default connect(({ user }) => ({ user }))(Login)
+export default connect(({ user, international }) => ({ user, international }))(
+  Login
+)

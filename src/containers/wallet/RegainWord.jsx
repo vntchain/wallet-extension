@@ -5,11 +5,13 @@ import { Form } from 'antd'
 import { Button, InputItem, TextareaItem } from 'antd-mobile'
 import { passwordPatten } from '../../constants/pattens'
 import { commonFormSet } from '../../constants/set'
+import { FormattedMessage, localText } from '../../i18n'
+
 const FormItem = Form.Item
 // const { TextArea } = Input
 
 const WordForm = Form.create({ name: 'word' })(props => {
-  const { form, onSubmit } = props
+  const { form, onSubmit, language } = props
   const { getFieldDecorator } = form
   const handleSubmit = e => {
     e.preventDefault()
@@ -17,7 +19,7 @@ const WordForm = Form.create({ name: 'word' })(props => {
       if (!err) {
         console.log('Received values of form: ', values) //eslint-disable-line
         const { seed, passwd } = values
-        onSubmit({ seed, passwd })
+        onSubmit({ seed, passwd, language: language })
       }
     })
   }
@@ -29,46 +31,83 @@ const WordForm = Form.create({ name: 'word' })(props => {
   }
   const compareToFirstPassword = (rule, value, callback) => {
     if (value && value !== form.getFieldValue('passwd')) {
-      callback('请确认两次填写的密码相同！')
+      callback(localText[language]['newPassword_callback'])
     }
     callback()
   }
   return (
     <Form {...commonFormSet} onSubmit={handleSubmit}>
-      <FormItem label={<BaseLabel label={'确认您的助记词'} />}>
+      <FormItem
+        label={<BaseLabel label={<FormattedMessage id="WordForm_label" />} />}
+      >
         {getFieldDecorator('seed', {
-          rules: [{ required: true, message: '请输入助记词' }]
+          rules: [
+            {
+              required: true,
+              message: <FormattedMessage id="WordForm_message" />
+            }
+          ]
         })(
           <TextareaItem
-            placeholder={`请使用空格分隔助记词，按照顺序依次输入。`}
+            placeholder={localText[language]['WordForm_placeholder']}
           />
         )}
       </FormItem>
       <FormItem
         label={
-          <BaseLabel label={'新密码'} tip={'(8-16位字符，包含字母和数字)'} />
+          <BaseLabel
+            label={localText[language]['newPassword']}
+            tip={<FormattedMessage id="newPasswordTip" />}
+          />
         }
       >
         {getFieldDecorator('passwd', {
           rules: [
-            { required: true, message: '请输入新密码' },
-            { min: 8, max: 16, message: '请输入8-16位字符' },
-            { pattern: passwordPatten, message: '密码包含字母和数字' },
+            {
+              required: true,
+              message: <FormattedMessage id="newPasswordMessage" />
+            },
+            {
+              min: 8,
+              max: 16,
+              message: <FormattedMessage id="newPasswordMessage2" />
+            },
+            {
+              pattern: passwordPatten,
+              message: <FormattedMessage id="newPasswordMessage3" />
+            },
             { validator: validateToNextPassword }
           ]
-        })(<InputItem type="password" maxLength={16} placeholder="请输入" />)}
+        })(
+          <InputItem
+            type="password"
+            maxLength={16}
+            placeholder={localText[language]['password_placeholder']}
+          />
+        )}
       </FormItem>
-      <FormItem label={<BaseLabel label={'确认密码'} />}>
+      <FormItem
+        label={<BaseLabel label={localText[language]['newPasswordConfirm']} />}
+      >
         {getFieldDecorator('confirmPassword', {
           rules: [
-            { required: true, message: '请输入确认密码' },
+            {
+              required: true,
+              message: <FormattedMessage id="newPasswordConfirmMessage" />
+            },
             { validator: compareToFirstPassword }
           ]
-        })(<InputItem type="password" maxLength={16} placeholder="请输入" />)}
+        })(
+          <InputItem
+            type="password"
+            maxLength={16}
+            placeholder={localText[language]['password_placeholder']}
+          />
+        )}
       </FormItem>
       <FormItem>
         <Button type="primary" onClick={handleSubmit}>
-          恢复钱包
+          <FormattedMessage id="RegainWord_recover" />
         </Button>
       </FormItem>
     </Form>
@@ -76,7 +115,10 @@ const WordForm = Form.create({ name: 'word' })(props => {
 })
 
 const RegainWord = function(props) {
-  const { dispatch } = props
+  const {
+    dispatch,
+    international: { language }
+  } = props
   const handleRegain = data => {
     dispatch({
       type: 'wallet/regainWord',
@@ -85,9 +127,9 @@ const RegainWord = function(props) {
   }
   return (
     <Fragment>
-      <WordForm onSubmit={handleRegain} />
+      <WordForm onSubmit={handleRegain} language={language} />
     </Fragment>
   )
 }
 
-export default connect()(RegainWord)
+export default connect(({ international }) => ({ international }))(RegainWord)

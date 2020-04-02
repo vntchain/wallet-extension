@@ -9,9 +9,10 @@ import { passwordPatten } from '../../constants/pattens'
 import { commonFormSet } from '../../constants/set'
 import styles from './Create.scss'
 const FormItem = Form.Item
+import { FormattedMessage, localText } from '../../i18n'
 
 const CreateForm = function(props) {
-  const { form, onSubmit, isCreateDisable } = props
+  const { form, onSubmit, isCreateDisable, language } = props
   const { getFieldDecorator } = form
   const handleSubmit = e => {
     e.preventDefault()
@@ -20,9 +21,9 @@ const CreateForm = function(props) {
         const isAgree = form.getFieldValue('agree')
         if (isAgree) {
           console.log('Received values of form: ', values) //eslint-disable-line
-          onSubmit({ passwd: values.password })
+          onSubmit({ passwd: values.password, language: language })
         } else {
-          message.warn('请阅读并同意服务条款')
+          message.warn(localText[language]['Create_messageWarn'])
         }
       }
     })
@@ -35,7 +36,7 @@ const CreateForm = function(props) {
   }
   const compareToFirstPassword = (rule, value, callback) => {
     if (value && value !== form.getFieldValue('password')) {
-      callback('请确认两次填写的密码相同！')
+      callback(localText[language]['newPassword_callback'])
     }
     callback()
   }
@@ -43,25 +44,55 @@ const CreateForm = function(props) {
     <Form {...commonFormSet} onSubmit={handleSubmit}>
       <FormItem
         label={
-          <BaseLabel label={'新密码'} tip={'(8-16位字符，包含字母和数字)'} />
+          <BaseLabel
+            label={localText[language]['newPassword']}
+            tip={localText[language]['newPasswordTip']}
+          />
         }
       >
         {getFieldDecorator('password', {
           rules: [
-            { required: true, message: '请输入新密码' },
-            { min: 8, max: 16, message: '请输入8-16位字符' },
-            { pattern: passwordPatten, message: '密码包含字母和数字' },
+            {
+              required: true,
+              message: <FormattedMessage id="newPasswordMessage" />
+            },
+            {
+              min: 8,
+              max: 16,
+              message: <FormattedMessage id="newPasswordMessage2" />
+            },
+            {
+              pattern: passwordPatten,
+              message: <FormattedMessage id="newPasswordMessage3" />
+            },
             { validator: validateToNextPassword }
           ]
-        })(<InputItem type="password" maxLength={16} placeholder="请输入" />)}
+        })(
+          <InputItem
+            type="password"
+            maxLength={16}
+            placeholder={localText[language]['password_placeholder']}
+          />
+        )}
       </FormItem>
-      <FormItem label={<BaseLabel label={'确认密码'} />}>
+      <FormItem
+        label={<BaseLabel label={localText[language]['newPasswordConfirm']} />}
+      >
         {getFieldDecorator('confirmPassword', {
           rules: [
-            { required: true, message: '请输入确认密码' },
+            {
+              required: true,
+              message: <FormattedMessage id="newPasswordConfirmMessage" />
+            },
             { validator: compareToFirstPassword }
           ]
-        })(<InputItem type="password" maxLength={16} placeholder="请输入" />)}
+        })(
+          <InputItem
+            type="password"
+            maxLength={16}
+            placeholder={localText[language]['password_placeholder']}
+          />
+        )}
       </FormItem>
       <FormItem>
         {getFieldDecorator('agree', {
@@ -71,8 +102,10 @@ const CreateForm = function(props) {
         })(
           <Checkbox>
             <span>
-              我已阅读并同意
-              <Link to={paths.law}>服务条款</Link>
+              <FormattedMessage id="Create_messageWarn" />
+              <Link to={paths.law}>
+                <FormattedMessage id="Create_term" />
+              </Link>
             </span>
           </Checkbox>
         )}
@@ -81,7 +114,7 @@ const CreateForm = function(props) {
           onClick={handleSubmit}
           disabled={isCreateDisable}
         >
-          创建
+          <FormattedMessage id="Create_create" />
         </Button>
       </FormItem>
     </Form>
@@ -93,7 +126,8 @@ const WrapCreateForm = Form.create({ name: 'create' })(CreateForm)
 const Wallet = function(props) {
   const {
     dispatch,
-    wallet: { isCreateDisable }
+    wallet: { isCreateDisable },
+    international: { language }
   } = props
   const handleCreate = data => {
     dispatch({
@@ -105,18 +139,22 @@ const Wallet = function(props) {
     <Fragment>
       <div className={styles.create}>
         <div className={styles.title}>
-          <h2>创建钱包</h2>
-          <span>请记住您的密码，将用于登录钱包。</span>
+          <h2>
+            <FormattedMessage id="Create_title" />
+          </h2>
+          <FormattedMessage id="Create_title2" />
         </div>
       </div>
       <WrapCreateForm
         onSubmit={handleCreate}
         isCreateDisable={isCreateDisable}
+        language={language}
       />
     </Fragment>
   )
 }
 
-export default connect(({ wallet }) => ({
-  wallet
+export default connect(({ wallet, international }) => ({
+  wallet,
+  international
 }))(Wallet)

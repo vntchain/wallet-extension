@@ -7,10 +7,11 @@ import { splitLongStr, formatDecimal } from '../../utils/helper'
 import { netList } from '../../constants/net'
 import styles from './Setting.scss'
 import { message } from 'antd'
-
+import { LangConsumer, FormattedMessage, localText } from '../../i18n'
 const Setting = function(props) {
   const {
     user: { addr, accounts, envObj },
+    international: { language },
     history,
     dispatch
   } = props
@@ -41,27 +42,51 @@ const Setting = function(props) {
   }
   const handleScan = () => {
     const curAccount = accounts.find(item => item.addr == addr)
-    console.warn(curAccount) //eslint-disable-line
+    // console.warn(curAccount) //eslint-disable-line
     if (curAccount.type) {
-      message.error('导入的地址不能查看助记词')
+      message.error(localText[language]['set_errMsg'])
       return
     }
     linkTo(paths.scanWord)
   }
-  const LinkList = [
-    {
-      创建新地址: createNewAddr,
-      导入地址: () => linkTo(paths.importKeystone)
-    },
-    {
-      关于我们: () => linkTo(paths.about),
-      服务条款: () => linkTo(paths.law)
-    },
-    {
-      查看助记词: handleScan,
-      登出钱包: loginOut
-    }
-  ]
+  const LinkList = {
+    zh: [
+      {
+        创建新地址: createNewAddr,
+        导入地址: () => linkTo(paths.importKeystone)
+      },
+      {
+        中文: 'zh',
+        English: 'en'
+      },
+      {
+        关于我们: () => linkTo(paths.about),
+        服务条款: () => linkTo(paths.law)
+      },
+      {
+        查看助记词: handleScan,
+        登出钱包: loginOut
+      }
+    ],
+    en: [
+      {
+        'Create new address': createNewAddr,
+        'Import address': () => linkTo(paths.importKeystone)
+      },
+      {
+        中文: 'zh',
+        English: 'en'
+      },
+      {
+        'About us': () => linkTo(paths.about),
+        'Terms of Service': () => linkTo(paths.law)
+      },
+      {
+        'View mnemonic words': handleScan,
+        'Sign out of wallet': loginOut
+      }
+    ]
+  }
   const handleChangeEnv = id => {
     if (id !== envObj.chainId) {
       dispatch({
@@ -100,7 +125,7 @@ const Setting = function(props) {
         style={{ display: showDisplay() }}
       >
         <div className={styles['setting-list']}>
-          {netList.map((item, index) => {
+          {netList[language].map((item, index) => {
             return item ? (
               <div
                 className={`${styles['setting-item']} ${
@@ -129,7 +154,9 @@ const Setting = function(props) {
                 <p>
                   <span>{splitLongStr(item.addr)}</span>
                   {item.type ? (
-                    <span className={styles.import}>外部导入</span>
+                    <span className={styles.import}>
+                      <FormattedMessage id="set_import" />
+                    </span>
                   ) : (
                     ''
                   )}
@@ -141,26 +168,52 @@ const Setting = function(props) {
             )
           })}
         </div>
-        {LinkList.map((obj, index) => (
-          <div className={styles['setting-list']} key={index}>
-            {Object.keys(obj).map(item => (
-              <a
-                className={`${styles['setting-item']}`}
-                key={item}
-                onClick={obj[item]}
-              >
-                {item}
-              </a>
-            ))}
-          </div>
-        ))}
+        {LinkList[language].map((obj, index) =>
+          index !== 1 ? (
+            <div className={styles['setting-list']} key={index}>
+              {Object.keys(obj).map(item => (
+                <a
+                  className={`${styles['setting-item']}`}
+                  key={item}
+                  onClick={obj[item]}
+                >
+                  {item}
+                </a>
+              ))}
+            </div>
+          ) : (
+            <LangConsumer key={language}>
+              {({ lang }) => (
+                <div className={styles['setting-list']} key={index}>
+                  {Object.keys(obj).map(item => (
+                    <div
+                      className={`${styles['setting-item']} ${
+                        obj[item] === lang ? styles['setting-item_active'] : ''
+                      }`}
+                      key={item}
+                      onClick={() => {
+                        dispatch({
+                          type: 'international/setLanguage',
+                          payload: obj[item]
+                        })
+                      }}
+                    >
+                      {item}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </LangConsumer>
+          )
+        )}
       </div>
     </div>
   )
 }
 
 export default withRouter(
-  connect(({ user }) => ({
-    user
+  connect(({ user, international }) => ({
+    user,
+    international
   }))(Setting)
 )

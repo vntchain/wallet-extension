@@ -8,11 +8,16 @@ import Create from './wallet/Create'
 import Word from './wallet/Word'
 import ConfirmWord from './wallet/ConfirmWord'
 import RegainWord from './wallet/RegainWord'
+import { FormattedMessage } from '../i18n'
 
 const Wallet = function() {
   return (
     <Fragment>
-      <Header title={`VNT钱包`} hasBack={true} theme={'white'} />
+      <Header
+        title={<FormattedMessage id="Wallet_title" />}
+        hasBack={true}
+        theme={'white'}
+      />
       <div className={styles.container}>
         <CommonPadding>
           <Switch>

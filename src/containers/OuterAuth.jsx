@@ -7,6 +7,7 @@ import BaseModalFooter from '../component/layout/BaseModalFooter'
 import { splitLongStr } from '../utils/helper'
 import { netList } from '../constants/net'
 import styles from './OuterAuth.scss'
+import { FormattedMessage, localText } from '../i18n'
 
 const OuterAuth = function(props) {
   const {
@@ -15,7 +16,8 @@ const OuterAuth = function(props) {
       addr,
       envObj: { chainId }
     },
-    popup: { url }
+    popup: { url },
+    international: { language }
   } = props
   const port = global.chrome.runtime.connect({ name: 'popup' })
   port.onMessage.addListener(function(msg) {
@@ -39,33 +41,35 @@ const OuterAuth = function(props) {
   }, [])
   return (
     <Fragment>
-      <Header title={`VNT${netList[chainId]}`} />
+      <Header title={`VNT${netList[language][chainId]}`} />
       <div className={styles.container}>
         <CommonPadding>
-          <h3>请求获得您的VNT地址</h3>
+          <h3>
+            <FormattedMessage id="OuterAuth_titleh3" />
+          </h3>
           <div className={styles.info}>
             <div className={styles['info-item']}>
-              <label>请求来源:</label>
+              <label>
+                <FormattedMessage id="OuterAuth_from" />
+              </label>
               <span>{url}</span>
             </div>
             <div className={styles['info-item']}>
-              <label>您的地址:</label>
+              <label>
+                <FormattedMessage id="OuterAuth_address" />
+              </label>
               <span>{splitLongStr(addr)}</span>
             </div>
           </div>
           <BaseTip
             className={styles.tip}
-            tips={[
-              `${url}正在请求获得您的地址，以便它提供后续服务。
-            这意味着它能够查询到您在该地址的资产数量及相关交易。
-            如果它想从您的地址转移资产，那么每次转账都需要您重新批准。`
-            ]}
+            tips={[`${url}${localText[language]['OuterAuth_Tip']}`]}
           />
           <BaseModalFooter
             onCancel={() => handleAuth(false)}
             onOk={() => handleAuth(true)}
-            cancelText="拒绝"
-            okText="同意"
+            cancelText={localText[language]['OuterAuth_cancelText']}
+            okText={localText[language]['OuterAuth_okText']}
           />
         </CommonPadding>
       </div>
@@ -73,4 +77,8 @@ const OuterAuth = function(props) {
   )
 }
 
-export default connect(({ user, popup }) => ({ user, popup }))(OuterAuth)
+export default connect(({ user, popup, international }) => ({
+  user,
+  popup,
+  international
+}))(OuterAuth)

@@ -8,6 +8,7 @@ import paths from '../utils/paths'
 import { calBigMulti, calCommission } from '../utils/helper'
 import BaseModalFooter from '../component/layout/BaseModalFooter'
 import styles from './TxDetail.scss'
+import { FormattedMessage, localText } from '../i18n'
 
 const TxDetail = function(props) {
   const idCopyRef = React.createRef()
@@ -23,7 +24,8 @@ const TxDetail = function(props) {
     history,
     user: { txDetail },
     price: { vntToCny },
-    send: { isCancelLoading, gasPriceDefault, gasLimitDefault }
+    send: { isCancelLoading, gasPriceDefault, gasLimitDefault },
+    international: { language }
   } = props
   const id = props.match.params.id
   const renderTotal = (text, record) => {
@@ -65,42 +67,80 @@ const TxDetail = function(props) {
       })
     }
   }, [from])
-  const DetailList = [
-    {
-      state: {
-        label: '状态'
+  const DetailList = {
+    zh: [
+      {
+        state: {
+          label: '状态'
+        },
+        id: {
+          label: '交易id',
+          hasCopy: true
+        },
+        time: '时间',
+        from: {
+          label: '来自',
+          hasCopy: true
+        },
+        to: {
+          label: '至',
+          hasCopy: true
+        }
       },
-      id: {
-        label: '交易id',
-        hasCopy: true
+      {
+        data: '备忘数据'
       },
-      time: '时间',
-      from: {
-        label: '来自',
-        hasCopy: true
-      },
-      to: {
-        label: '至',
-        hasCopy: true
+      {
+        value: {
+          label: '数量',
+          render: text => `${text} VNT`
+        },
+        gas: 'Gas Limit',
+        gasUsed: 'Gas Used',
+        gasPrice: 'Gas Price（GWEI）',
+        total: {
+          label: '总量',
+          render: (text, record) => renderTotal(text, record)
+        }
       }
-    },
-    {
-      data: '备忘数据'
-    },
-    {
-      value: {
-        label: '数量',
-        render: text => `${text} VNT`
+    ],
+    en: [
+      {
+        state: {
+          label: 'Status'
+        },
+        id: {
+          label: 'ID',
+          hasCopy: true
+        },
+        time: 'Time',
+        from: {
+          label: 'From',
+          hasCopy: true
+        },
+        to: {
+          label: 'To',
+          hasCopy: true
+        }
       },
-      gas: 'Gas Limit',
-      gasUsed: 'Gas Used',
-      gasPrice: 'Gas Price（GWEI）',
-      total: {
-        label: '总量',
-        render: (text, record) => renderTotal(text, record)
+      {
+        data: 'Remark data'
+      },
+      {
+        value: {
+          label: 'Quantity',
+          render: text => `${text} VNT`
+        },
+        gas: 'Gas Limit',
+        gasUsed: 'Gas Used',
+        gasPrice: 'Gas Price（GWEI）',
+        total: {
+          label: 'Total',
+          render: (text, record) => renderTotal(text, record)
+        }
       }
-    }
-  ]
+    ]
+  }
   const hasResendFooter = () => {
     const { state, gasPrice, gas } = txDetail
     return (
@@ -129,13 +169,17 @@ const TxDetail = function(props) {
   }
   return (
     <Fragment>
-      <Header title={'交易详情'} hasBack={true} backUrl={paths.home} />
+      <Header
+        title={<FormattedMessage id="TxDetail_title" />}
+        hasBack={true}
+        backUrl={paths.home}
+      />
       <div className={styles.container}>
         <CommonPadding>
           {txDetail.time ? (
             <Fragment>
               <div>
-                {DetailList.map((blocks, index) => (
+                {DetailList[language].map((blocks, index) => (
                   <div className={styles.block} key={index}>
                     {Object.keys(blocks).map(item => {
                       const val = blocks[item]
@@ -154,8 +198,11 @@ const TxDetail = function(props) {
                               <Copier
                                 text={txDetail[item]}
                                 ref={refObj[`${item}CopyRef`]}
+                                language={language}
                               >
-                                <span className={styles.copy}>复制</span>
+                                <span className={styles.copy}>
+                                  <FormattedMessage id="TxDetail_copy" />
+                                </span>
                               </Copier>
                             </div>
                           ) : (
@@ -171,8 +218,8 @@ const TxDetail = function(props) {
               </div>
               {hasResendFooter() ? (
                 <BaseModalFooter
-                  okText="加速交易"
-                  cancelText="取消交易"
+                  okText={localText[language]['TxDetail_okText']}
+                  cancelText={localText[language]['TxDetail_cancelText']}
                   onCancel={handleCancel}
                   onOk={handleOk}
                   cancelLoading={isCancelLoading}
@@ -191,5 +238,10 @@ const TxDetail = function(props) {
 }
 
 export default withRouter(
-  connect(({ user, price, send }) => ({ user, price, send }))(TxDetail)
+  connect(({ user, price, send, international }) => ({
+    user,
+    price,
+    send,
+    international
+  }))(TxDetail)
 )

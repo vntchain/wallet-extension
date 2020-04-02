@@ -1,13 +1,14 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { message } from 'antd'
-
+// import { connect } from 'react-redux'
+import { localText } from '../i18n'
 const Copier = React.forwardRef((props, ref) => {
-  const { text } = props
+  const { text, language } = props
   const handleCopy = () => {
     ref.current.select()
     document.execCommand('copy')
-    message.info('复制成功！')
+    message.info(localText[language]['Copier_message'])
   }
   return (
     <Fragment>

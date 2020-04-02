@@ -3,7 +3,7 @@ import { push } from 'react-router-redux'
 import paths from '../utils/paths'
 import { createWallet, restoreFromSeed } from '../utils/chrome'
 import { message } from 'antd'
-
+import { localText } from '../i18n'
 const { put, select } = effects
 export default {
   state: {
@@ -20,7 +20,7 @@ export default {
       })
       try {
         const word = yield createWallet(payload)
-        message.success('创建钱包成功！')
+        message.success(localText[payload.language]['Create_msg'])
         yield put({
           type: 'user/setIsAuth',
           payload: true
@@ -72,7 +72,7 @@ export default {
           payload: true
         })
         yield restoreFromSeed(payload)
-        message.success('恢复钱包成功！')
+        message.success(localText[payload.language]['RegainWord_msg'])
         yield put({
           type: 'user/setIsAuth',
           payload: true

@@ -7,6 +7,7 @@ import BaseLabel from '../../component/layout/BaseLabel'
 import Copier from '../../component/Copier'
 // import PageSpin from '../../component/layout/PageSpin'
 import styles from './ExportKeystone.scss'
+import { FormattedMessage, localText } from '../../i18n'
 
 const UserDetail = function(props) {
   const addrCopyRef = React.createRef()
@@ -17,6 +18,7 @@ const UserDetail = function(props) {
     onClose,
     user: { addr },
     keystone: { privateKey, isDownloadLoading, isExportLoading },
+    international: { language },
     dispatch
   } = props
   const handleFetchKeystone = values => {
@@ -56,7 +58,7 @@ const UserDetail = function(props) {
     <Modal
       visible={visible}
       transparent
-      title="导出私钥"
+      title={<FormattedMessage id="ExportKeystone_Modal_title" />}
       closable={true}
       maskClosable={true}
       onClose={handleClose}
@@ -68,37 +70,46 @@ const UserDetail = function(props) {
         {privateKey ? (
           <Fragment>
             <div className={styles.title}>
-              <BaseLabel>地址</BaseLabel>
-              <Copier text={addr} ref={addrCopyRef}>
-                <a href="javascript:">复制地址</a>
+              <BaseLabel>
+                <FormattedMessage id="ExportKeystone_address" />
+              </BaseLabel>
+              <Copier text={addr} language={language} ref={addrCopyRef}>
+                <a href="javascript:">
+                  <FormattedMessage id="ExportKeystone_addrCopy" />
+                </a>
               </Copier>
             </div>
             <div className={styles.addr}>{addr}</div>
             <div className={styles.title}>
-              <BaseLabel>私钥</BaseLabel>
+              <BaseLabel>
+                <FormattedMessage id="ExportKeystone_private" />
+              </BaseLabel>
               <span>
                 {isDownloadLoading ? (
-                  <span>文件准备中...</span>
+                  <FormattedMessage id="ExportKeystone_DownloadLoading" />
                 ) : (
                   <a href="javascript:" onClick={handleFetchKeystoneJson}>
-                    下载JSON文件
+                    <FormattedMessage id="ExportKeystone_downloadJson" />
                   </a>
                 )}
-                <Copier text={privateKey} ref={privateCopyRef}>
-                  <a href="javascript:">复制私钥</a>
+                <Copier
+                  text={privateKey}
+                  language={language}
+                  ref={privateCopyRef}
+                >
+                  <a href="javascript:">
+                    <FormattedMessage id="ExportKeystone_privateCopy" />
+                  </a>
                 </Copier>
               </span>
             </div>
             <div className={styles.code}>{privateKey}</div>
             <BaseTip
               className={styles.tips}
-              tips={[
-                '注意',
-                '永远不要公开这个私钥。任何拥有你的私钥的人都可以窃取你地址上的资产。'
-              ]}
+              tips={localText[language]['ExportKeystone_tip']}
             />
             <Button type="primary" onClick={handleClose}>
-              完成
+              <FormattedMessage id="ExportKeystone_ok" />
             </Button>
           </Fragment>
         ) : (
@@ -113,7 +124,8 @@ const UserDetail = function(props) {
   )
 }
 
-export default connect(({ user, keystone }) => ({
+export default connect(({ user, keystone, international }) => ({
   user,
-  keystone
+  keystone,
+  international
 }))(UserDetail)

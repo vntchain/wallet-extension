@@ -34,6 +34,20 @@ yarn build
 
 /src/constants/net.js
 
+## 钱包开发启动流程
+
+-  在background 文件中运行produce.sh 脚本
+
+-  在 控制台中 输入 NODE_ENV=development gulp dev
+
+  注意：windows不支持NODE_ENV=development的设置方式。
+
+        安装  npm install across-env --save-dev
+    
+        使用 NODE_ENV=production 前面加 cross-env
+
+-  然后在 浏览器中 进行加载扩展程序操作即可
+
 ## dapp与插件交互
 
 见文档 “dapp与插件交互说明”
