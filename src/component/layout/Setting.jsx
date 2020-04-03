@@ -154,7 +154,11 @@ const Setting = function(props) {
                 <p>
                   <span>{splitLongStr(item.addr)}</span>
                   {item.type ? (
-                    <span className={styles.import}>
+                    <span
+                      className={
+                        language === 'zh' ? styles.import : styles.import_en
+                      }
+                    >
                       <FormattedMessage id="set_import" />
                     </span>
                   ) : (

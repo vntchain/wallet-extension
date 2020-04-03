@@ -14,12 +14,23 @@
   line-height: 0.16rem;
   vertical-align: middle;
 }
-.value {
+.value,.value_en {
   color: $font-color;
 }
-.info {
+.value_en {
+  font-size: 0.14rem;
+  margin-top: .05rem;
+}
+.info,
+.info_en {
   display: block;
   color: $font-color-light;
+}
+.info_en {
+  font-size: 0.14rem;
+}
+.bill{
+  flex:1;
 }
 .outlineFlex {
   display: flex;
@@ -63,13 +74,14 @@
   border-radius: 0.04rem;
 }
 .btn_en {
-  padding-top: 0.15rem;
-  font-size: 0.16rem;
+  flex:1;
+  padding: 0.05rem;
+  font-size: 0.14rem;
   color: $font-color;
   background: $border-color;
   border-radius: 0.04rem;
   text-align: center;
-  margin-left: 0.2rem;
+  margin-left: .1rem;
 }
 .button {
   margin-bottom: 0.4rem;
