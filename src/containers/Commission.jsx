@@ -202,11 +202,16 @@ const Send = function(props) {
           <div className={`${styles.outlineFlex} ${styles.blocks}`}>
             <div className={styles.innerFlex}>
               <BaseLabel
+                style={language === 'en' ? { flex: 1 } : {}}
                 label={localText[language]['commission_serviceCharge']}
               />
-              <span>
-                <div className={styles.value}>{`${commission} VNT`}</div>
-                <div className={styles.info}>
+              <span className={language === 'zh' ? '' : styles.bill}>
+                <div
+                  className={language === 'zh' ? styles.value : styles.value_en}
+                >{`${commission} VNT`}</div>
+                <div
+                  className={language === 'zh' ? styles.info : styles.info_en}
+                >
                   {`￥ ${calBigMulti(commission, vntToCny)}`}
                 </div>
               </span>
