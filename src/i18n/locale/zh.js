@@ -96,7 +96,7 @@ export default {
   commission_ErrorMessage_validateLimit2: '余额不足',
   commission_ErrorMessage_info: '非法字符',
   commission_title: '自定义手续费',
-  commission_serviceCharge: '手续费:',
+  commission_serviceCharge: '手续费',
   commission_setting: '推荐设置',
   commission_baseTip: [
     '温馨提示：',

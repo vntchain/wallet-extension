@@ -7,11 +7,11 @@ class BaseLabel extends React.Component {
     super(props)
   }
   render() {
-    const { label, tip, icon, children, style, labelStyle } = this.props
+    const { label, tip, icon, children, style } = this.props
     return (
       <div className={styles.label} style={style}>
         {icon ? <img src={icon} alt={label} /> : ''}
-        <label style={labelStyle}>{children || label}</label>
+        <label>{children || label}</label>
         {tip ? <span className={styles.tip}>{tip}</span> : ''}
       </div>
     )

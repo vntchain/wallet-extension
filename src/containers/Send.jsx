@@ -31,8 +31,14 @@ const SendForm = Form.create({ name: 'login' })(props => {
   const [balanceCNY, setBalanceCNY] = useState(0)
   const { getFieldDecorator, setFieldsValue, getFieldValue } = form
   const formItemLayout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 18 }
+    zh: {
+      labelCol: { span: 6 },
+      wrapperCol: { span: 18 }
+    },
+    en: {
+      labelCol: { span: 9 },
+      wrapperCol: { span: 15 }
+    }
   }
   const handleSubmit = e => {
     e.preventDefault()
@@ -94,7 +100,11 @@ const SendForm = Form.create({ name: 'login' })(props => {
     })
   }
   return (
-    <Form {...commonFormSet} {...formItemLayout} onSubmit={handleSubmit}>
+    <Form
+      {...commonFormSet}
+      {...formItemLayout[language]}
+      onSubmit={handleSubmit}
+    >
       <FormItem label={<BaseLabel label={localText[language]['send_from']} />}>
         <span className={styles.value}>{splitLongStr(addr)}</span>
         <span className={styles.info}>{`${accountBalance} VNT`}</span>
@@ -176,7 +186,7 @@ const SendForm = Form.create({ name: 'login' })(props => {
       <FormItem
         label={
           <BaseLabel
-            labelStyle={language === 'en' ? { fontSize: '.12rem' } : {}}
+            style={language === 'en' ? { lineHeight: '.2rem' } : {}}
             label={localText[language]['send_serviceCharge']}
           />
         }
