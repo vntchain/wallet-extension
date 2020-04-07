@@ -17,17 +17,14 @@
 .value,.value_en {
   color: $font-color;
 }
-.value_en {
+.value_en,
+.info_en {
   font-size: 0.14rem;
-  margin-top: .05rem;
 }
 .info,
 .info_en {
   display: block;
   color: $font-color-light;
-}
-.info_en {
-  font-size: 0.14rem;
 }
 .bill{
   flex:1;
