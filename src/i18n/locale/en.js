@@ -25,8 +25,8 @@ export default {
 
   home_title: 'Home',
   home_detail: 'Details',
-  home_rollIn: 'Roll In',
-  home_rollOut: 'Roll Out',
+  home_rollIn: 'Receive',
+  home_rollOut: 'Send',
   home_history: 'Transaction History',
   home_history_toBrowser: 'Go to the browser to view',
   home_history_orderID: 'Transaction id', // ScanWord
